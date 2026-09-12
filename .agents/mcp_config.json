@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "unity-mcp": {
+      "command": "C:\\Users\\Sadib\\.local\\bin\\uvx.exe",
+      "args": [
+        "--from",
+        "mcpforunityserver==10.2.0",
+        "mcp-for-unity",
+        "--transport",
+        "http",
+        "--http-url",
+        "http://127.0.0.1:8083",
+        "--project-scoped-tools"
+      ]
+    }
+  }
+}
