@@ -138,7 +138,7 @@ namespace Game29
             return card;
         }
 
-        public void DisplayTrick(Trick trick)
+        public void DisplayTrick(Trick trick, PlayerSeat? flyFromSeat = null, Vector3 flyFromWorld = default)
         {
             EnsureComponents();
 
@@ -156,19 +156,23 @@ namespace Game29
             {
                 hasPlay[(int)play.Player] = true;
                 CardUI slot = GetSlotForSeat(play.Player);
-                if (slot != null)
-                {
-                    bool wasEmpty = slot.CurrentCard == null;
-                    slot.SetCard(play.Card, false, null);
-                    slot.SetGlow(false, Color.clear);
+                if (slot == null) continue;
 
-                    if (wasEmpty)
-                    {
-                        // Pop-in animation when card lands in trick area
-                        slot.transform.DOKill();
-                        slot.transform.localScale = Vector3.one * 0.6f;
-                        slot.transform.DOScale(1f, 0.24f).SetEase(Ease.OutBack).SetLink(slot.gameObject);
-                    }
+                // Keep an in-flight travel animation; don't snap the card to the slot.
+                if (slot.CurrentCard != null && slot.CurrentCard == play.Card)
+                    continue;
+
+                bool isNew = slot.CurrentCard == null;
+                slot.SetCard(play.Card, false, null);
+                slot.SetGlow(false, Color.clear);
+
+                if (isNew && flyFromSeat.HasValue && flyFromSeat.Value == play.Player)
+                    AnimateCardFromWorld(slot, play.Player, flyFromWorld);
+                else if (isNew)
+                {
+                    slot.transform.DOKill();
+                    slot.transform.localScale = Vector3.one * 0.6f;
+                    slot.transform.DOScale(1f, 0.24f).SetEase(Ease.OutBack).SetLink(slot.gameObject);
                 }
             }
 
@@ -177,6 +181,28 @@ namespace Game29
                 if (!hasPlay[i])
                     ClearSlot(GetSlotForSeat((PlayerSeat)i), (PlayerSeat)i);
             }
+        }
+
+        public const float CardTravelDuration = 0.9f;
+
+        private void AnimateCardFromWorld(CardUI slot, PlayerSeat seat, Vector3 worldStart)
+        {
+            RectTransform areaRT = transform as RectTransform;
+            RectTransform slotRT = slot.GetComponent<RectTransform>();
+            if (areaRT == null || slotRT == null) return;
+
+            Vector3 local = areaRT.InverseTransformPoint(worldStart);
+            Vector2 localStart = new Vector2(local.x, local.y);
+            Vector2 target = _baseSlotPositions[(int)seat];
+
+            float duration = CardTravelDuration;
+            if (GameManager.Instance != null)
+                duration = GameManager.Instance.CardTravelDuration;
+
+            slotRT.DOKill();
+            slotRT.anchoredPosition = localStart;
+            slotRT.localScale = Vector3.one * 1.08f;
+            slot.AnimatePlayTo(target, duration);
         }
 
         public void ShowTrickWinner(PlayerSeat winner, int points)

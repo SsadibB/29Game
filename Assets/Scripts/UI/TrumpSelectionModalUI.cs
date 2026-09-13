@@ -69,8 +69,12 @@ namespace Game29
             if (rt == null) rt = gameObject.AddComponent<RectTransform>();
             rt.anchorMin = Vector2.zero;
             rt.anchorMax = Vector2.one;
+            rt.pivot = new Vector2(0.5f, 0.5f);
             rt.offsetMin = Vector2.zero;
             rt.offsetMax = Vector2.zero;
+            rt.anchoredPosition3D = Vector3.zero;
+            rt.localScale = Vector3.one;
+            rt.localRotation = Quaternion.identity;
 
             // ── Full-screen semi-transparent backdrop ──
             if (backdropImage == null)
@@ -90,7 +94,7 @@ namespace Game29
                 panelRT.anchorMin = new Vector2(0.5f, 0.5f);
                 panelRT.anchorMax = new Vector2(0.5f, 0.5f);
                 panelRT.pivot     = new Vector2(0.5f, 0.5f);
-                panelRT.sizeDelta = new Vector2(580, 520);
+                panelRT.sizeDelta = new Vector2(580, 620);
                 panelRT.anchoredPosition = Vector2.zero;
 
                 panelBg = panelGO.AddComponent<Image>();
@@ -116,7 +120,7 @@ namespace Game29
             if (titleText == null)
             {
                 titleText = CreateText(panelRT, "Title",
-                    new Vector2(0, 215), new Vector2(540, 46),
+                    new Vector2(0, 260), new Vector2(540, 46),
                     24, FontStyle.Bold, CardVisualTheme.ColorGold);
                 titleText.text = "★  YOU WON THE BID!  ★";
             }
@@ -124,50 +128,43 @@ namespace Game29
             if (subtitleText == null)
             {
                 subtitleText = CreateText(panelRT, "Subtitle",
-                    new Vector2(0, 178), new Vector2(540, 28),
+                    new Vector2(0, 222), new Vector2(540, 28),
                     14, FontStyle.Normal, new Color(0.75f, 0.82f, 0.92f));
-                subtitleText.text = "Select Trump Suit — or choose a special mode below";
+                subtitleText.text = "Bid Winner chooses trump — J > 9 > A > 10 > K > Q > 8 > 7";
             }
 
             // ── Thin separator ──
-            CreateSeparator(panelRT, new Vector2(0, 154), new Vector2(510, 2));
+            CreateSeparator(panelRT, new Vector2(0, 198), new Vector2(510, 2));
 
             // ── Suit card buttons (top row) ──
             if (heartsBtn == null)
             {
-                heartsBtn   = CreateSuitBtn(panelRT, "HeartsBtn",   new Vector2(-195, 45), Suit.Hearts);
-                diamondsBtn = CreateSuitBtn(panelRT, "DiamondsBtn", new Vector2(-65,  45), Suit.Diamonds);
-                clubsBtn    = CreateSuitBtn(panelRT, "ClubsBtn",    new Vector2( 65,  45), Suit.Clubs);
-                spadesBtn   = CreateSuitBtn(panelRT, "SpadesBtn",   new Vector2( 195, 45), Suit.Spades);
+                heartsBtn   = CreateSuitBtn(panelRT, "HeartsBtn",   new Vector2(-195, 90), Suit.Hearts);
+                diamondsBtn = CreateSuitBtn(panelRT, "DiamondsBtn", new Vector2(-65,  90), Suit.Diamonds);
+                clubsBtn    = CreateSuitBtn(panelRT, "ClubsBtn",    new Vector2( 65,  90), Suit.Clubs);
+                spadesBtn   = CreateSuitBtn(panelRT, "SpadesBtn",   new Vector2( 195, 90), Suit.Spades);
             }
 
-            // ── Divider label ──
             if (dividerText == null)
             {
                 dividerText = CreateText(panelRT, "DividerLabel",
-                    new Vector2(0, -68), new Vector2(540, 24),
-                    12, FontStyle.Bold, new Color(0.5f, 0.55f, 0.65f));
-                dividerText.text = "─────────   SPECIAL MODES   ─────────";
+                    new Vector2(0, -10), new Vector2(500, 24),
+                    13, FontStyle.Bold, new Color(0.75f, 0.80f, 0.88f));
+                dividerText.text = "—  or special trump  —";
             }
 
-            // ── Special mode buttons (bottom row) ──
             if (seventhCardBtn == null)
             {
-                seventhCardBtn = CreateSpecialBtn(panelRT, "SeventhCardBtn",
-                    new Vector2(0, -120),
-                    "🎴",
-                    "7TH CARD",
-                    "Blind mystery trump — revealed from 2nd deal",
-                    new Color(0.98f, 0.72f, 0.15f),
-                    new Color(0.16f, 0.12f, 0.04f, 0.95f));
+                seventhCardBtn = CreateSpecialBtn(panelRT, "SeventhCardBtn", new Vector2(0, -58),
+                    "🎴", "7TH CARD", "Blind trump = your 7th dealt card (face-down until revealed)",
+                    CardVisualTheme.ColorGold, new Color(0.16f, 0.14f, 0.08f, 0.97f));
+            }
 
-                jokerBtn = CreateSpecialBtn(panelRT, "JokerBtn",
-                    new Vector2(0, -190),
-                    "🃏",
-                    "JOKER  —  NO TRUMP",
-                    "Highest card of the led suit always wins",
-                    new Color(0.45f, 0.88f, 1.0f),
-                    new Color(0.04f, 0.12f, 0.18f, 0.95f));
+            if (jokerBtn == null)
+            {
+                jokerBtn = CreateSpecialBtn(panelRT, "JokerBtn", new Vector2(0, -128),
+                    "🃏", "JOKER", "Jacks are super-trumps: ♠J > ♥J > ♦J > ♣J",
+                    new Color(0.5f, 0.85f, 1f), new Color(0.08f, 0.16f, 0.24f, 0.97f));
             }
 
             HookButtonListeners();
@@ -185,6 +182,7 @@ namespace Game29
                 seventhCardBtn.onClick.RemoveAllListeners();
                 seventhCardBtn.onClick.AddListener(OnSeventhCardSelected);
             }
+
             if (jokerBtn != null)
             {
                 jokerBtn.onClick.RemoveAllListeners();
@@ -211,6 +209,8 @@ namespace Game29
 
             if (titleText != null)
                 titleText.text = $"★  YOU WON THE BID  ( {winningBid} )  ★";
+            if (subtitleText != null)
+                subtitleText.text = "Choose a suit, 7th Card, or Joker. Ranking: J > 9 > A > 10 > K > Q > 8 > 7";
 
             // Update suit card counts
             UpdateSuitBtn(heartsBtn,   Suit.Hearts,   hand);
@@ -218,9 +218,16 @@ namespace Game29
             UpdateSuitBtn(clubsBtn,    Suit.Clubs,    hand);
             UpdateSuitBtn(spadesBtn,   Suit.Spades,   hand);
 
+            if (panelRT != null)
+                panelRT.sizeDelta = new Vector2(580, 620);
+            if (dividerText != null) dividerText.gameObject.SetActive(true);
+            if (seventhCardBtn != null) seventhCardBtn.gameObject.SetActive(true);
+            if (jokerBtn != null) jokerBtn.gameObject.SetActive(true);
+
             // Backdrop fade in
             if (backdropImage != null)
             {
+                backdropImage.raycastTarget = true;
                 backdropImage.color = new Color(0f, 0f, 0f, 0f);
                 backdropImage.DOFade(0.82f, 0.2f).SetLink(gameObject);
             }
@@ -234,42 +241,26 @@ namespace Game29
             }
 
             // Staggered button entrance animations
-            AnimateButtonEntrance(heartsBtn,      0.08f);
-            AnimateButtonEntrance(diamondsBtn,    0.14f);
-            AnimateButtonEntrance(clubsBtn,       0.20f);
-            AnimateButtonEntrance(spadesBtn,      0.26f);
-            AnimateButtonEntrance(seventhCardBtn, 0.33f);
-            AnimateButtonEntrance(jokerBtn,       0.39f);
+            AnimateButtonEntrance(heartsBtn,   0.08f);
+            AnimateButtonEntrance(diamondsBtn, 0.14f);
+            AnimateButtonEntrance(clubsBtn,    0.20f);
+            AnimateButtonEntrance(spadesBtn,   0.26f);
+            AnimateButtonEntrance(seventhCardBtn, 0.32f);
+            AnimateButtonEntrance(jokerBtn,    0.38f);
         }
 
         public void Hide()
         {
-            // If not visible, just deactivate immediately (e.g. initial setup call)
-            if (!gameObject.activeSelf)
-            {
-                gameObject.SetActive(false);
-                return;
-            }
-
             transform.DOKill();
             if (panelRT != null) panelRT.DOKill();
 
+            // Drop the full-screen raycast immediately. Waiting on a hide tween
+            // left an invisible overlay on top of the hand, so card clicks after
+            // trump selection never reached the cards and play could not start.
             if (backdropImage != null)
-                backdropImage.DOFade(0f, 0.15f).SetLink(gameObject);
+                backdropImage.raycastTarget = false;
 
-            if (panelRT != null)
-            {
-                panelRT.DOScale(0.85f, 0.18f).SetEase(Ease.InQuad).SetLink(gameObject)
-                    .OnComplete(() =>
-                    {
-                        if (this != null && gameObject != null)
-                            gameObject.SetActive(false);
-                    });
-            }
-            else
-            {
-                gameObject.SetActive(false);
-            }
+            gameObject.SetActive(false);
         }
 
         // ════════════════════════════════════════════════════════════════════
@@ -298,7 +289,7 @@ namespace Game29
 
         private void OnJokerSelected()
         {
-            Debug.Log("[29 TrumpSelection] Human South selected Joker (No-Trump)!");
+            Debug.Log("[29 TrumpSelection] Human South selected Joker!");
             if (jokerBtn != null)
                 jokerBtn.transform.DOPunchScale(Vector3.one * 0.2f, 0.2f, 10, 1).SetLink(gameObject);
 

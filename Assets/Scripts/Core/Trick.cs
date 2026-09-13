@@ -9,7 +9,7 @@ namespace Game29
     ///
     /// Trick-winning rules:
     ///   1. Trump beats all non-trump.
-    ///   2. Among same-suit cards, higher Rank wins.
+    ///   2. Among same-suit cards, 29 rank wins: J &gt; 9 &gt; A &gt; 10 &gt; K &gt; Q &gt; 8 &gt; 7.
     ///   3. An off-suit, non-trump card never beats the led suit or a trump.
     /// </summary>
     public class Trick
@@ -46,38 +46,17 @@ namespace Game29
         /// Determines which player wins this trick.
         /// Pass <c>null</c> if trump has not been revealed (treated as no trump).
         /// </summary>
-        public PlayerSeat DetermineWinner(Suit? trumpSuit)
+        public PlayerSeat DetermineWinner(Suit? trumpSuit, TrumpMode mode = TrumpMode.Suit)
         {
             if (_plays.Count == 0) return Leader;
 
             var winner = _plays[0];
             for (int i = 1; i < _plays.Count; i++)
             {
-                if (Beats(_plays[i].Card, winner.Card, trumpSuit))
+                if (GameRules.Beats(_plays[i].Card, winner.Card, LedSuit, trumpSuit, mode))
                     winner = _plays[i];
             }
             return winner.Player;
-        }
-
-        // Returns true if challenger beats the current leader card.
-        private bool Beats(Card challenger, Card current, Suit? trumpSuit)
-        {
-            bool challengerIsTrump = trumpSuit.HasValue && challenger.Suit == trumpSuit.Value;
-            bool currentIsTrump    = trumpSuit.HasValue && current.Suit    == trumpSuit.Value;
-
-            // Trump always beats non-trump.
-            if (challengerIsTrump && !currentIsTrump) return true;
-            if (!challengerIsTrump && currentIsTrump)  return false;
-
-            // Both trump or both non-trump: higher rank in the SAME suit wins.
-            if (challenger.Suit == current.Suit)
-                return (int)challenger.Rank > (int)current.Rank;
-
-            // Different suits, neither trump — only the led suit can take the trick.
-            if (LedSuit.HasValue && challenger.Suit == LedSuit.Value && current.Suit != LedSuit.Value)
-                return true;
-
-            return false;
         }
     }
 }

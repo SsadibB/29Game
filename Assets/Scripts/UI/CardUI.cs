@@ -8,7 +8,7 @@ namespace Game29
 {
     /// <summary>
     /// Visual representation of a single playing card in Unity uGUI.
-    /// Handles face-up card display (Rank, Suit, Points Badge), face-down CardBack display,
+    /// Handles face-up card display (Rank, Suit), face-down CardBack display,
     /// playability highlights, hover elevation, and click callbacks.
     /// </summary>
     public class CardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
@@ -23,9 +23,6 @@ namespace Game29
         [SerializeField] private Image centerSuitImage;
         [SerializeField] private Text rankBottomRight;
         [SerializeField] private Text suitBottomRight;
-        [SerializeField] private GameObject pointsBadgeObj;
-        [SerializeField] private Image pointsBadgeBg;
-        [SerializeField] private Text pointsBadgeText;
         [SerializeField] private Button button;
         [SerializeField] private CanvasGroup canvasGroup;
         [SerializeField] private RectTransform rectTransform;
@@ -102,30 +99,24 @@ namespace Game29
             if (centerSuitText == null)
                 centerSuitText = CreateChildText("CenterSuit", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(80, 80), TextAnchor.MiddleCenter, 54, FontStyle.Normal);
 
+            if (centerSuitImage == null)
+            {
+                centerSuitImage = CreateChildImage("CenterSuitIcon", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), -40f, 40f);
+                centerSuitImage.preserveAspect = true;
+                centerSuitImage.gameObject.SetActive(false);
+            }
+
             if (rankBottomRight == null)
                 rankBottomRight = CreateChildText("RankBottomRight", new Vector2(1, 0), new Vector2(1, 0), new Vector2(-12, 8), new Vector2(36, 32), TextAnchor.LowerRight, 22, FontStyle.Bold);
 
             if (suitBottomRight == null)
                 suitBottomRight = CreateChildText("SuitBottomRight", new Vector2(1, 0), new Vector2(1, 0), new Vector2(-12, 32), new Vector2(36, 26), TextAnchor.LowerRight, 20, FontStyle.Normal);
 
-            if (pointsBadgeObj == null)
+            Transform leftoverBadge = transform.Find("PointsBadge");
+            if (leftoverBadge != null)
             {
-                pointsBadgeObj = new GameObject("PointsBadge");
-                pointsBadgeObj.transform.SetParent(transform, false);
-                RectTransform rt = pointsBadgeObj.AddComponent<RectTransform>();
-                rt.anchorMin = new Vector2(1, 1);
-                rt.anchorMax = new Vector2(1, 1);
-                rt.pivot = new Vector2(1, 1);
-                rt.anchoredPosition = new Vector2(-6, -6);
-                rt.sizeDelta = new Vector2(46, 22);
-
-                pointsBadgeBg = pointsBadgeObj.AddComponent<Image>();
-                pointsBadgeBg.sprite = CardVisualTheme.PillBadge;
-                pointsBadgeBg.type = Image.Type.Sliced;
-                pointsBadgeBg.raycastTarget = false;
-
-                pointsBadgeText = CreateChildText("Text", new Vector2(0, 0), new Vector2(1, 1), Vector2.zero, Vector2.zero, TextAnchor.MiddleCenter, 13, FontStyle.Bold, pointsBadgeObj.transform);
-                pointsBadgeText.color = Color.white;
+                if (Application.isPlaying) Destroy(leftoverBadge.gameObject);
+                else DestroyImmediate(leftoverBadge.gameObject);
             }
 
             if (glowOutline != null)
@@ -155,7 +146,6 @@ namespace Game29
             Color suitColor = CardVisualTheme.GetSuitColor(card.Suit);
             string suitSym = CardVisualTheme.GetSuitSymbol(card.Suit);
             string rankStr = CardVisualTheme.GetRankString(card.Rank);
-            int pts = CardVisualTheme.GetPoints(card.Rank);
 
             // Labels
             rankTopLeft.text = rankStr;
@@ -163,32 +153,34 @@ namespace Game29
             suitTopLeft.text = suitSym;
             suitTopLeft.color = suitColor;
 
-            centerSuitText.text = suitSym;
-            centerSuitText.color = suitColor;
-
             rankBottomRight.text = rankStr;
             rankBottomRight.color = suitColor;
             suitBottomRight.text = suitSym;
             suitBottomRight.color = suitColor;
 
-            // Show face-up elements
-            rankTopLeft.gameObject.SetActive(true);
-            suitTopLeft.gameObject.SetActive(true);
-            centerSuitText.gameObject.SetActive(true);
-            rankBottomRight.gameObject.SetActive(true);
-            suitBottomRight.gameObject.SetActive(true);
-
-            // Point badge
-            if (pts > 0)
+            // Center suit mark: prefer the SuitIcons artwork if it loaded, fall back
+            // to the unicode glyph so cards still render correctly without the asset.
+            Sprite suitSprite = CardVisualTheme.GetSuitSprite(card.Suit);
+            if (suitSprite != null && centerSuitImage != null)
             {
-                pointsBadgeObj.SetActive(true);
-                pointsBadgeBg.color = CardVisualTheme.GetPointsBadgeColor(pts);
-                pointsBadgeText.text = $"+{pts}";
+                centerSuitImage.sprite = suitSprite;
+                centerSuitImage.color = Color.white;
+                centerSuitImage.gameObject.SetActive(true);
+                centerSuitText.gameObject.SetActive(false);
             }
             else
             {
-                pointsBadgeObj.SetActive(false);
+                centerSuitText.text = suitSym;
+                centerSuitText.color = suitColor;
+                centerSuitText.gameObject.SetActive(true);
+                if (centerSuitImage != null) centerSuitImage.gameObject.SetActive(false);
             }
+
+            // Show face-up elements
+            rankTopLeft.gameObject.SetActive(true);
+            suitTopLeft.gameObject.SetActive(true);
+            rankBottomRight.gameObject.SetActive(true);
+            suitBottomRight.gameObject.SetActive(true);
 
             // Playability and interactability
             SetPlayable(isPlayable);
@@ -211,9 +203,9 @@ namespace Game29
             rankTopLeft.gameObject.SetActive(false);
             suitTopLeft.gameObject.SetActive(false);
             centerSuitText.gameObject.SetActive(false);
+            if (centerSuitImage != null) centerSuitImage.gameObject.SetActive(false);
             rankBottomRight.gameObject.SetActive(false);
             suitBottomRight.gameObject.SetActive(false);
-            pointsBadgeObj.SetActive(false);
 
             if (glowOutline != null) glowOutline.gameObject.SetActive(false);
             canvasGroup.alpha = 1f;
@@ -236,13 +228,19 @@ namespace Game29
             rankTopLeft.gameObject.SetActive(false);
             suitTopLeft.gameObject.SetActive(false);
             centerSuitText.gameObject.SetActive(false);
+            if (centerSuitImage != null) centerSuitImage.gameObject.SetActive(false);
             rankBottomRight.gameObject.SetActive(false);
             suitBottomRight.gameObject.SetActive(false);
-            pointsBadgeObj.SetActive(false);
 
             if (glowOutline != null) glowOutline.gameObject.SetActive(false);
             if (canvasGroup != null) canvasGroup.alpha = 0.5f;
             if (button != null) button.interactable = false;
+        }
+
+        public void BindClick(Action<Card> onClick)
+        {
+            _onClickCallback = onClick;
+            if (button != null) button.interactable = _onClickCallback != null;
         }
 
         public void SetPlayable(bool playable)
@@ -327,7 +325,7 @@ namespace Game29
             rectTransform.DOKill();
             Sequence seq = DOTween.Sequence();
             seq.SetLink(gameObject);
-            seq.Append(rectTransform.DOAnchorPos(targetPos, duration).SetEase(Ease.OutQuad));
+            seq.Append(rectTransform.DOAnchorPos(targetPos, duration).SetEase(Ease.InOutCubic));
             seq.Join(rectTransform.DOScale(1f, duration));
             if (onComplete != null)
                 seq.OnComplete(() =>
@@ -360,15 +358,20 @@ namespace Game29
 
         private void HandleClick()
         {
-            if (CurrentCard == null) return;
+            if (CurrentCard == null || _onClickCallback == null) return;
 
+            // Play immediately. Waiting on a punch tween's OnComplete is unsafe:
+            // hover/deal DOKill() on the same RectTransform can cancel it, so the
+            // card click visually "does nothing" and the trick never starts.
             Card cardToPlay = CurrentCard;
-            transform.DOKill();
-            transform.DOPunchScale(Vector3.one * 0.12f, 0.12f, 8, 1).SetLink(gameObject).OnComplete(() =>
+            _onClickCallback.Invoke(cardToPlay);
+
+            if (rectTransform != null)
             {
-                if (this != null && gameObject != null)
-                    _onClickCallback?.Invoke(cardToPlay);
-            });
+                rectTransform.DOPunchScale(Vector3.one * 0.12f, 0.12f, 8, 1)
+                    .SetId("cardPunch")
+                    .SetLink(gameObject);
+            }
         }
 
         public void OnPointerEnter(PointerEventData eventData)

@@ -71,7 +71,7 @@ namespace Game29
             List<Card> validPlays = playerHand.GetValidPlays(_currentTrick);
             if (!validPlays.Contains(card)) return false;
 
-            // Notify trump manager — reveals trump if a trump card is played.
+            // Playing a trump-suit card does not reveal hidden trump.
             _trump.NotifyCardPlayed(card);
 
             playerHand.RemoveCard(card);
@@ -116,14 +116,15 @@ namespace Game29
 
         private void ResolveTrick()
         {
-            // Use fully visible trump if revealed; otherwise the trick resolves without trump awareness.
+            // Hidden trump does not count until it has been revealed.
             Suit? effectiveTrump = _trump.TrumpRevealed ? _trump.TrumpSuit : null;
-            // Note: for winner determination we always use the actual trump — the
-            // game will reveal it naturally through NotifyCardPlayed calls before this.
-            effectiveTrump = _trump.TrumpSuit; // internal resolution uses real trump
-
-            PlayerSeat winner = _currentTrick.DetermineWinner(effectiveTrump);
+            PlayerSeat winner = _currentTrick.DetermineWinner(effectiveTrump, _trump.Mode);
             int        points = _currentTrick.TotalPoints();
+
+            // The team that wins the 8th (final) trick scores +1, for 29 total points.
+            bool isFinalTrick = _tricksCompleted == GameRules.TricksPerRound - 1;
+            if (isFinalTrick)
+                points += GameRules.FinalTrickBonus;
 
             _tricksTaken[(int)winner]++;
             _teamPoints[GameRules.GetTeam(winner)] += points;

@@ -6,8 +6,10 @@ namespace Game29
     /// Tracks game-level scores across multiple rounds.
     ///
     /// Scoring:
-    ///   • Bidding team meets or exceeds bid → bidding team gains +1 game point.
-    ///   • Bidding team falls short of bid   → defending team gains +1 game point.
+    ///   • Only the bidding team’s game score changes.
+    ///   • Bidding team meets or exceeds the bid → their score +1.
+    ///   • Bidding team falls short of the bid → their score −1.
+    ///   • The defending team’s score is unchanged either way.
     ///   • First team to <see cref="GameRules.GamePointsToWin"/> game points wins.
     ///
     /// Teams: 0 = South+North (human), 1 = East+West.
@@ -50,7 +52,7 @@ namespace Game29
             if (biddingTeamWon)
                 GamePoints[BiddingTeam]++;
             else
-                GamePoints[1 - BiddingTeam]++;
+                GamePoints[BiddingTeam]--;
 
             OnRoundScored?.Invoke(BiddingTeam, CurrentBid, biddingTeamWon);
 

@@ -12,8 +12,7 @@ namespace Game29
     ///   • Bidding — estimates personal hand strength; bids conservatively.
     ///   • Trump   — chooses the suit with the most point/control cards.
     ///   • Play    — tries to win tricks it should win; avoids wasting points.
-    ///   • Awareness — respects what trump knowledge it legitimately has
-    ///     (bidding-team members know trump from the start; defenders learn on reveal).
+    ///   • Awareness — only the Bid Winner knows trump until it is revealed.
     /// </summary>
     public class AIPlayer
     {
@@ -63,8 +62,8 @@ namespace Game29
         // ════════════════════════════════════════════════════════════════════════
 
         /// <summary>
-        /// Selects the best trump suit from this player's hand.
-        /// Used by the partner of the bid-winner.
+        /// Selects the best trump suit from this player's first 4 cards.
+        /// Used by the Bid Winner.
         /// </summary>
         public Suit SelectTrump(Hand hand)
         {
@@ -77,9 +76,7 @@ namespace Game29
                 foreach (Card card in hand.GetCardsBySuit(suit))
                 {
                     score += card.PointValue * 3;
-                    if (card.Rank == Rank.Jack)  score += 5; // trump Jack is the top trump
-                    if (card.Rank == Rank.Ace)   score += 2;
-                    if (card.Rank == Rank.King)  score += 1;
+                    score += GameRules.GetTrickRank(card.Rank); // J > 9 > A > 10 > K > Q > 8 > 7
                     score += 1; // length bonus per card
                 }
                 if (score > bestScore) { bestScore = score; bestSuit = suit; }
@@ -95,26 +92,66 @@ namespace Game29
         /// Picks the best legal card to play given the current trick state.
         ///
         /// <paramref name="visibleTrump"/> should be:
-        ///   • The real trump suit if this AI is on the bidding team, or if trump has been revealed.
-        ///   • Null if this AI is a defender and trump hasn't been revealed yet.
+        ///   • The real trump suit if this AI won the bid, or if trump has been revealed.
+        ///   • Null otherwise (including the bid winner's partner).
         /// </summary>
+        /// <summary>
+        /// Chooses Suit, 7th Card, or Joker from the first 4 cards.
+        /// </summary>
+        public TrumpMode DecideTrumpMode(Hand hand, out Suit suit)
+        {
+            suit = SelectTrump(hand);
+            int jacks = 0;
+            foreach (Card card in hand.Cards)
+            {
+                if (card.Rank == Rank.Jack) jacks++;
+            }
+
+            int bestLen = hand.GetCardsBySuit(suit).Count;
+            if (jacks >= 2 && bestLen <= 1)
+                return TrumpMode.Joker;
+            if (bestLen <= 1)
+                return TrumpMode.SeventhCard;
+            return TrumpMode.Suit;
+        }
+
+        /// <summary>
+        /// Reveal hidden trump only when void in the led suit and a trump play is useful.
+        /// </summary>
+        public bool ShouldRevealTrump(Hand hand, Trick currentTrick, Suit? visibleTrump)
+        {
+            if (currentTrick == null || currentTrick.IsEmpty || !currentTrick.LedSuit.HasValue)
+                return false;
+            if (hand.HasSuit(currentTrick.LedSuit.Value))
+                return false;
+
+            if (visibleTrump.HasValue)
+                return hand.HasSuit(visibleTrump.Value);
+
+            foreach (Card card in hand.Cards)
+            {
+                if (card.Rank == Rank.Jack || card.Rank == Rank.Nine)
+                    return true;
+            }
+            return false;
+        }
+
         public Card DecideCardToPlay(
             Hand       hand,
             Trick      currentTrick,
             Suit?      visibleTrump,
-            PlayerSeat myPartner)
+            PlayerSeat myPartner,
+            TrumpMode  mode = TrumpMode.Suit)
         {
             List<Card> validPlays = hand.GetValidPlays(currentTrick);
-            if (validPlays.Count == 0) return hand.Cards[0]; // safety fallback
+            if (validPlays.Count == 0) return hand.Cards[0];
             if (validPlays.Count == 1) return validPlays[0];
 
-            // ── Leading a trick ──────────────────────────────────────────────
             if (currentTrick == null || currentTrick.IsEmpty)
-                return ChooseLeadCard(validPlays, visibleTrump);
+                return ChooseLeadCard(validPlays, visibleTrump, mode);
 
-            // ── Following a trick ────────────────────────────────────────────
-            bool partnerCurrentlyWinning = currentTrick.DetermineWinner(visibleTrump) == myPartner;
-            return ChooseFollowCard(validPlays, currentTrick, visibleTrump, partnerCurrentlyWinning);
+            bool partnerCurrentlyWinning = currentTrick.DetermineWinner(visibleTrump, mode) == myPartner;
+            return ChooseFollowCard(validPlays, currentTrick, visibleTrump, partnerCurrentlyWinning, mode);
         }
 
         // ════════════════════════════════════════════════════════════════════════
@@ -132,9 +169,7 @@ namespace Game29
             foreach (Card card in hand.Cards)
             {
                 strength += card.PointValue;             // raw point cards
-                if (card.Rank == Rank.Jack)  strength += 2; // Jacks are the highest trump — extra weight
-                if (card.Rank == Rank.King)  strength += 1;
-                if (card.Rank == Rank.Queen) strength += 1;
+                strength += GameRules.GetTrickRank(card.Rank) >= 7 ? 2 : 0; // Jack / Nine extra weight
             }
 
             // Suit-length bonus — a long suit is likely to become trump.
@@ -147,84 +182,75 @@ namespace Game29
             return strength;
         }
 
-        private Card ChooseLeadCard(List<Card> valid, Suit? trump)
+        private Card ChooseLeadCard(List<Card> valid, Suit? trump, TrumpMode mode)
         {
-            // Prefer leading a high-value non-trump card to cash points early.
+            if (mode == TrumpMode.Joker)
+            {
+                List<Card> nonJoker = valid.Where(c => !GameRules.IsJokerCard(c)).ToList();
+                if (nonJoker.Count > 0)
+                {
+                    Card best = nonJoker.OrderByDescending(c => c.PointValue)
+                                        .ThenByDescending(c => GameRules.GetTrickRank(c.Rank))
+                                        .First();
+                    if (best.PointValue > 0) return best;
+                    return nonJoker.OrderBy(c => GameRules.GetTrickRank(c.Rank)).First();
+                }
+                return valid.OrderBy(c => GameRules.GetJokerRank(c.Suit)).First();
+            }
+
             List<Card> nonTrump = trump.HasValue
                 ? valid.Where(c => c.Suit != trump.Value).ToList()
                 : new List<Card>(valid);
 
             if (nonTrump.Count > 0)
             {
-                // Lead highest-point non-trump if we have one.
                 Card best = nonTrump.OrderByDescending(c => c.PointValue)
-                                    .ThenByDescending(c => (int)c.Rank)
+                                    .ThenByDescending(c => GameRules.GetTrickRank(c.Rank))
                                     .First();
                 if (best.PointValue > 0) return best;
-
-                // Otherwise lead our safest (lowest rank) non-trump.
-                return nonTrump.OrderBy(c => (int)c.Rank).First();
+                return nonTrump.OrderBy(c => GameRules.GetTrickRank(c.Rank)).First();
             }
 
-            // Only trump cards left — lead lowest to save big trumps.
-            return valid.OrderBy(c => (int)c.Rank).First();
+            return valid.OrderBy(c => GameRules.GetTrickRank(c.Rank)).First();
         }
 
         private Card ChooseFollowCard(
             List<Card> valid,
             Trick      trick,
             Suit?      trump,
-            bool       partnerWinning)
+            bool       partnerWinning,
+            TrumpMode  mode)
         {
-            // If partner is already winning, contribute cheapest card (don't over-spend).
             if (partnerWinning)
-                return valid.OrderBy(c => c.PointValue).ThenBy(c => (int)c.Rank).First();
+                return valid.OrderBy(c => c.PointValue).ThenBy(c => GameRules.GetTrickRank(c.Rank)).First();
 
-            // Try to win the trick.
-            Card currentBest = GetWinningCard(trick, trump);
+            Card currentBest = GetWinningCard(trick, trump, mode);
             List<Card> beaters = valid
-                .Where(c => CardBeats(c, currentBest, trick.LedSuit, trump))
+                .Where(c => CardBeats(c, currentBest, trick.LedSuit, trump, mode))
                 .ToList();
 
             if (beaters.Count > 0)
-            {
-                // Win with the cheapest winning card (preserve big cards for later).
-                return beaters.OrderBy(c => (int)c.Rank).First();
-            }
+                return beaters.OrderBy(c => c.PointValue).ThenBy(c => GameRules.GetTrickRank(c.Rank)).First();
 
-            // Can't win — discard lowest-value card.
-            return valid.OrderBy(c => c.PointValue).ThenBy(c => (int)c.Rank).First();
+            return valid.OrderBy(c => c.PointValue).ThenBy(c => GameRules.GetTrickRank(c.Rank)).First();
         }
 
-        private Card GetWinningCard(Trick trick, Suit? trump)
+        private Card GetWinningCard(Trick trick, Suit? trump, TrumpMode mode)
         {
             if (trick == null || trick.IsEmpty) return null;
-            (PlayerSeat _, Card winning) = trick.Plays[0];
+            Card winning = trick.Plays[0].Card;
             for (int i = 1; i < trick.Plays.Count; i++)
             {
-                if (CardBeats(trick.Plays[i].Card, winning, trick.LedSuit, trump))
+                if (CardBeats(trick.Plays[i].Card, winning, trick.LedSuit, trump, mode))
                     winning = trick.Plays[i].Card;
             }
             return winning;
         }
 
-        private bool CardBeats(Card challenger, Card current, Suit? ledSuit, Suit? trump)
+        private bool CardBeats(Card challenger, Card current, Suit? ledSuit, Suit? trump, TrumpMode mode)
         {
             if (current == null) return true;
-
-            bool challengerTrump = trump.HasValue && challenger.Suit == trump.Value;
-            bool currentTrump    = trump.HasValue && current.Suit    == trump.Value;
-
-            if (challengerTrump && !currentTrump) return true;
-            if (!challengerTrump && currentTrump)  return false;
-
-            if (challenger.Suit == current.Suit)
-                return (int)challenger.Rank > (int)current.Rank;
-
-            if (ledSuit.HasValue && challenger.Suit == ledSuit.Value && current.Suit != ledSuit.Value)
-                return true;
-
-            return false;
+            return GameRules.Beats(challenger, current, ledSuit, trump, mode);
         }
     }
 }

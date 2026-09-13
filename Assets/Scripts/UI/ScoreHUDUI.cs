@@ -97,8 +97,8 @@ namespace Game29
                 GameObject rBtn = new GameObject("RevealTrumpBtn");
                 rBtn.transform.SetParent(centerBox.transform, false);
                 RectTransform rrt = rBtn.AddComponent<RectTransform>();
-                rrt.anchoredPosition = new Vector2(0, -96);
-                rrt.sizeDelta = new Vector2(160, 28);
+                rrt.anchoredPosition = new Vector2(0, -58);
+                rrt.sizeDelta = new Vector2(180, 32);
 
                 Image rimg = rBtn.AddComponent<Image>();
                 rimg.sprite = CardVisualTheme.PillBadge;
@@ -170,49 +170,42 @@ namespace Game29
 
             // Trump
             var tm = gm.TrumpManager;
-            bool revealed = gm.IsTrumpRevealed();
             Suit? trump = gm.GetTrumpForHuman();
+
+            if (revealTrumpBtn != null)
+            {
+                bool canReveal = gm.CanHumanRevealTrump();
+                revealTrumpBtn.gameObject.SetActive(canReveal);
+                RectTransform rrt = revealTrumpBtn.GetComponent<RectTransform>();
+                if (rrt != null)
+                {
+                    rrt.anchoredPosition = new Vector2(0, -58);
+                    rrt.sizeDelta = new Vector2(180, 32);
+                }
+            }
 
             if (tm != null && tm.IsJoker)
             {
-                trumpInfoText.text = "★ TRUMP: <color=#80D8FF><b>🃏 JOKER (NO TRUMP)</b></color> ★";
-                if (revealTrumpBtn != null) revealTrumpBtn.gameObject.SetActive(false);
-            }
-            else if (revealed && trump.HasValue)
-            {
-                string sym = CardVisualTheme.GetSuitSymbol(trump.Value);
-                string name = CardVisualTheme.GetSuitName(trump.Value);
-                Color col = CardVisualTheme.GetSuitColor(trump.Value);
-                string modeTag = (tm != null && tm.IsSeventhCard) ? " [7th Card]" : "";
-                trumpInfoText.text = $"★ TRUMP: <color=#{ColorUtility.ToHtmlStringRGB(col)}><b>{sym} {name.ToUpper()}{modeTag}</b></color> ★";
-                if (revealTrumpBtn != null) revealTrumpBtn.gameObject.SetActive(false);
-            }
-            else if (tm != null && tm.IsSeventhCard)
-            {
-                trumpInfoText.text = "TRUMP: 🎴 7TH CARD (SECRET)";
-                bool canReveal = gm.CurrentPhase == GamePhase.Playing && gm.CurrentPlayer == GameManager.HumanSeat;
-                if (revealTrumpBtn != null) revealTrumpBtn.gameObject.SetActive(canReveal);
+                trumpInfoText.text = "★ JOKER: <color=#80D8FF><b>♠J &gt; ♥J &gt; ♦J &gt; ♣J</b></color> ★";
             }
             else if (trump.HasValue)
             {
-                // South knows trump because South is bidder/partner, but it's not publicly revealed yet
                 string sym = CardVisualTheme.GetSuitSymbol(trump.Value);
                 string name = CardVisualTheme.GetSuitName(trump.Value);
                 Color col = CardVisualTheme.GetSuitColor(trump.Value);
-                trumpInfoText.text = $"YOUR TRUMP: <color=#{ColorUtility.ToHtmlStringRGB(col)}><b>{sym} {name.ToUpper()}</b></color> (Secret)";
-                bool canReveal = gm.CurrentPhase == GamePhase.Playing && gm.CurrentPlayer == GameManager.HumanSeat;
-                if (revealTrumpBtn != null) revealTrumpBtn.gameObject.SetActive(canReveal);
+                trumpInfoText.text = $"★ TRUMP: <color=#{ColorUtility.ToHtmlStringRGB(col)}><b>{sym} {name.ToUpper()}</b></color> ★";
+            }
+            else if (tm != null && (tm.TrumpSuit.HasValue || tm.IsSeventhCard))
+            {
+                trumpInfoText.text = "TRUMP: FACE DOWN";
             }
             else if (gm.CurrentPhase >= GamePhase.TrumpSelection)
             {
-                trumpInfoText.text = "TRUMP: ❓ HIDDEN";
-                bool canReveal = gm.CurrentPhase == GamePhase.Playing && gm.CurrentPlayer == GameManager.HumanSeat;
-                if (revealTrumpBtn != null) revealTrumpBtn.gameObject.SetActive(canReveal);
+                trumpInfoText.text = "TRUMP: SELECTING…";
             }
             else
             {
                 trumpInfoText.text = "TRUMP: NOT SET YET";
-                if (revealTrumpBtn != null) revealTrumpBtn.gameObject.SetActive(false);
             }
 
             // Trick count

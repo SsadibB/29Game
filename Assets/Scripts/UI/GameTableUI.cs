@@ -154,8 +154,9 @@ namespace Game29
                     break;
 
                 case GamePhase.Playing:
-                    scoreHUD.SetStatusMessage("Tricks in progress. Click Trump Card to reveal!");
-                    biddingPanel.Hide();
+                    scoreHUD.SetStatusMessage("YOUR TURN — Select a card to play");
+                    if (biddingPanel != null) biddingPanel.Hide();
+                    if (trumpSelectionModal != null) trumpSelectionModal.Hide();
                     RefreshHumanCards();
                     RefreshAICardCounts();
                     if (trumpCardSlot != null) trumpCardSlot.UpdateDisplay(_gm);
@@ -195,7 +196,12 @@ namespace Game29
             else if (_gm.CurrentPhase == GamePhase.Playing)
             {
                 if (seat == GameManager.HumanSeat)
-                    scoreHUD.SetStatusMessage("YOUR TURN — Select a card to play");
+                {
+                    if (_gm.CanHumanRevealTrump())
+                        scoreHUD.SetStatusMessage("You have no cards of the led suit — tap REVEAL TRUMP to play trump, or discard.");
+                    else
+                        scoreHUD.SetStatusMessage("YOUR TURN — Select a card to play");
+                }
                 else
                 {
                     string name = seat == PlayerSeat.North ? "Partner" : seat.ToString();
@@ -205,6 +211,8 @@ namespace Game29
 
             // Immediately refresh playability whenever active player changes
             RefreshHumanCards();
+            if (scoreHUD != null) scoreHUD.UpdateHUD(_gm);
+            if (trumpCardSlot != null) trumpCardSlot.UpdateDisplay(_gm);
         }
 
         private void HandleBiddingAction(PlayerSeat seat, int? bid)
@@ -217,8 +225,11 @@ namespace Game29
 
         private void HandleCardPlayed(PlayerSeat seat, Card card)
         {
+            PlayerSeatUI seatUI = GetSeatUI(seat);
+            Vector3 origin = seatUI != null ? seatUI.GetPlayOriginWorld(card) : transform.position;
+
             if (trickArea != null && _gm.GetCurrentTrick() != null)
-                trickArea.DisplayTrick(_gm.GetCurrentTrick());
+                trickArea.DisplayTrick(_gm.GetCurrentTrick(), seat, origin);
 
             if (seat == GameManager.HumanSeat)
                 RefreshHumanCards();
@@ -355,6 +366,7 @@ namespace Game29
                 return;
             }
 
+            Debug.Log($"[29 GameTableUI] Playing {card}");
             _gm.PlayHumanCard(card);
         }
 
@@ -425,7 +437,7 @@ namespace Game29
                     hrt.anchorMax = new Vector2(1f, 1f);
                     hrt.pivot = new Vector2(0.5f, 1f);
                     hrt.anchoredPosition = new Vector2(0, 0);
-                    hrt.sizeDelta = new Vector2(0, 68);
+                    hrt.sizeDelta = new Vector2(0, 96);
                 }
             }
 
@@ -546,7 +558,11 @@ namespace Game29
                     trt.pivot = new Vector2(0.5f, 0.5f);
                     trt.anchoredPosition = new Vector2(-340, 20);
                     trt.sizeDelta = new Vector2(115, 165);
+                    trt.localScale = Vector3.one;
+                    Vector3 lp = trt.localPosition;
+                    trt.localPosition = new Vector3(lp.x, lp.y, 0f);
                 }
+                trumpCardSlot.transform.SetAsLastSibling();
             }
 
             // 10. Bidding Panel — popup in center
@@ -561,7 +577,13 @@ namespace Game29
                     brt.anchoredPosition = new Vector2(0, -20);
                     brt.sizeDelta = new Vector2(460, 250);
                 }
+                biddingPanel.transform.SetAsLastSibling();
             }
+
+            if (trumpSelectionModal != null)
+                trumpSelectionModal.transform.SetAsLastSibling();
+            if (roundEndModal != null)
+                roundEndModal.transform.SetAsLastSibling();
         }
 
         // ════════════════════════════════════════════════════════════════════════

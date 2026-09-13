@@ -14,9 +14,27 @@ namespace Game29
         public IReadOnlyList<Card> Cards => _cards.AsReadOnly();
         public int Count => _cards.Count;
 
-        public void AddCard(Card card) => _cards.Add(card);
+        public void AddCard(Card card)
+        {
+            _cards.Add(card);
+            SortForDisplay();
+        }
 
         public void AddCards(IEnumerable<Card> cards) => _cards.AddRange(cards);
+
+        /// <summary>
+        /// Left-to-right: Spades, Clubs, Hearts, Diamonds.
+        /// Within a suit: J, 9, A, 10, K, Q, 8, 7.
+        /// </summary>
+        public void SortForDisplay()
+        {
+            _cards.Sort((a, b) =>
+            {
+                int suitCmp = GameRules.GetHandSuitOrder(a.Suit).CompareTo(GameRules.GetHandSuitOrder(b.Suit));
+                if (suitCmp != 0) return suitCmp;
+                return GameRules.GetTrickRank(b.Rank).CompareTo(GameRules.GetTrickRank(a.Rank));
+            });
+        }
 
         /// <summary>Removes one instance of a card. Returns true if found and removed.</summary>
         public bool RemoveCard(Card card) => _cards.Remove(card);

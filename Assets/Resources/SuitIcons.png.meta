@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: 53c33c7aa4c908b409d1aea003a1c95c
+guid: e0f292fcd2f59fb4f869b5af61cd48c8
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2960233865238629150
-    second: SuitIcons_0
+      213: 6579797623386452015
+    second: SuitIcons 1_0
+  - first:
+      213: -236134981602624014
+    second: SuitIcons 1_1
+  - first:
+      213: -910104148464915227
+    second: SuitIcons 1_2
+  - first:
+      213: -1411634627838870871
+    second: SuitIcons 1_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,13 +135,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SuitIcons_0
+      name: SuitIcons 1_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1024
-        height: 1024
+        x: 57
+        y: 564
+        width: 407
+        height: 377
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +150,74 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e1b41a5340dd41920800000000000000
-      internalID: 2960233865238629150
+      spriteID: f20b8e3c313205b50800000000000000
+      internalID: 6579797623386452015
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SuitIcons 1_1
+      rect:
+        serializedVersion: 2
+        x: 597
+        y: 550
+        width: 342
+        height: 404
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2fd388e3c7419bcf0800000000000000
+      internalID: -236134981602624014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SuitIcons 1_2
+      rect:
+        serializedVersion: 2
+        x: 58
+        y: 70
+        width: 405
+        height: 404
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5eca3225919ae53f0800000000000000
+      internalID: -910104148464915227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SuitIcons 1_3
+      rect:
+        serializedVersion: 2
+        x: 578
+        y: 70
+        width: 381
+        height: 404
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9aaf50ff8cdd86ce0800000000000000
+      internalID: -1411634627838870871
       vertices: []
       indices: 
       edges: []
@@ -161,7 +236,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      SuitIcons_0: 2960233865238629150
+      SuitIcons 1_0: 6579797623386452015
+      SuitIcons 1_1: -236134981602624014
+      SuitIcons 1_2: -910104148464915227
+      SuitIcons 1_3: -1411634627838870871
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

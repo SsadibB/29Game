@@ -115,7 +115,8 @@ namespace Game29
                 resultText.color = new Color(0.95f, 0.30f, 0.30f);
             }
 
-            detailsText.text = $"Bid Target: <b>{bid}</b> points\n+1 Game Point awarded to {(biddingTeamWon ? teamName : GameRules.TeamName(1 - scoreMgr.BiddingTeam))}";
+            string delta = biddingTeamWon ? "+1" : "−1";
+            detailsText.text = $"Bid Target: <b>{bid}</b> points\n{teamName} {delta}   |   Opponents unchanged";
             scoreBoardText.text = $"CURRENT SCORE:\nYou & Partner: {scoreMgr.GamePoints[0]}   |   Opponents: {scoreMgr.GamePoints[1]}";
 
             actionButtonText.text = "NEXT ROUND ▶";

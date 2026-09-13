@@ -17,12 +17,12 @@ namespace Game29
         public PlayerSeat Seat;
 
         [Header("UI Elements")]
-        [SerializeField] private Image     avatarBg;
-        [SerializeField] private Image     avatarIcon;
-        [SerializeField] private Image     turnGlowBorder;
-        [SerializeField] private Text      nameLabel;
-        [SerializeField] private Image     actionBubbleBg;
-        [SerializeField] private Text      actionBubbleText;
+        [SerializeField] private Image avatarBg;
+        [SerializeField] private Image avatarIcon;
+        [SerializeField] private Image turnGlowBorder;
+        [SerializeField] private Text nameLabel;
+        [SerializeField] private Image actionBubbleBg;
+        [SerializeField] private Text actionBubbleText;
         [SerializeField] private Transform cardContainer;
 
         private readonly List<CardUI> _spawnedCards = new List<CardUI>();
@@ -31,10 +31,10 @@ namespace Game29
         public Transform CardContainer => cardContainer != null ? cardContainer : transform;
 
         // Card dimensions for landscape layout
-        private const float HumanCardW   = 130f;
-        private const float HumanCardH   = 190f;
-        private const float AICardW      = 55f;
-        private const float AICardH      = 80f;
+        private const float HumanCardW = 130f;
+        private const float HumanCardH = 190f;
+        private const float AICardW = 55f;
+        private const float AICardH = 80f;
 
         private void Awake()
         {
@@ -56,7 +56,7 @@ namespace Game29
                 RectTransform rt = cc.AddComponent<RectTransform>();
                 rt.anchorMin = new Vector2(0.5f, 0.5f);
                 rt.anchorMax = new Vector2(0.5f, 0.5f);
-                rt.pivot     = new Vector2(0.5f, 0.5f);
+                rt.pivot = new Vector2(0.5f, 0.5f);
                 rt.sizeDelta = new Vector2(900, 200);
                 cardContainer = cc.transform;
             }
@@ -202,9 +202,9 @@ namespace Game29
         public void SetLayoutPositions(Vector2 avatarPos, Vector2 namePos, Vector2 bubblePos)
         {
             EnsureComponents();
-            if (avatarBg      != null) ((RectTransform)avatarBg.transform).anchoredPosition      = avatarPos;
-            if (nameLabel     != null) ((RectTransform)nameLabel.transform).anchoredPosition     = namePos;
-            if (actionBubbleBg!= null) ((RectTransform)actionBubbleBg.transform).anchoredPosition= bubblePos;
+            if (avatarBg != null) ((RectTransform)avatarBg.transform).anchoredPosition = avatarPos;
+            if (nameLabel != null) ((RectTransform)nameLabel.transform).anchoredPosition = namePos;
+            if (actionBubbleBg != null) ((RectTransform)actionBubbleBg.transform).anchoredPosition = bubblePos;
         }
 
         public void SetActiveTurn(bool isMyTurn)
@@ -254,6 +254,28 @@ namespace Game29
             _actionBubbleCoroutine = null;
         }
 
+        /// <summary>World position to fly a played card from this seat toward the trick area.</summary>
+        public Vector3 GetPlayOriginWorld(Card card)
+        {
+            if (card != null)
+            {
+                for (int i = 0; i < _spawnedCards.Count; i++)
+                {
+                    CardUI ui = _spawnedCards[i];
+                    if (ui != null && ui.CurrentCard != null && ui.CurrentCard.Equals(card))
+                        return ui.transform.position;
+                }
+            }
+
+            if (_spawnedCards.Count > 0)
+            {
+                CardUI last = _spawnedCards[_spawnedCards.Count - 1];
+                if (last != null) return last.transform.position;
+            }
+
+            return CardContainer != null ? CardContainer.position : transform.position;
+        }
+
         /// <summary>Plays a horizontal shake animation on the card matching <paramref name="card"/>.</summary>
         public void ShakeCard(Card card)
         {
@@ -281,11 +303,11 @@ namespace Game29
             }
 
             int count = hand.Count;
-            float cardW   = HumanCardW;
-            float cardH   = HumanCardH;
+            float cardW = HumanCardW;
+            float cardH = HumanCardH;
             // Wider spread for landscape — up to 1200px total width
             float spacing = Mathf.Min(cardW * 0.88f, 1100f / Mathf.Max(1, count));
-            float startX  = -(count - 1) * spacing * 0.5f;
+            float startX = -(count - 1) * spacing * 0.5f;
 
             // Check if existing spawned cards match the hand exactly
             bool sameHand = _spawnedCards.Count == count;
@@ -308,6 +330,7 @@ namespace Game29
                 {
                     Card card = hand.Cards[i];
                     bool isPlayable = validPlays != null && validPlays.Contains(card);
+                    _spawnedCards[i].BindClick(onCardClick);
                     _spawnedCards[i].SetPlayable(isPlayable);
                 }
                 return;
@@ -335,6 +358,7 @@ namespace Game29
                 {
                     Card card = hand.Cards[i];
                     bool isPlayable = validPlays != null && validPlays.Contains(card);
+                    _spawnedCards[i].BindClick(onCardClick);
                     _spawnedCards[i].SetPlayable(isPlayable);
 
                     Vector2 targetPos = new Vector2(startX + i * spacing, 0);
@@ -408,13 +432,25 @@ namespace Game29
         /// </summary>
         public void RenderAICardCount(int cardCount, bool horizontal = true, bool animate = false)
         {
+            // Skip the destroy+rebuild when this seat's card count hasn't actually
+            // changed. RefreshAllDisplay() runs on every OnStateChanged tick — which
+            // fires for ANY seat's play, not just this one — and this method used to
+            // unconditionally ClearCards() + respawn every face-down back every time
+            // it was called. That meant every AI seat's still-in-hand cards were
+            // destroyed and instantly recreated whenever ANY player played a card,
+            // which is what read as a little "shake"/flicker in the other players'
+            // hands. Face-down backs carry no per-card state, so if the count is
+            // unchanged there's nothing to update.
+            if (!animate && cardCount == _spawnedCards.Count)
+                return;
+
             ClearCards();
             if (cardCount <= 0) return;
 
-            float cardW   = AICardW;
-            float cardH   = AICardH;
+            float cardW = AICardW;
+            float cardH = AICardH;
             float spacing = horizontal ? 20f : 22f;
-            float start   = -(cardCount - 1) * spacing * 0.5f;
+            float start = -(cardCount - 1) * spacing * 0.5f;
 
             Vector2 origin = GetCenterOffsetInContainer();
 

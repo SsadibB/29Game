@@ -72,12 +72,14 @@ namespace Game29
         [Header("Pacing & Delays")]
         [SerializeField] private bool enablePacing = true;
         [SerializeField] private float aiBidDelay = 0.6f;
-        [SerializeField] private float aiPlayDelay = 0.6f;
+        [SerializeField] private float aiPlayDelay = 0.45f;
+        [SerializeField] private float cardTravelDuration = 0.9f;
         [SerializeField] private float trickClearDelay = 1.2f;
 
         public bool EnablePacing { get => enablePacing; set => enablePacing = value; }
         public float AIBidDelay => aiBidDelay;
         public float AIPlayDelay => aiPlayDelay;
+        public float CardTravelDuration => cardTravelDuration;
         public float TrickClearDelay => trickClearDelay;
 
         private Coroutine _aiBiddingRoutine;
@@ -158,6 +160,7 @@ namespace Game29
             _trickMgr.OnCardPlayed += HandleCardPlayed;
             _trickMgr.OnTrickWon += HandleTrickWon;
             _trickMgr.OnRoundComplete += HandleRoundComplete;
+            _trumpMgr.OnTrumpChosen += NotifyStateChanged;
             _trumpMgr.OnTrumpRevealed += t => { OnTrumpRevealed?.Invoke(t); NotifyStateChanged(); };
             _scoreMgr.OnRoundScored += HandleRoundScored;
             _scoreMgr.OnGameOver += HandleGameOver;
@@ -226,8 +229,11 @@ namespace Game29
                 NotifyStateChanged();
                 if (!_trickMgr.RoundComplete)
                 {
+                    float delay = cardTravelDuration;
                     if (wasCompletingCard && enablePacing)
-                        StartCoroutine(DelayedAdvancePlayTurn(trickClearDelay));
+                        delay += trickClearDelay;
+                    if (enablePacing)
+                        StartCoroutine(DelayedAdvancePlayTurn(delay));
                     else
                         AdvancePlayTurn();
                 }
@@ -242,12 +248,33 @@ namespace Game29
                 AdvancePlayTurn();
         }
 
-        /// <summary>Allows the human player to request revealing trump when follow suit is not possible.</summary>
-        public void RevealTrump()
+        /// <summary>
+        /// Reveal trump. Only legal when this player cannot follow the led suit.
+        /// After a 7th-card reveal, that card is returned to the bidder's hand.
+        /// </summary>
+        public bool RevealTrump()
         {
-            _trumpMgr.RevealTrumpExplicitly();
+            if (!CanRevealTrump(CurrentPlayer)) return false;
+
+            if (!_trumpMgr.RevealTrumpExplicitly()) return false;
+
+            if (_trumpMgr.TryReturnSeventhCardToHand(out Card seventh))
+            {
+                _hands[(int)_trumpMgr.Bidder].AddCard(seventh);
+            }
+
             NotifyStateChanged();
+            return true;
         }
+
+        /// <summary>True if this seat may reveal the face-down trump right now.</summary>
+        public bool CanRevealTrump(PlayerSeat seat)
+        {
+            if (CurrentPhase != GamePhase.Playing || CurrentPlayer != seat) return false;
+            return _trumpMgr.CanReveal(seat, _trickMgr?.CurrentTrick, _hands[(int)seat]);
+        }
+
+        public bool CanHumanRevealTrump() => CanRevealTrump(HumanSeat);
 
         // ════════════════════════════════════════════════════════════════════════
         // PUBLIC QUERY API  (for UI read-only access)
@@ -320,6 +347,8 @@ namespace Game29
                 seat = GameRules.NextPlayer(seat);
             }
 
+            SortAllHands();
+
             Debug.Log($"[29] 🃏 First 4 cards dealt to each player. Your hand (4 cards): {string.Join(", ", HumanHand.Cards)}");
             OnHumanHandDealt?.Invoke(HumanHand);
         }
@@ -338,11 +367,24 @@ namespace Game29
             {
                 Hand bidderHand = _hands[(int)_trumpMgr.Bidder];
                 if (bidderHand.Count >= 7)
-                    _trumpMgr.ResolveSeventhCard(bidderHand.Cards[6]);
+                {
+                    Card card7 = bidderHand.Cards[6];
+                    bidderHand.RemoveCard(card7);
+                    _trumpMgr.ResolveSeventhCard(card7);
+                    Debug.Log($"[29] 7th card set aside face-down as hidden trump ({_trumpMgr.Bidder}).");
+                }
             }
+
+            SortAllHands();
 
             Debug.Log($"[29] 🃏 Second 4 cards dealt. Full hand (8 cards): {string.Join(", ", HumanHand.Cards)}");
             OnHumanHandDealt?.Invoke(HumanHand);
+        }
+
+        private void SortAllHands()
+        {
+            for (int i = 0; i < 4; i++)
+                _hands[i].SortForDisplay();
         }
 
         private void DealCards()
@@ -433,6 +475,12 @@ namespace Game29
 
         private void HandleBiddingComplete(PlayerSeat winner, int bid)
         {
+            if (_aiBiddingRoutine != null)
+            {
+                StopCoroutine(_aiBiddingRoutine);
+                _aiBiddingRoutine = null;
+            }
+
             _scoreMgr.RegisterBid(winner, bid);
             ChangePhase(GamePhase.TrumpSelection);
 
@@ -445,13 +493,18 @@ namespace Game29
             else
             {
                 Hand winnerHand = _hands[(int)winner];
-                _trumpMgr.SelectTrump(winner, winnerHand);
-                Debug.Log($"[29] Bid won by {winner} at {bid}. Trump selected (hidden): {_trumpMgr.TrumpSuit}");
+                AIPlayer ai = GetAI(winner);
+                if (ai != null)
+                    ApplyAITrumpChoice(ai, winner, winnerHand);
+                else
+                    _trumpMgr.SelectTrump(winner, winnerHand);
+
+                Debug.Log($"[29] Bid won by {winner} at {bid}. Trump mode: {_trumpMgr.Mode} (hidden until revealed).");
                 CompleteTrumpSelectionAndStartPlay();
             }
         }
 
-        /// <summary>Called when human player selects a trump suit from their 4 cards.</summary>
+        /// <summary>Called when the human Bid Winner selects a trump suit from their 4 cards.</summary>
         public void SelectHumanTrump(Suit suit)
         {
             if (CurrentPhase != GamePhase.TrumpSelection) return;
@@ -477,8 +530,25 @@ namespace Game29
             if (CurrentPhase != GamePhase.TrumpSelection) return;
 
             _trumpMgr.SetJokerTrump(HumanSeat);
-            Debug.Log("[29] Human South set Trump to Joker (No-Trump mode).");
+            Debug.Log("[29] Human South set Trump to Joker (Jacks are super-trumps).");
             CompleteTrumpSelectionAndStartPlay();
+        }
+
+        private void ApplyAITrumpChoice(AIPlayer ai, PlayerSeat winner, Hand winnerHand)
+        {
+            TrumpMode mode = ai.DecideTrumpMode(winnerHand, out Suit suit);
+            switch (mode)
+            {
+                case TrumpMode.SeventhCard:
+                    _trumpMgr.SetSeventhCardTrump(winner);
+                    break;
+                case TrumpMode.Joker:
+                    _trumpMgr.SetJokerTrump(winner);
+                    break;
+                default:
+                    _trumpMgr.SetTrumpSuit(winner, suit);
+                    break;
+            }
         }
 
         private void CompleteTrumpSelectionAndStartPlay()
@@ -537,13 +607,16 @@ namespace Game29
                     if (ai == null) break;
 
                     PlayerSeat partner = GameRules.GetPartner(CurrentPlayer);
+                    MaybeAIRevealTrump(CurrentPlayer);
+
                     Suit? visibleTrump = _trumpMgr.GetVisibleTrump(CurrentPlayer);
 
                     Card card = ai.DecideCardToPlay(
                         _hands[(int)CurrentPlayer],
                         _trickMgr.CurrentTrick,
                         visibleTrump,
-                        partner);
+                        partner,
+                        _trumpMgr.Mode);
 
                     _trickMgr.PlayCard(CurrentPlayer, card, _hands[(int)CurrentPlayer]);
 
@@ -568,16 +641,21 @@ namespace Game29
                 if (ai == null) yield break;
 
                 PlayerSeat partner = GameRules.GetPartner(CurrentPlayer);
+                MaybeAIRevealTrump(CurrentPlayer);
+
                 Suit? visibleTrump = _trumpMgr.GetVisibleTrump(CurrentPlayer);
 
                 Card card = ai.DecideCardToPlay(
                     _hands[(int)CurrentPlayer],
                     _trickMgr.CurrentTrick,
                     visibleTrump,
-                    partner);
+                    partner,
+                    _trumpMgr.Mode);
 
                 bool completesTrick = _trickMgr.CurrentTrick != null && _trickMgr.CurrentTrick.PlayCount == 3;
                 _trickMgr.PlayCard(CurrentPlayer, card, _hands[(int)CurrentPlayer]);
+
+                yield return new WaitForSeconds(cardTravelDuration);
 
                 if (completesTrick)
                 {
@@ -588,6 +666,20 @@ namespace Game29
                     SetCurrentPlayer(_trickMgr.GetCurrentPlayer());
             }
             _aiPlayRoutine = null;
+        }
+
+        private void MaybeAIRevealTrump(PlayerSeat seat)
+        {
+            if (!CanRevealTrump(seat)) return;
+
+            AIPlayer ai = GetAI(seat);
+            if (ai == null) return;
+
+            Suit? visibleTrump = _trumpMgr.GetVisibleTrump(seat);
+            if (!ai.ShouldRevealTrump(_hands[(int)seat], _trickMgr.CurrentTrick, visibleTrump))
+                return;
+
+            RevealTrump();
         }
 
         private void HandleCardPlayed(PlayerSeat player, Card card)
@@ -642,6 +734,7 @@ namespace Game29
         {
             CurrentPlayer = seat;
             OnCurrentPlayerChanged?.Invoke(seat);
+            NotifyStateChanged();
         }
 
         private void NotifyStateChanged() => OnStateChanged?.Invoke();

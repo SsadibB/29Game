@@ -4,7 +4,7 @@ namespace Game29
     /// Supported trump selection types in 29:
     ///   • Suit: Standard chosen suit (Hearts, Diamonds, Clubs, Spades).
     ///   • SeventhCard: Blind trump determined by the bidder's 7th dealt card (revealed on demand).
-    ///   • Joker: No-Trump mode (highest card of led suit wins; no trump suit).
+    ///   • Joker: Jacks are super-trumps (♠J &gt; ♥J &gt; ♦J &gt; ♣J) and beat all non-Jack cards.
     /// </summary>
     public enum TrumpMode
     {

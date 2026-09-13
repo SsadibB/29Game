@@ -12,10 +12,10 @@ namespace Game29
         /// <summary>Cards are being shuffled and distributed.</summary>
         Dealing,
 
-        /// <summary>Players are placing bids (16–28).</summary>
+        /// <summary>Players are placing bids (15–28).</summary>
         Bidding,
 
-        /// <summary>Bidder's partner selects the trump suit (hidden).</summary>
+        /// <summary>Bid winner selects the trump suit.</summary>
         TrumpSelection,
 
         /// <summary>Trick-taking play phase.</summary>

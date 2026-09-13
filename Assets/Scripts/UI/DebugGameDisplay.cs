@@ -141,7 +141,7 @@ namespace Game29
             {
                 string revealed = _gm.IsTrumpRevealed()
                     ? "(revealed to all)"
-                    : "(you know — hidden from opponents)";
+                    : "(only the bid winner knows)";
                 GUI.color = SuitColour(trump.Value);
                 GUILayout.Label("Trump: " + SuitSymbol(trump.Value) + " " + trump.Value + "  " + revealed, _labelStyle);
                 GUI.color = Color.white;
@@ -256,15 +256,6 @@ namespace Game29
                 GUI.enabled = true;
                 GUI.color = Color.white;
             }
-            GUILayout.EndHorizontal();
-
-            GUILayout.Space(6);
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Button("🎴 7TH CARD (blind mystery trump)", GUILayout.Height(34)))
-                _gm.SelectHumanSeventhCard();
-            GUILayout.Space(10);
-            if (GUILayout.Button("🃏 JOKER (no trump)", GUILayout.Height(34)))
-                _gm.SelectHumanJoker();
             GUILayout.EndHorizontal();
         }
 

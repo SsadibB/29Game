@@ -26,8 +26,8 @@ namespace Game29
         [SerializeField] private Transform presetsContainer;
 
         private readonly List<Button> _presetButtons = new List<Button>();
-        private int _selectedBid = 16;
-        private int _minAllowedBid = 16;
+        private int _selectedBid = GameRules.MinBid;
+        private int _minAllowedBid = GameRules.MinBid;
 
         private void Awake()
         {
@@ -79,7 +79,7 @@ namespace Game29
 
             if (bidButton == null)
             {
-                bidButton = CreateButton("BidBtn", new Vector2(105, -60), new Vector2(180, 46), "BID 16", 18, new Color(0.10f, 0.58f, 0.28f), Color.white, OnBidClicked);
+                bidButton = CreateButton("BidBtn", new Vector2(105, -60), new Vector2(180, 46), $"BID {GameRules.MinBid}", 18, new Color(0.10f, 0.58f, 0.28f), Color.white, OnBidClicked);
                 bidButtonText = bidButton.GetComponentInChildren<Text>();
 
                 passButton = CreateButton("PassBtn", new Vector2(-105, -60), new Vector2(160, 46), "PASS", 17, new Color(0.60f, 0.18f, 0.18f), Color.white, OnPassClicked);
@@ -142,10 +142,7 @@ namespace Game29
         public void Hide()
         {
             transform.DOKill();
-            transform.DOScale(0.8f, 0.16f).SetEase(Ease.InQuad).OnComplete(() =>
-            {
-                gameObject.SetActive(false);
-            });
+            gameObject.SetActive(false);
         }
 
         private void UpdateDisplay()
