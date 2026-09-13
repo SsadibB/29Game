@@ -8,42 +8,42 @@ using UnityEngine.InputSystem.UI;
 namespace Game29
 {
     /// <summary>
-    /// Master UI Manager for the 29 Card Game.
-    /// Orchestrates the entire Canvas visual hierarchy:
-    ///   • Felt table background
-    ///   • 4 Player seat layouts (South/Human, North/Partner, East/Opponent, West/Opponent)
-    ///   • Center Trick area
-    ///   • Bidding interactive modal
-    ///   • Scoreboard HUD & status banners
-    ///   • Round-end and Game-over popups
-    ///
-    /// Automatically builds the complete UI at runtime if not present in the scene.
+    /// Master UI Manager for the 29 Card Game — Landscape Layout.
+    /// Reference resolution: 1920×1080.
+    /// Board background uses board.png from Resources.
+    /// Player seat layout:
+    ///   South  (Human)    — bottom-center with 8 large interactive cards
+    ///   North  (Partner)  — top-center
+    ///   West   (Opponent) — left
+    ///   East   (Opponent) — right
+    ///   Trump  (Single Card) — sits on the wooden table board left of trick area, click-to-reveal
+    ///   Tricks (Center)   — cross pattern
     /// </summary>
     public class GameTableUI : MonoBehaviour
     {
         // ── Component References ────────────────────────────────────────────────
         [Header("Root & Layout")]
-        [SerializeField] private Canvas         canvas;
-        [SerializeField] private CanvasScaler   canvasScaler;
-        [SerializeField] private Image          tableBackground;
+        [SerializeField] private Canvas canvas;
+        [SerializeField] private CanvasScaler canvasScaler;
+        [SerializeField] private Image tableBackground;
 
         [Header("Player Seats")]
-        [SerializeField] private PlayerSeatUI   southSeat;
-        [SerializeField] private PlayerSeatUI   northSeat;
-        [SerializeField] private PlayerSeatUI   westSeat;
-        [SerializeField] private PlayerSeatUI   eastSeat;
+        [SerializeField] private PlayerSeatUI southSeat;
+        [SerializeField] private PlayerSeatUI northSeat;
+        [SerializeField] private PlayerSeatUI westSeat;
+        [SerializeField] private PlayerSeatUI eastSeat;
 
         [Header("Game Areas")]
-        [SerializeField] private TrickAreaUI          trickArea;
-        [SerializeField] private BiddingPanelUI       biddingPanel;
-        [SerializeField] private ScoreHUDUI           scoreHUD;
-        [SerializeField] private RoundEndModalUI      roundEndModal;
+        [SerializeField] private TrickAreaUI trickArea;
+        [SerializeField] private BiddingPanelUI biddingPanel;
+        [SerializeField] private ScoreHUDUI scoreHUD;
+        [SerializeField] private RoundEndModalUI roundEndModal;
         [SerializeField] private TrumpSelectionModalUI trumpSelectionModal;
-        [SerializeField] private TrumpCardSlotUI      trumpCardSlot;
+        [SerializeField] private TrumpCardSlotUI trumpCardSlot;
 
         private GameManager _gm;
         private bool _isInitialized;
-        private bool _animateNextDeal;  // true only when cards are freshly dealt
+        private bool _animateNextDeal;
 
         // ════════════════════════════════════════════════════════════════════════
         // INITIALISATION
@@ -53,11 +53,14 @@ namespace Game29
         {
             EnsureInputSystemEventSystem();
             BuildUIIfMissing();
+            ApplyLandscapeLayout();
         }
 
         private void Start()
         {
             EnsureInputSystemEventSystem();
+            ApplyLandscapeLayout();
+
             _gm = GameManager.Instance;
             if (_gm == null)
             {
@@ -83,18 +86,17 @@ namespace Game29
             if (_isInitialized || _gm == null) return;
             _isInitialized = true;
 
-            // Subscribe to all game events
-            _gm.OnPhaseChanged         += HandlePhaseChanged;
-            _gm.OnHumanHandDealt       += HandleHumanHandDealt;
+            _gm.OnPhaseChanged += HandlePhaseChanged;
+            _gm.OnHumanHandDealt += HandleHumanHandDealt;
             _gm.OnCurrentPlayerChanged += HandleCurrentPlayerChanged;
-            _gm.OnBiddingAction        += HandleBiddingAction;
-            _gm.OnCardPlayed           += HandleCardPlayed;
-            _gm.OnTrickWon             += HandleTrickWon;
-            _gm.OnTrumpRevealed        += HandleTrumpRevealed;
-            _gm.OnRoundScored                  += HandleRoundScored;
-            _gm.OnGameOver                     += HandleGameOver;
-            _gm.OnHumanTrumpSelectionRequired  += HandleHumanTrumpSelectionRequired;
-            _gm.OnStateChanged                 += RefreshAllDisplay;
+            _gm.OnBiddingAction += HandleBiddingAction;
+            _gm.OnCardPlayed += HandleCardPlayed;
+            _gm.OnTrickWon += HandleTrickWon;
+            _gm.OnTrumpRevealed += HandleTrumpRevealed;
+            _gm.OnRoundScored += HandleRoundScored;
+            _gm.OnGameOver += HandleGameOver;
+            _gm.OnHumanTrumpSelectionRequired += HandleHumanTrumpSelectionRequired;
+            _gm.OnStateChanged += RefreshAllDisplay;
 
             RefreshAllDisplay();
         }
@@ -102,17 +104,17 @@ namespace Game29
         private void OnDestroy()
         {
             if (_gm == null) return;
-            _gm.OnPhaseChanged         -= HandlePhaseChanged;
-            _gm.OnHumanHandDealt       -= HandleHumanHandDealt;
+            _gm.OnPhaseChanged -= HandlePhaseChanged;
+            _gm.OnHumanHandDealt -= HandleHumanHandDealt;
             _gm.OnCurrentPlayerChanged -= HandleCurrentPlayerChanged;
-            _gm.OnBiddingAction        -= HandleBiddingAction;
-            _gm.OnCardPlayed           -= HandleCardPlayed;
-            _gm.OnTrickWon             -= HandleTrickWon;
-            _gm.OnTrumpRevealed        -= HandleTrumpRevealed;
-            _gm.OnRoundScored                  -= HandleRoundScored;
-            _gm.OnGameOver                     -= HandleGameOver;
-            _gm.OnHumanTrumpSelectionRequired  -= HandleHumanTrumpSelectionRequired;
-            _gm.OnStateChanged                 -= RefreshAllDisplay;
+            _gm.OnBiddingAction -= HandleBiddingAction;
+            _gm.OnCardPlayed -= HandleCardPlayed;
+            _gm.OnTrickWon -= HandleTrickWon;
+            _gm.OnTrumpRevealed -= HandleTrumpRevealed;
+            _gm.OnRoundScored -= HandleRoundScored;
+            _gm.OnGameOver -= HandleGameOver;
+            _gm.OnHumanTrumpSelectionRequired -= HandleHumanTrumpSelectionRequired;
+            _gm.OnStateChanged -= RefreshAllDisplay;
         }
 
         // ════════════════════════════════════════════════════════════════════════
@@ -126,24 +128,37 @@ namespace Game29
             switch (phase)
             {
                 case GamePhase.Dealing:
-                    scoreHUD.SetStatusMessage("Dealing cards...");
+                    scoreHUD.SetStatusMessage("Dealing cards from the deck...");
                     trickArea.ClearAll();
                     biddingPanel.Hide();
                     break;
 
                 case GamePhase.Bidding:
-                    scoreHUD.SetStatusMessage("Bidding Phase — Choose your bid wisely");
+                    scoreHUD.SetStatusMessage("Bidding Phase — Place your bid");
                     trickArea.ClearAll();
                     break;
 
                 case GamePhase.TrumpSelection:
-                    scoreHUD.SetStatusMessage("Partner is selecting Trump suit...");
+                    if (_gm != null)
+                    {
+                        PlayerSeat bidWinner = _gm.GetBidWinner();
+                        if (bidWinner == GameManager.HumanSeat)
+                            scoreHUD.SetStatusMessage("★ YOU WON THE BID! Choose your Trump card ★");
+                        else
+                        {
+                            string bidderName = bidWinner == PlayerSeat.North ? "Partner (North)" : bidWinner.ToString();
+                            scoreHUD.SetStatusMessage($"{bidderName} won the bid and is setting the Trump card...");
+                        }
+                    }
                     biddingPanel.Hide();
                     break;
 
                 case GamePhase.Playing:
-                    scoreHUD.SetStatusMessage("Tricks in progress");
+                    scoreHUD.SetStatusMessage("Tricks in progress. Click Trump Card to reveal!");
                     biddingPanel.Hide();
+                    RefreshHumanCards();
+                    RefreshAICardCounts();
+                    if (trumpCardSlot != null) trumpCardSlot.UpdateDisplay(_gm);
                     break;
 
                 case GamePhase.RoundOver:
@@ -154,9 +169,9 @@ namespace Game29
 
         private void HandleHumanHandDealt(Hand hand)
         {
-            _animateNextDeal = true;   // mark: next RefreshHumanCards should animate
+            _animateNextDeal = true;
             RefreshHumanCards();
-            RefreshAICardCounts();
+            RefreshAICardCounts(animate: true);
         }
 
         private void HandleCurrentPlayerChanged(PlayerSeat seat)
@@ -188,6 +203,7 @@ namespace Game29
                 }
             }
 
+            // Immediately refresh playability whenever active player changes
             RefreshHumanCards();
         }
 
@@ -195,19 +211,15 @@ namespace Game29
         {
             PlayerSeatUI seatUI = GetSeatUI(seat);
             string text = bid.HasValue ? $"Bid {bid.Value}!" : "Pass";
-            if (seatUI != null)
-                seatUI.ShowActionBubble(text);
-
+            if (seatUI != null) seatUI.ShowActionBubble(text);
             scoreHUD.UpdateHUD(_gm);
         }
 
         private void HandleCardPlayed(PlayerSeat seat, Card card)
         {
-            // Update trick cards
             if (trickArea != null && _gm.GetCurrentTrick() != null)
                 trickArea.DisplayTrick(_gm.GetCurrentTrick());
 
-            // Update hand visuals
             if (seat == GameManager.HumanSeat)
                 RefreshHumanCards();
             else
@@ -222,8 +234,7 @@ namespace Game29
                 trickArea.ShowTrickWinner(winner, points);
 
             PlayerSeatUI seatUI = GetSeatUI(winner);
-            if (seatUI != null)
-                seatUI.ShowActionBubble($"Won +{points} pts!");
+            if (seatUI != null) seatUI.ShowActionBubble($"Won +{points} pts!");
 
             scoreHUD.UpdateHUD(_gm);
         }
@@ -234,31 +245,26 @@ namespace Game29
             string name = CardVisualTheme.GetSuitName(trump);
             scoreHUD.SetStatusMessage($"★ TRUMP REVEALED: {sym} {name.ToUpper()}! ★");
             scoreHUD.UpdateHUD(_gm);
-            if (trumpCardSlot != null)
-                trumpCardSlot.UpdateDisplay(_gm);
+            if (trumpCardSlot != null) trumpCardSlot.UpdateDisplay(_gm);
             RefreshHumanCards();
         }
 
         private void HandleHumanTrumpSelectionRequired(Hand hand)
         {
-            if (trumpSelectionModal == null)
-                BuildUIIfMissing();
-
+            if (trumpSelectionModal == null) BuildUIIfMissing();
             if (trumpSelectionModal != null)
                 trumpSelectionModal.Show(_gm.GetCurrentBid(), hand);
-            scoreHUD.SetStatusMessage("★ YOU WON THE BID! Choose Trump suit ★");
+            scoreHUD.SetStatusMessage("★ YOU WON THE BID! Choose your Trump card ★");
         }
 
         private void HandleRoundScored(bool biddingTeamWon)
         {
-            if (roundEndModal != null)
-                roundEndModal.ShowRoundOver(_gm.ScoreManager, biddingTeamWon);
+            if (roundEndModal != null) roundEndModal.ShowRoundOver(_gm.ScoreManager, biddingTeamWon);
         }
 
         private void HandleGameOver(int winningTeam)
         {
-            if (roundEndModal != null)
-                roundEndModal.ShowGameOver(_gm.ScoreManager, winningTeam);
+            if (roundEndModal != null) roundEndModal.ShowGameOver(_gm.ScoreManager, winningTeam);
         }
 
         // ════════════════════════════════════════════════════════════════════════
@@ -273,8 +279,7 @@ namespace Game29
             UpdateTurnHighlights(_gm.CurrentPlayer);
             RefreshHumanCards();
             RefreshAICardCounts();
-            if (trumpCardSlot != null)
-                trumpCardSlot.UpdateDisplay(_gm);
+            if (trumpCardSlot != null) trumpCardSlot.UpdateDisplay(_gm);
 
             if (_gm.CurrentPhase == GamePhase.Playing)
             {
@@ -293,32 +298,62 @@ namespace Game29
             if (_gm == null || southSeat == null) return;
             Hand hand = _gm.HumanHand;
             List<Card> validPlays = _gm.GetHumanValidPlays();
-            // Consume the animate flag: only play deal animation once per real deal
             bool animate = _animateNextDeal;
             _animateNextDeal = false;
             southSeat.RenderHumanHand(hand, validPlays, OnHumanCardSelected, animate);
         }
 
-        private void RefreshAICardCounts()
+        private void RefreshAICardCounts(bool animate = false)
         {
             if (_gm == null) return;
-            if (northSeat != null) northSeat.RenderAICardCount(_gm.GetHand(PlayerSeat.North).Count, true);
-            if (westSeat != null)  westSeat.RenderAICardCount(_gm.GetHand(PlayerSeat.West).Count, false);
-            if (eastSeat != null)  eastSeat.RenderAICardCount(_gm.GetHand(PlayerSeat.East).Count, false);
+            if (northSeat != null) northSeat.RenderAICardCount(_gm.GetHand(PlayerSeat.North).Count, horizontal: true, animate: animate);
+            if (westSeat != null) westSeat.RenderAICardCount(_gm.GetHand(PlayerSeat.West).Count, horizontal: true, animate: animate);
+            if (eastSeat != null) eastSeat.RenderAICardCount(_gm.GetHand(PlayerSeat.East).Count, horizontal: true, animate: animate);
         }
 
         private void UpdateTurnHighlights(PlayerSeat current)
         {
             if (southSeat != null) southSeat.SetActiveTurn(current == PlayerSeat.South);
             if (northSeat != null) northSeat.SetActiveTurn(current == PlayerSeat.North);
-            if (westSeat  != null) westSeat.SetActiveTurn(current == PlayerSeat.West);
-            if (eastSeat  != null) eastSeat.SetActiveTurn(current == PlayerSeat.East);
+            if (westSeat != null) westSeat.SetActiveTurn(current == PlayerSeat.West);
+            if (eastSeat != null) eastSeat.SetActiveTurn(current == PlayerSeat.East);
         }
 
         private void OnHumanCardSelected(Card card)
         {
-            if (_gm == null || _gm.CurrentPhase != GamePhase.Playing || _gm.CurrentPlayer != GameManager.HumanSeat)
+            if (_gm == null) return;
+
+            if (_gm.CurrentPhase != GamePhase.Playing)
+            {
+                scoreHUD.SetStatusMessage("⚠ Bidding in progress — cards cannot be played yet!");
+                if (southSeat != null) southSeat.ShakeCard(card);
                 return;
+            }
+
+            if (_gm.CurrentPlayer != GameManager.HumanSeat)
+            {
+                scoreHUD.SetStatusMessage("Wait for your turn to play!");
+                if (southSeat != null) southSeat.ShakeCard(card);
+                return;
+            }
+
+            List<Card> validPlays = _gm.GetHumanValidPlays();
+            if (!validPlays.Contains(card))
+            {
+                if (southSeat != null) southSeat.ShakeCard(card);
+                Trick currentTrick = _gm.GetCurrentTrick();
+                if (currentTrick != null && currentTrick.LedSuit.HasValue)
+                {
+                    string suitName = CardVisualTheme.GetSuitName(currentTrick.LedSuit.Value);
+                    string suitSym = CardVisualTheme.GetSuitSymbol(currentTrick.LedSuit.Value);
+                    scoreHUD.SetStatusMessage($"⚠ Must follow suit: {suitSym} {suitName}!");
+                }
+                else
+                {
+                    scoreHUD.SetStatusMessage("⚠ Invalid card play!");
+                }
+                return;
+            }
 
             _gm.PlayHumanCard(card);
         }
@@ -329,10 +364,204 @@ namespace Game29
             {
                 PlayerSeat.South => southSeat,
                 PlayerSeat.North => northSeat,
-                PlayerSeat.West  => westSeat,
-                PlayerSeat.East  => eastSeat,
-                _                => null
+                PlayerSeat.West => westSeat,
+                PlayerSeat.East => eastSeat,
+                _ => null
             };
+        }
+
+        // ════════════════════════════════════════════════════════════════════════
+        // LANDSCAPE LAYOUT ENFORCEMENT (1920×1080)
+        // ════════════════════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Explicitly positions all board components for the landscape 1920×1080 canvas
+        /// using board.png as the background.
+        /// </summary>
+        public void ApplyLandscapeLayout()
+        {
+            // 1. Canvas Scaler
+            if (canvasScaler == null) canvasScaler = GetComponent<CanvasScaler>();
+            if (canvasScaler != null)
+            {
+                canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+                canvasScaler.referenceResolution = new Vector2(1920, 1080);
+                canvasScaler.matchWidthOrHeight = 0.5f;
+            }
+
+            // 2. Full-Screen Board Background
+            if (tableBackground == null)
+            {
+                Transform bgT = transform.Find("Board_BG") ?? transform.Find("TableFelt_BG");
+                if (bgT != null) tableBackground = bgT.GetComponent<Image>();
+            }
+
+            if (tableBackground != null)
+            {
+                tableBackground.sprite = CardVisualTheme.BoardBackground;
+                tableBackground.color = Color.white;
+                tableBackground.type = Image.Type.Simple;
+                tableBackground.preserveAspect = false;
+                tableBackground.raycastTarget = false;
+
+                RectTransform bgrt = tableBackground.GetComponent<RectTransform>();
+                if (bgrt != null)
+                {
+                    bgrt.anchorMin = Vector2.zero;
+                    bgrt.anchorMax = Vector2.one;
+                    bgrt.offsetMin = Vector2.zero;
+                    bgrt.offsetMax = Vector2.zero;
+                }
+                tableBackground.transform.SetAsFirstSibling();
+            }
+
+            // 3. Score HUD (top stretch)
+            if (scoreHUD != null)
+            {
+                RectTransform hrt = scoreHUD.GetComponent<RectTransform>();
+                if (hrt != null)
+                {
+                    hrt.anchorMin = new Vector2(0f, 1f);
+                    hrt.anchorMax = new Vector2(1f, 1f);
+                    hrt.pivot = new Vector2(0.5f, 1f);
+                    hrt.anchoredPosition = new Vector2(0, 0);
+                    hrt.sizeDelta = new Vector2(0, 68);
+                }
+            }
+
+            // 4. North (Partner) — top center
+            if (northSeat != null)
+            {
+                RectTransform nrt = northSeat.GetComponent<RectTransform>();
+                if (nrt != null)
+                {
+                    nrt.anchorMin = new Vector2(0.5f, 1f);
+                    nrt.anchorMax = new Vector2(0.5f, 1f);
+                    nrt.pivot = new Vector2(0.5f, 1f);
+                    nrt.anchoredPosition = new Vector2(0, -72);
+                    nrt.sizeDelta = new Vector2(480, 110);
+                }
+                northSeat.SetLayoutPositions(new Vector2(0, -16), new Vector2(0, -52), new Vector2(0, -80));
+                RectTransform ccrtN = (RectTransform)northSeat.CardContainer;
+                if (ccrtN != null)
+                {
+                    ccrtN.anchorMin = new Vector2(0.5f, 0.5f);
+                    ccrtN.anchorMax = new Vector2(0.5f, 0.5f);
+                    ccrtN.anchoredPosition = new Vector2(0, -82);
+                    ccrtN.sizeDelta = new Vector2(460, 65);
+                }
+            }
+
+            // 5. South (Human) — bottom center
+            if (southSeat != null)
+            {
+                RectTransform srt = southSeat.GetComponent<RectTransform>();
+                if (srt != null)
+                {
+                    srt.anchorMin = new Vector2(0.5f, 0f);
+                    srt.anchorMax = new Vector2(0.5f, 0f);
+                    srt.pivot = new Vector2(0.5f, 0f);
+                    srt.anchoredPosition = new Vector2(0, 8);
+                    srt.sizeDelta = new Vector2(1840, 235);
+                }
+                southSeat.SetLayoutPositions(new Vector2(-760, 110), new Vector2(-760, 65), new Vector2(-760, 160));
+                RectTransform ccrtS = (RectTransform)southSeat.CardContainer;
+                if (ccrtS != null)
+                {
+                    ccrtS.anchorMin = new Vector2(0.5f, 0.5f);
+                    ccrtS.anchorMax = new Vector2(0.5f, 0.5f);
+                    ccrtS.anchoredPosition = new Vector2(50, 75);
+                    ccrtS.sizeDelta = new Vector2(1460, 200);
+                }
+            }
+
+            // 6. West (Opponent) — left middle
+            if (westSeat != null)
+            {
+                RectTransform wrt = westSeat.GetComponent<RectTransform>();
+                if (wrt != null)
+                {
+                    wrt.anchorMin = new Vector2(0f, 0.5f);
+                    wrt.anchorMax = new Vector2(0f, 0.5f);
+                    wrt.pivot = new Vector2(0f, 0.5f);
+                    wrt.anchoredPosition = new Vector2(35, 20);
+                    wrt.sizeDelta = new Vector2(140, 360);
+                }
+                westSeat.SetLayoutPositions(new Vector2(0, 110), new Vector2(0, 72), new Vector2(0, 155));
+                RectTransform ccrtW = (RectTransform)westSeat.CardContainer;
+                if (ccrtW != null)
+                {
+                    ccrtW.anchorMin = new Vector2(0.5f, 0.5f);
+                    ccrtW.anchorMax = new Vector2(0.5f, 0.5f);
+                    ccrtW.anchoredPosition = new Vector2(0, -25);
+                    ccrtW.sizeDelta = new Vector2(130, 200);
+                }
+            }
+
+            // 7. East (Opponent) — right middle
+            if (eastSeat != null)
+            {
+                RectTransform ert = eastSeat.GetComponent<RectTransform>();
+                if (ert != null)
+                {
+                    ert.anchorMin = new Vector2(1f, 0.5f);
+                    ert.anchorMax = new Vector2(1f, 0.5f);
+                    ert.pivot = new Vector2(1f, 0.5f);
+                    ert.anchoredPosition = new Vector2(-35, 20);
+                    ert.sizeDelta = new Vector2(140, 360);
+                }
+                eastSeat.SetLayoutPositions(new Vector2(0, 110), new Vector2(0, 72), new Vector2(0, 155));
+                RectTransform ccrtE = (RectTransform)eastSeat.CardContainer;
+                if (ccrtE != null)
+                {
+                    ccrtE.anchorMin = new Vector2(0.5f, 0.5f);
+                    ccrtE.anchorMax = new Vector2(0.5f, 0.5f);
+                    ccrtE.anchoredPosition = new Vector2(0, -25);
+                    ccrtE.sizeDelta = new Vector2(130, 200);
+                }
+            }
+
+            // 8. Trick Area — center of the board
+            if (trickArea != null)
+            {
+                RectTransform trt = trickArea.GetComponent<RectTransform>();
+                if (trt != null)
+                {
+                    trt.anchorMin = new Vector2(0.5f, 0.5f);
+                    trt.anchorMax = new Vector2(0.5f, 0.5f);
+                    trt.pivot = new Vector2(0.5f, 0.5f);
+                    trt.anchoredPosition = new Vector2(50, 20);
+                    trt.sizeDelta = new Vector2(500, 440);
+                }
+            }
+
+            // 9. Trump Card Slot — single card on the board to the left of TrickArea
+            if (trumpCardSlot != null)
+            {
+                RectTransform trt = trumpCardSlot.GetComponent<RectTransform>();
+                if (trt != null)
+                {
+                    trt.anchorMin = new Vector2(0.5f, 0.5f);
+                    trt.anchorMax = new Vector2(0.5f, 0.5f);
+                    trt.pivot = new Vector2(0.5f, 0.5f);
+                    trt.anchoredPosition = new Vector2(-340, 20);
+                    trt.sizeDelta = new Vector2(115, 165);
+                }
+            }
+
+            // 10. Bidding Panel — popup in center
+            if (biddingPanel != null)
+            {
+                RectTransform brt = biddingPanel.GetComponent<RectTransform>();
+                if (brt != null)
+                {
+                    brt.anchorMin = new Vector2(0.5f, 0.5f);
+                    brt.anchorMax = new Vector2(0.5f, 0.5f);
+                    brt.pivot = new Vector2(0.5f, 0.5f);
+                    brt.anchoredPosition = new Vector2(0, -20);
+                    brt.sizeDelta = new Vector2(460, 250);
+                }
+            }
         }
 
         // ════════════════════════════════════════════════════════════════════════
@@ -341,7 +570,6 @@ namespace Game29
 
         public void BuildUIIfMissing()
         {
-            // 1. Canvas Setup
             canvas = GetComponent<Canvas>();
             if (canvas == null)
             {
@@ -352,202 +580,138 @@ namespace Game29
 
             canvasScaler = GetComponent<CanvasScaler>();
             if (canvasScaler == null)
-            {
                 canvasScaler = gameObject.AddComponent<CanvasScaler>();
-                canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-                canvasScaler.referenceResolution = new Vector2(1080, 1920);
-                canvasScaler.matchWidthOrHeight = 0.5f;
-            }
 
             if (GetComponent<GraphicRaycaster>() == null)
                 gameObject.AddComponent<GraphicRaycaster>();
 
-            // Ensure EventSystem in scene configured for Unity Input System
             EnsureInputSystemEventSystem();
 
-            // 2. Fullscreen Table Felt Background
+            // Background
             if (tableBackground == null)
             {
-                GameObject bgObj = new GameObject("TableFelt_BG");
-                bgObj.transform.SetParent(transform, false);
-                RectTransform bgrt = bgObj.AddComponent<RectTransform>();
-                bgrt.anchorMin = Vector2.zero;
-                bgrt.anchorMax = Vector2.one;
-                bgrt.sizeDelta = Vector2.zero;
-
-                tableBackground = bgObj.AddComponent<Image>();
-                tableBackground.sprite = CardVisualTheme.TableFelt;
-                tableBackground.type = Image.Type.Simple;
-                tableBackground.preserveAspect = false;
-                tableBackground.color = Color.white;
-                tableBackground.raycastTarget = false;
+                Transform bgT = transform.Find("Board_BG") ?? transform.Find("TableFelt_BG");
+                GameObject bgObj = bgT != null ? bgT.gameObject : new GameObject("Board_BG");
+                if (bgT == null) bgObj.transform.SetParent(transform, false);
+                tableBackground = bgObj.GetComponent<Image>() ?? bgObj.AddComponent<Image>();
             }
 
-            // 3. Top Score HUD
+            // Score HUD
             if (scoreHUD == null)
             {
-                GameObject hudObj = new GameObject("ScoreHUD");
-                hudObj.transform.SetParent(transform, false);
-                scoreHUD = hudObj.AddComponent<ScoreHUDUI>();
+                Transform sT = transform.Find("ScoreHUD");
+                GameObject hudObj = sT != null ? sT.gameObject : new GameObject("ScoreHUD");
+                if (sT == null) hudObj.transform.SetParent(transform, false);
+                scoreHUD = hudObj.GetComponent<ScoreHUDUI>() ?? hudObj.AddComponent<ScoreHUDUI>();
                 scoreHUD.EnsureComponents();
             }
 
-            // 4. Center Trick Area
+            // Trick Area
             if (trickArea == null)
             {
-                GameObject trickObj = new GameObject("TrickArea");
-                trickObj.transform.SetParent(transform, false);
-                RectTransform trt = trickObj.AddComponent<RectTransform>();
-                trt.anchorMin = new Vector2(0.5f, 0.5f);
-                trt.anchorMax = new Vector2(0.5f, 0.5f);
-                trt.anchoredPosition = new Vector2(0, 140);
-                trt.sizeDelta = new Vector2(460, 460);
-
-                trickArea = trickObj.AddComponent<TrickAreaUI>();
+                Transform tT = transform.Find("TrickArea");
+                GameObject trickObj = tT != null ? tT.gameObject : new GameObject("TrickArea");
+                if (tT == null) trickObj.transform.SetParent(transform, false);
+                trickArea = trickObj.GetComponent<TrickAreaUI>() ?? trickObj.AddComponent<TrickAreaUI>();
                 trickArea.EnsureComponents();
             }
 
-            // 5. Player Seats
-            // North (Partner) - Top
+            // Player Seats
             if (northSeat == null)
             {
-                GameObject nObj = new GameObject("Player_North");
-                nObj.transform.SetParent(transform, false);
-                RectTransform nrt = nObj.AddComponent<RectTransform>();
-                nrt.anchorMin = new Vector2(0.5f, 0.5f);
-                nrt.anchorMax = new Vector2(0.5f, 0.5f);
-                nrt.anchoredPosition = new Vector2(0, 680);
-                nrt.sizeDelta = new Vector2(400, 140);
-
-                northSeat = nObj.AddComponent<PlayerSeatUI>();
+                Transform nT = transform.Find("Player_North");
+                GameObject nObj = nT != null ? nT.gameObject : new GameObject("Player_North");
+                if (nT == null) nObj.transform.SetParent(transform, false);
+                northSeat = nObj.GetComponent<PlayerSeatUI>() ?? nObj.AddComponent<PlayerSeatUI>();
                 northSeat.Seat = PlayerSeat.North;
                 northSeat.EnsureComponents();
-                northSeat.SetLayoutPositions(new Vector2(0, 48), new Vector2(0, 14), new Vector2(0, -22));
             }
 
-            // West (Opponent) - Left
             if (westSeat == null)
             {
-                GameObject wObj = new GameObject("Player_West");
-                wObj.transform.SetParent(transform, false);
-                RectTransform wrt = wObj.AddComponent<RectTransform>();
-                wrt.anchorMin = new Vector2(0.5f, 0.5f);
-                wrt.anchorMax = new Vector2(0.5f, 0.5f);
-                wrt.anchoredPosition = new Vector2(-410, 140);
-                wrt.sizeDelta = new Vector2(180, 400);
-
-                westSeat = wObj.AddComponent<PlayerSeatUI>();
+                Transform wT = transform.Find("Player_West");
+                GameObject wObj = wT != null ? wT.gameObject : new GameObject("Player_West");
+                if (wT == null) wObj.transform.SetParent(transform, false);
+                westSeat = wObj.GetComponent<PlayerSeatUI>() ?? wObj.AddComponent<PlayerSeatUI>();
                 westSeat.Seat = PlayerSeat.West;
                 westSeat.EnsureComponents();
-                westSeat.SetLayoutPositions(new Vector2(0, 160), new Vector2(0, 120), new Vector2(0, 80));
             }
 
-            // East (Opponent) - Right
             if (eastSeat == null)
             {
-                GameObject eObj = new GameObject("Player_East");
-                eObj.transform.SetParent(transform, false);
-                RectTransform ert = eObj.AddComponent<RectTransform>();
-                ert.anchorMin = new Vector2(0.5f, 0.5f);
-                ert.anchorMax = new Vector2(0.5f, 0.5f);
-                ert.anchoredPosition = new Vector2(410, 140);
-                ert.sizeDelta = new Vector2(180, 400);
-
-                eastSeat = eObj.AddComponent<PlayerSeatUI>();
+                Transform eT = transform.Find("Player_East");
+                GameObject eObj = eT != null ? eT.gameObject : new GameObject("Player_East");
+                if (eT == null) eObj.transform.SetParent(transform, false);
+                eastSeat = eObj.GetComponent<PlayerSeatUI>() ?? eObj.AddComponent<PlayerSeatUI>();
                 eastSeat.Seat = PlayerSeat.East;
                 eastSeat.EnsureComponents();
-                eastSeat.SetLayoutPositions(new Vector2(0, 160), new Vector2(0, 120), new Vector2(0, 80));
             }
 
-            // South (Human) - Bottom
             if (southSeat == null)
             {
-                GameObject sObj = new GameObject("Player_South");
-                sObj.transform.SetParent(transform, false);
-                RectTransform srt = sObj.AddComponent<RectTransform>();
-                srt.anchorMin = new Vector2(0.5f, 0);
-                srt.anchorMax = new Vector2(0.5f, 0);
-                srt.pivot     = new Vector2(0.5f, 0);
-                srt.anchoredPosition = new Vector2(0, 20);
-                srt.sizeDelta = new Vector2(1060, 280);
-
-                southSeat = sObj.AddComponent<PlayerSeatUI>();
+                Transform sT = transform.Find("Player_South");
+                GameObject sObj = sT != null ? sT.gameObject : new GameObject("Player_South");
+                if (sT == null) sObj.transform.SetParent(transform, false);
+                southSeat = sObj.GetComponent<PlayerSeatUI>() ?? sObj.AddComponent<PlayerSeatUI>();
                 southSeat.Seat = PlayerSeat.South;
                 southSeat.EnsureComponents();
-                southSeat.SetLayoutPositions(new Vector2(-380, 210), new Vector2(-380, 168), new Vector2(-380, 130));
-
-                // Position South's card container centered
-                RectTransform ccrt = (RectTransform)southSeat.CardContainer;
-                ccrt.anchorMin = new Vector2(0.5f, 0.5f);
-                ccrt.anchorMax = new Vector2(0.5f, 0.5f);
-                ccrt.anchoredPosition = new Vector2(0, -30);
-                ccrt.sizeDelta = new Vector2(1040, 180);
             }
 
-            // 6. Interactive Bidding Modal Panel
+            // Bidding Panel
             if (biddingPanel == null)
             {
-                GameObject bObj = new GameObject("BiddingPanel");
-                bObj.transform.SetParent(transform, false);
-                RectTransform brt = bObj.AddComponent<RectTransform>();
-                brt.anchorMin = new Vector2(0.5f, 0.5f);
-                brt.anchorMax = new Vector2(0.5f, 0.5f);
-                brt.anchoredPosition = new Vector2(0, -250);
-
-                biddingPanel = bObj.AddComponent<BiddingPanelUI>();
+                Transform bT = transform.Find("BiddingPanel");
+                GameObject bObj = bT != null ? bT.gameObject : new GameObject("BiddingPanel");
+                if (bT == null) bObj.transform.SetParent(transform, false);
+                biddingPanel = bObj.GetComponent<BiddingPanelUI>() ?? bObj.AddComponent<BiddingPanelUI>();
                 biddingPanel.EnsureComponents();
                 biddingPanel.Hide();
             }
 
-            // 7. Round End & Game Over Modal
+            // Round End Modal
             if (roundEndModal == null)
             {
-                GameObject rObj = new GameObject("RoundEndModal");
-                rObj.transform.SetParent(transform, false);
-                RectTransform rrt = rObj.AddComponent<RectTransform>();
-                rrt.anchorMin = new Vector2(0.5f, 0.5f);
-                rrt.anchorMax = new Vector2(0.5f, 0.5f);
-                rrt.anchoredPosition = Vector2.zero;
-
-                roundEndModal = rObj.AddComponent<RoundEndModalUI>();
+                Transform rT = transform.Find("RoundEndModal");
+                GameObject rObj = rT != null ? rT.gameObject : new GameObject("RoundEndModal");
+                if (rT == null) rObj.transform.SetParent(transform, false);
+                roundEndModal = rObj.GetComponent<RoundEndModalUI>() ?? rObj.AddComponent<RoundEndModalUI>();
                 roundEndModal.EnsureComponents();
                 roundEndModal.Hide();
             }
 
-            // 8. On-table physical Trump Card Slot
+            // Trump Card Slot
             if (trumpCardSlot == null)
             {
                 Transform existingSlot = transform.Find("TrumpCardSlot");
                 GameObject tSlotObj = existingSlot != null ? existingSlot.gameObject : new GameObject("TrumpCardSlot");
                 if (existingSlot == null) tSlotObj.transform.SetParent(transform, false);
-                RectTransform trt = tSlotObj.GetComponent<RectTransform>() ?? tSlotObj.AddComponent<RectTransform>();
-                trt.anchorMin = new Vector2(0.5f, 0.5f);
-                trt.anchorMax = new Vector2(0.5f, 0.5f);
-                trt.anchoredPosition = new Vector2(-270, 390);
-                trt.sizeDelta = new Vector2(120, 165);
-
                 trumpCardSlot = tSlotObj.GetComponent<TrumpCardSlotUI>() ?? tSlotObj.AddComponent<TrumpCardSlotUI>();
                 trumpCardSlot.EnsureComponents();
                 tSlotObj.SetActive(false);
             }
 
-            // 9. Trump Selection Modal  (full-screen overlay)
+            // Trump Selection Modal
             if (trumpSelectionModal == null)
             {
                 Transform existingModal = transform.Find("TrumpSelectionModal");
                 GameObject tModalObj = existingModal != null ? existingModal.gameObject : new GameObject("TrumpSelectionModal");
                 if (existingModal == null) tModalObj.transform.SetParent(transform, false);
-                RectTransform mrt = tModalObj.GetComponent<RectTransform>() ?? tModalObj.AddComponent<RectTransform>();
-                // Full-screen stretch so the backdrop covers everything
-                mrt.anchorMin        = Vector2.zero;
-                mrt.anchorMax        = Vector2.one;
-                mrt.offsetMin        = Vector2.zero;
-                mrt.offsetMax        = Vector2.zero;
-
                 trumpSelectionModal = tModalObj.GetComponent<TrumpSelectionModalUI>() ?? tModalObj.AddComponent<TrumpSelectionModalUI>();
                 trumpSelectionModal.EnsureComponents();
                 trumpSelectionModal.Hide();
             }
+
+            // Safety net: if trumpSelectionModal was wired up manually in the Inspector
+            // to an object living outside this Canvas's hierarchy, it will silently
+            // never render (UI graphics require a Canvas ancestor). Force it under us.
+            if (trumpSelectionModal != null && trumpSelectionModal.transform.parent != transform)
+            {
+                Debug.LogWarning("[29 GameTableUI] TrumpSelectionModal was parented outside the " +
+                    "GameTable Canvas — reparenting it now so it can actually render.");
+                trumpSelectionModal.transform.SetParent(transform, false);
+            }
+
+            ApplyLandscapeLayout();
         }
 
         private void EnsureInputSystemEventSystem()
@@ -559,7 +723,6 @@ namespace Game29
                 es = esObj.AddComponent<UnityEngine.EventSystems.EventSystem>();
             }
 
-            // Remove legacy StandaloneInputModule if present to prevent InvalidOperationException with new Input System
             var legacyModule = es.GetComponent<UnityEngine.EventSystems.StandaloneInputModule>();
             if (legacyModule != null)
             {
@@ -567,12 +730,9 @@ namespace Game29
                 else DestroyImmediate(legacyModule);
             }
 
-            // Ensure InputSystemUIInputModule is present and has active default action bindings
             var inputModule = es.GetComponent<InputSystemUIInputModule>();
             if (inputModule == null)
-            {
                 inputModule = es.gameObject.AddComponent<InputSystemUIInputModule>();
-            }
 
             if (inputModule != null)
             {

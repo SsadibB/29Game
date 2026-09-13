@@ -6,12 +6,10 @@ using DG.Tweening;
 namespace Game29
 {
     /// <summary>
-    /// Displays the Trump card slot on the game table.
-    /// Supports:
-    ///   • Standard Suit trump (hidden card back -> 3D DOTween flip to revealed suit)
-    ///   • 7th Card mode (blind mystery card back -> flips to revealed 7th card)
-    ///   • Joker mode (public No-Trump icon & badge)
-    ///   • Interactive REVEAL button when it's human player's turn to reveal trump.
+    /// Visual representation of the single Trump Card placed on the board.
+    /// In 29, the bid winner sets the trump card face-down on the table.
+    /// When someone wants to reveal the trump card during play, they simply click it.
+    /// Clicking the card triggers a 3D flip animation revealing the secret trump suit/card.
     /// </summary>
     public class TrumpCardSlotUI : MonoBehaviour
     {
@@ -21,20 +19,28 @@ namespace Game29
         [SerializeField] private Text   suitSymbolText;
         [SerializeField] private Text   suitNameText;
         [SerializeField] private Text   statusLabelText;
-        [SerializeField] private Button revealBtn;
+        [SerializeField] private Text   tapToRevealText;
+        [SerializeField] private Button cardButton;
 
         private bool _wasRevealed = false;
+        private Tween _pulseTween;
 
         private void Awake()
         {
             EnsureComponents();
         }
 
+        private void OnDestroy()
+        {
+            transform.DOKill();
+            _pulseTween?.Kill();
+        }
+
         public void EnsureComponents()
         {
             RectTransform rt = GetComponent<RectTransform>();
             if (rt == null) rt = gameObject.AddComponent<RectTransform>();
-            rt.sizeDelta = new Vector2(110, 150);
+            rt.sizeDelta = new Vector2(110, 160);
 
             if (cardBg == null)
             {
@@ -43,6 +49,16 @@ namespace Game29
                 cardBg.sprite = CardVisualTheme.CardBack;
                 cardBg.type = Image.Type.Simple;
                 cardBg.preserveAspect = true;
+                cardBg.raycastTarget = true;
+            }
+
+            if (cardButton == null)
+            {
+                cardButton = GetComponent<Button>();
+                if (cardButton == null) cardButton = gameObject.AddComponent<Button>();
+                cardButton.targetGraphic = cardBg;
+                cardButton.onClick.RemoveAllListeners();
+                cardButton.onClick.AddListener(OnCardClicked);
             }
 
             if (glowOutline == null)
@@ -56,66 +72,36 @@ namespace Game29
                 grt.offsetMax = Vector2.zero;
 
                 glowOutline = gObj.AddComponent<Image>();
-                glowOutline.sprite = CardVisualTheme.CreateRoundedRectSprite(110, 150, 16, Color.clear, CardVisualTheme.ColorGold, 5);
+                glowOutline.sprite = CardVisualTheme.CreateRoundedRectSprite(110, 160, 18, Color.clear, CardVisualTheme.ColorGold, 5);
                 glowOutline.type = Image.Type.Sliced;
                 glowOutline.raycastTarget = false;
                 glowOutline.gameObject.SetActive(false);
             }
 
+            if (statusLabelText == null)
+            {
+                GameObject lObj = CreateText("StatusLabel", new Vector2(0, 96), 13, FontStyle.Bold, CardVisualTheme.ColorGold);
+                statusLabelText = lObj.GetComponent<Text>();
+                statusLabelText.text = "TRUMP CARD";
+            }
+
             if (suitSymbolText == null)
             {
-                GameObject sObj = CreateText("SuitSymbol", new Vector2(0, 15), 52, FontStyle.Bold, CardVisualTheme.ColorGold);
+                GameObject sObj = CreateText("SuitSymbol", new Vector2(0, 14), 54, FontStyle.Bold, CardVisualTheme.ColorGold);
                 suitSymbolText = sObj.GetComponent<Text>();
             }
 
             if (suitNameText == null)
             {
-                GameObject nObj = CreateText("SuitName", new Vector2(0, -32), 13, FontStyle.Bold, Color.white);
+                GameObject nObj = CreateText("SuitName", new Vector2(0, -36), 13, FontStyle.Bold, Color.white);
                 suitNameText = nObj.GetComponent<Text>();
             }
 
-            if (statusLabelText == null)
+            if (tapToRevealText == null)
             {
-                GameObject lObj = CreateText("StatusLabel", new Vector2(0, 88), 13, FontStyle.Bold, CardVisualTheme.ColorGold);
-                statusLabelText = lObj.GetComponent<Text>();
-            }
-
-            if (revealBtn == null)
-            {
-                GameObject btnObj = new GameObject("RevealButton");
-                btnObj.transform.SetParent(transform, false);
-                RectTransform brt = btnObj.AddComponent<RectTransform>();
-                brt.anchorMin = new Vector2(0.5f, 0f);
-                brt.anchorMax = new Vector2(0.5f, 0f);
-                brt.anchoredPosition = new Vector2(0, -26);
-                brt.sizeDelta = new Vector2(100, 32);
-
-                Image bimg = btnObj.AddComponent<Image>();
-                bimg.sprite = CardVisualTheme.PillBadge;
-                bimg.type = Image.Type.Sliced;
-                bimg.color = new Color(0.90f, 0.70f, 0.15f, 0.98f);
-                bimg.raycastTarget = true;
-
-                revealBtn = btnObj.AddComponent<Button>();
-                revealBtn.targetGraphic = bimg;
-                revealBtn.onClick.AddListener(OnRevealClicked);
-
-                GameObject tObj = new GameObject("Text");
-                tObj.transform.SetParent(btnObj.transform, false);
-                RectTransform trt = tObj.AddComponent<RectTransform>();
-                trt.anchorMin = Vector2.zero;
-                trt.anchorMax = Vector2.one;
-                trt.sizeDelta = Vector2.zero;
-
-                Text txt = tObj.AddComponent<Text>();
-                txt.font = CardVisualTheme.GetFont();
-                txt.fontSize = 12;
-                txt.fontStyle = FontStyle.Bold;
-                txt.alignment = TextAnchor.MiddleCenter;
-                txt.color = Color.black;
-                txt.raycastTarget = false;
-                txt.text = "REVEAL";
-                btnObj.SetActive(false);
+                GameObject trObj = CreateText("TapToReveal", new Vector2(0, -96), 11, FontStyle.Bold, new Color(0.95f, 0.85f, 0.40f, 0.95f));
+                tapToRevealText = trObj.GetComponent<Text>();
+                tapToRevealText.text = "TAP TO REVEAL";
             }
         }
 
@@ -129,6 +115,7 @@ namespace Game29
             {
                 gameObject.SetActive(false);
                 _wasRevealed = false;
+                StopPulse();
                 return;
             }
 
@@ -140,18 +127,19 @@ namespace Game29
             // Handle Joker (No-Trump) Mode
             if (tm.IsJoker)
             {
+                StopPulse();
                 cardBg.sprite = CardVisualTheme.RoundedCardSlot;
                 cardBg.color  = new Color(0.12f, 0.20f, 0.35f, 0.95f);
                 suitSymbolText.gameObject.SetActive(true);
                 suitSymbolText.text = "🃏";
                 suitSymbolText.color = new Color(0.5f, 0.85f, 1f);
                 suitNameText.gameObject.SetActive(true);
-                suitNameText.text = "JOKER";
+                suitNameText.text = "NO TRUMP";
                 suitNameText.color = Color.white;
-                statusLabelText.text = "★ NO TRUMP ★";
+                statusLabelText.text = "★ JOKER ★";
                 statusLabelText.color = new Color(0.5f, 0.85f, 1f);
                 glowOutline.gameObject.SetActive(true);
-                if (revealBtn != null) revealBtn.gameObject.SetActive(false);
+                if (tapToRevealText != null) tapToRevealText.gameObject.SetActive(false);
                 return;
             }
 
@@ -172,31 +160,9 @@ namespace Game29
                 _wasRevealed = true;
                 ApplyRevealedState(actualTrump.Value);
             }
-            else if (tm.IsSeventhCard)
+            else if (actualTrump.HasValue || tm.IsSeventhCard)
             {
-                // Blind 7th Card trump mode before reveal
-                _wasRevealed = false;
-                cardBg.sprite = CardVisualTheme.CardBack;
-                cardBg.color = Color.white;
-                glowOutline.gameObject.SetActive(false);
-
-                suitSymbolText.gameObject.SetActive(true);
-                suitSymbolText.text = "🎴";
-                suitSymbolText.color = CardVisualTheme.ColorGold;
-
-                suitNameText.gameObject.SetActive(true);
-                suitNameText.text = "7TH CARD";
-                suitNameText.color = Color.white;
-
-                statusLabelText.text = "7TH CARD (SECRET)";
-                statusLabelText.color = CardVisualTheme.ColorGold;
-
-                bool canReveal = gm.CurrentPhase == GamePhase.Playing && gm.CurrentPlayer == GameManager.HumanSeat;
-                if (revealBtn != null) revealBtn.gameObject.SetActive(canReveal);
-            }
-            else if (actualTrump.HasValue)
-            {
-                // Standard Suit secret trump before reveal
+                // Unrevealed Trump Card sitting face-down on the board
                 _wasRevealed = false;
                 cardBg.sprite = CardVisualTheme.CardBack;
                 cardBg.color = Color.white;
@@ -204,35 +170,37 @@ namespace Game29
 
                 if (visibleTrump.HasValue)
                 {
-                    // South knows their team's trump
-                    suitSymbolText.gameObject.SetActive(true);
-                    suitSymbolText.text = CardVisualTheme.GetSuitSymbol(visibleTrump.Value);
-                    suitSymbolText.color = new Color(1f, 0.85f, 0.4f, 0.9f);
-
-                    suitNameText.gameObject.SetActive(true);
-                    suitNameText.text = "YOUR TRUMP";
-                    suitNameText.color = Color.white;
-
-                    statusLabelText.text = $"SECRET ({CardVisualTheme.GetSuitName(visibleTrump.Value)})";
+                    // South knows their secret trump
+                    string sym = CardVisualTheme.GetSuitSymbol(visibleTrump.Value);
+                    string name = CardVisualTheme.GetSuitName(visibleTrump.Value);
+                    statusLabelText.text = $"TRUMP ({sym} {name})";
+                    statusLabelText.color = CardVisualTheme.ColorGold;
+                }
+                else if (tm.IsSeventhCard)
+                {
+                    statusLabelText.text = "TRUMP (7th Card)";
                     statusLabelText.color = CardVisualTheme.ColorGold;
                 }
                 else
                 {
-                    // Opponent trump — hidden
-                    suitSymbolText.gameObject.SetActive(true);
-                    suitSymbolText.text = "?";
-                    suitSymbolText.color = CardVisualTheme.ColorGold;
-
-                    suitNameText.gameObject.SetActive(true);
-                    suitNameText.text = "HIDDEN";
-                    suitNameText.color = new Color(0.7f, 0.8f, 0.9f);
-
-                    statusLabelText.text = "TRUMP (SECRET)";
-                    statusLabelText.color = new Color(0.7f, 0.8f, 0.9f);
+                    statusLabelText.text = "TRUMP CARD";
+                    statusLabelText.color = new Color(0.85f, 0.88f, 0.95f);
                 }
 
-                bool canReveal = gm.CurrentPhase == GamePhase.Playing && gm.CurrentPlayer == GameManager.HumanSeat;
-                if (revealBtn != null) revealBtn.gameObject.SetActive(canReveal);
+                // Card back covers the face
+                suitSymbolText.gameObject.SetActive(false);
+                suitNameText.gameObject.SetActive(false);
+
+                // In playing phase, invite user to tap card to reveal
+                bool canReveal = gm.CurrentPhase == GamePhase.Playing;
+                if (tapToRevealText != null)
+                {
+                    tapToRevealText.gameObject.SetActive(canReveal);
+                    tapToRevealText.text = "CLICK TO REVEAL";
+                }
+
+                if (canReveal) StartPulse();
+                else StopPulse();
             }
             else
             {
@@ -242,6 +210,7 @@ namespace Game29
 
         private void ApplyRevealedState(Suit trump)
         {
+            StopPulse();
             cardBg.sprite = CardVisualTheme.CardFront;
             cardBg.color = Color.white;
 
@@ -258,17 +227,20 @@ namespace Game29
             statusLabelText.color = CardVisualTheme.ColorGold;
             glowOutline.gameObject.SetActive(true);
 
-            if (revealBtn != null) revealBtn.gameObject.SetActive(false);
+            if (tapToRevealText != null)
+                tapToRevealText.gameObject.SetActive(false);
         }
 
         private void AnimateFlipToRevealed(Suit trump)
         {
+            StopPulse();
             transform.DOKill();
+            // 3D flip: fold horizontally to zero scale, switch face, unfold
             transform.DOScaleX(0f, 0.16f).SetEase(Ease.InQuad).SetLink(gameObject).OnComplete(() =>
             {
                 if (this == null || gameObject == null) return;
                 ApplyRevealedState(trump);
-                transform.DOScaleX(1f, 0.18f).SetEase(Ease.OutQuad).SetLink(gameObject).OnComplete(() =>
+                transform.DOScaleX(1f, 0.20f).SetEase(Ease.OutQuad).SetLink(gameObject).OnComplete(() =>
                 {
                     if (this != null && gameObject != null)
                         transform.DOPunchScale(Vector3.one * 0.18f, 0.25f, 8, 1).SetLink(gameObject);
@@ -276,13 +248,45 @@ namespace Game29
             });
         }
 
-        private void OnRevealClicked()
+        private void OnCardClicked()
         {
-            Debug.Log("[29 TrumpSlot] Human South clicked REVEAL TRUMP");
-            if (revealBtn != null)
-                revealBtn.transform.DOPunchScale(Vector3.one * 0.2f, 0.15f, 10, 1).SetLink(gameObject);
+            var gm = GameManager.Instance;
+            if (gm == null) return;
 
-            GameManager.Instance.RevealTrump();
+            if (gm.CurrentPhase != GamePhase.Playing)
+            {
+                transform.DOPunchScale(Vector3.one * 0.08f, 0.18f, 6, 1).SetLink(gameObject);
+                return;
+            }
+
+            if (gm.IsTrumpRevealed())
+            {
+                // Already revealed — playful bounce
+                transform.DOPunchScale(Vector3.one * 0.08f, 0.16f, 6, 1).SetLink(gameObject);
+                return;
+            }
+
+            // Reveal the trump!
+            Debug.Log("[29 TrumpSlot] Trump Card clicked on board -> REVEALING TRUMP!");
+            transform.DOPunchScale(Vector3.one * 0.2f, 0.2f, 8, 1).SetLink(gameObject);
+            gm.RevealTrump();
+        }
+
+        private void StartPulse()
+        {
+            if (_pulseTween != null && _pulseTween.IsActive()) return;
+            glowOutline.gameObject.SetActive(true);
+            glowOutline.color = new Color(CardVisualTheme.ColorGold.r, CardVisualTheme.ColorGold.g, CardVisualTheme.ColorGold.b, 0.2f);
+            _pulseTween = glowOutline.DOFade(0.7f, 0.7f).SetLoops(-1, LoopType.Yoyo).SetLink(gameObject);
+        }
+
+        private void StopPulse()
+        {
+            if (_pulseTween != null)
+            {
+                _pulseTween.Kill();
+                _pulseTween = null;
+            }
         }
 
         private GameObject CreateText(string name, Vector2 pos, int fontSize, FontStyle style, Color color)
@@ -291,7 +295,7 @@ namespace Game29
             obj.transform.SetParent(transform, false);
             RectTransform rt = obj.AddComponent<RectTransform>();
             rt.anchoredPosition = pos;
-            rt.sizeDelta = new Vector2(120, 40);
+            rt.sizeDelta = new Vector2(160, 32);
 
             Text txt = obj.AddComponent<Text>();
             txt.font = CardVisualTheme.GetFont();

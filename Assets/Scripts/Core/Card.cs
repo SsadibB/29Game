@@ -9,7 +9,7 @@ namespace Game29
     ///   Jack = 3 | Nine = 2 | Ace = 1 | Ten = 1 | rest = 0
     /// </summary>
     [Serializable]
-    public class Card
+    public class Card : IEquatable<Card>
     {
         public Suit Suit { get; private set; }
         public Rank Rank { get; private set; }
@@ -42,10 +42,26 @@ namespace Game29
         public override bool Equals(object obj)
         {
             if (obj is Card other)
-                return other.Suit == Suit && other.Rank == Rank;
+                return Equals(other);
             return false;
         }
 
+        public bool Equals(Card other)
+        {
+            if (ReferenceEquals(other, null)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Suit == other.Suit && Rank == other.Rank;
+        }
+
         public override int GetHashCode() => HashCode.Combine(Suit, Rank);
+
+        public static bool operator ==(Card a, Card b)
+        {
+            if (ReferenceEquals(a, b)) return true;
+            if (ReferenceEquals(a, null) || ReferenceEquals(b, null)) return false;
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(Card a, Card b) => !(a == b);
     }
 }

@@ -8,8 +8,8 @@ namespace Game29
 {
     /// <summary>
     /// Visual UI component representing one of the 4 player seats (South, North, East, West).
-    /// Displays avatar, name label, turn glow indicator, action speech bubble,
-    /// mini card-backs for AI opponents/partner, and South's interactive hand cards.
+    /// Landscape layout: avatar uses Vector.png, cards are larger (130×190 for South),
+    /// deal animations fly from the board center, and AI backs also animate on deal.
     /// </summary>
     public class PlayerSeatUI : MonoBehaviour
     {
@@ -18,7 +18,7 @@ namespace Game29
 
         [Header("UI Elements")]
         [SerializeField] private Image     avatarBg;
-        [SerializeField] private Text      avatarInitialText;
+        [SerializeField] private Image     avatarIcon;
         [SerializeField] private Image     turnGlowBorder;
         [SerializeField] private Text      nameLabel;
         [SerializeField] private Image     actionBubbleBg;
@@ -29,6 +29,12 @@ namespace Game29
         private Coroutine _actionBubbleCoroutine;
 
         public Transform CardContainer => cardContainer != null ? cardContainer : transform;
+
+        // Card dimensions for landscape layout
+        private const float HumanCardW   = 130f;
+        private const float HumanCardH   = 190f;
+        private const float AICardW      = 55f;
+        private const float AICardH      = 80f;
 
         private void Awake()
         {
@@ -51,35 +57,51 @@ namespace Game29
                 rt.anchorMin = new Vector2(0.5f, 0.5f);
                 rt.anchorMax = new Vector2(0.5f, 0.5f);
                 rt.pivot     = new Vector2(0.5f, 0.5f);
-                rt.sizeDelta = new Vector2(900, 180);
+                rt.sizeDelta = new Vector2(900, 200);
                 cardContainer = cc.transform;
             }
 
             if (avatarBg == null)
             {
-                GameObject av = new GameObject("Avatar");
-                av.transform.SetParent(transform, false);
-                RectTransform rt = av.AddComponent<RectTransform>();
+                Transform existingAv = transform.Find("Avatar") ?? transform.Find("AvatarBg");
+                GameObject av = existingAv != null ? existingAv.gameObject : new GameObject("AvatarBg");
+                if (existingAv == null) av.transform.SetParent(transform, false);
+                RectTransform rt = av.GetComponent<RectTransform>() ?? av.AddComponent<RectTransform>();
                 rt.anchorMin = new Vector2(0.5f, 0.5f);
                 rt.anchorMax = new Vector2(0.5f, 0.5f);
-                rt.sizeDelta = new Vector2(56, 56);
-                avatarBg = av.AddComponent<Image>();
+                rt.sizeDelta = new Vector2(62, 62);
+                avatarBg = av.GetComponent<Image>() ?? av.AddComponent<Image>();
                 avatarBg.sprite = CardVisualTheme.CircleAvatar;
+                avatarBg.color = new Color(0.10f, 0.16f, 0.24f, 0.95f);
                 avatarBg.raycastTarget = false;
 
-                GameObject avTxt = new GameObject("Initial");
-                avTxt.transform.SetParent(av.transform, false);
-                RectTransform art = avTxt.AddComponent<RectTransform>();
-                art.anchorMin = Vector2.zero;
-                art.anchorMax = Vector2.one;
-                art.sizeDelta = Vector2.zero;
-                avatarInitialText = avTxt.AddComponent<Text>();
-                avatarInitialText.font = CardVisualTheme.GetFont();
-                avatarInitialText.fontSize = 26;
-                avatarInitialText.fontStyle = FontStyle.Bold;
-                avatarInitialText.alignment = TextAnchor.MiddleCenter;
-                avatarInitialText.color = CardVisualTheme.ColorGold;
-                avatarInitialText.raycastTarget = false;
+                // Hide any legacy single-letter "Initial" text inside Avatar
+                Transform oldInit = av.transform.Find("Initial");
+                if (oldInit != null) oldInit.gameObject.SetActive(false);
+            }
+
+            if (avatarIcon == null)
+            {
+                Transform existingIcon = avatarBg.transform.Find("AvatarIcon");
+                if (existingIcon != null && existingIcon.GetComponent<RectTransform>() == null)
+                {
+                    if (Application.isPlaying) Destroy(existingIcon.gameObject);
+                    else DestroyImmediate(existingIcon.gameObject);
+                    existingIcon = null;
+                }
+
+                GameObject icon = existingIcon != null ? existingIcon.gameObject : new GameObject("AvatarIcon", typeof(RectTransform));
+                if (existingIcon == null) icon.transform.SetParent(avatarBg.transform, false);
+                RectTransform irt = icon.GetComponent<RectTransform>();
+                irt.anchorMin = new Vector2(0.12f, 0.12f);
+                irt.anchorMax = new Vector2(0.88f, 0.88f);
+                irt.offsetMin = Vector2.zero;
+                irt.offsetMax = Vector2.zero;
+                avatarIcon = icon.GetComponent<Image>() ?? icon.AddComponent<Image>();
+                avatarIcon.sprite = CardVisualTheme.VectorAvatar;
+                avatarIcon.color = Color.white;
+                avatarIcon.preserveAspect = true;
+                avatarIcon.raycastTarget = false;
             }
 
             if (turnGlowBorder == null)
@@ -89,9 +111,9 @@ namespace Game29
                 RectTransform grt = glow.AddComponent<RectTransform>();
                 grt.anchorMin = Vector2.zero;
                 grt.anchorMax = Vector2.one;
-                grt.sizeDelta = new Vector2(16, 16);
+                grt.sizeDelta = new Vector2(18, 18);
                 turnGlowBorder = glow.AddComponent<Image>();
-                turnGlowBorder.sprite = CardVisualTheme.CreateCircleSprite(72, Color.clear, CardVisualTheme.ColorGold, 5);
+                turnGlowBorder.sprite = CardVisualTheme.CreateCircleSprite(80, Color.clear, CardVisualTheme.ColorGold, 6);
                 turnGlowBorder.color = CardVisualTheme.ColorGoldGlow;
                 turnGlowBorder.raycastTarget = false;
                 glow.SetActive(false);
@@ -104,7 +126,7 @@ namespace Game29
                 RectTransform nrt = nl.AddComponent<RectTransform>();
                 nrt.anchorMin = new Vector2(0.5f, 0.5f);
                 nrt.anchorMax = new Vector2(0.5f, 0.5f);
-                nrt.sizeDelta = new Vector2(180, 26);
+                nrt.sizeDelta = new Vector2(200, 28);
                 nameLabel = nl.AddComponent<Text>();
                 nameLabel.font = CardVisualTheme.GetFont();
                 nameLabel.fontSize = 17;
@@ -121,7 +143,7 @@ namespace Game29
                 RectTransform abrt = ab.AddComponent<RectTransform>();
                 abrt.anchorMin = new Vector2(0.5f, 0.5f);
                 abrt.anchorMax = new Vector2(0.5f, 0.5f);
-                abrt.sizeDelta = new Vector2(120, 32);
+                abrt.sizeDelta = new Vector2(130, 34);
                 actionBubbleBg = ab.AddComponent<Image>();
                 actionBubbleBg.sprite = CardVisualTheme.PillBadge;
                 actionBubbleBg.type = Image.Type.Sliced;
@@ -136,7 +158,7 @@ namespace Game29
                 abtrt.sizeDelta = Vector2.zero;
                 actionBubbleText = abt.AddComponent<Text>();
                 actionBubbleText.font = CardVisualTheme.GetFont();
-                actionBubbleText.fontSize = 15;
+                actionBubbleText.fontSize = 16;
                 actionBubbleText.fontStyle = FontStyle.Bold;
                 actionBubbleText.alignment = TextAnchor.MiddleCenter;
                 actionBubbleText.color = CardVisualTheme.ColorGold;
@@ -149,31 +171,30 @@ namespace Game29
 
         public void SetupIdentity()
         {
+            if (nameLabel == null || avatarIcon == null) return;
             switch (Seat)
             {
                 case PlayerSeat.South:
                     nameLabel.text = "YOU (South) ★";
                     nameLabel.color = CardVisualTheme.ColorCyan;
-                    avatarInitialText.text = "S";
-                    avatarInitialText.color = CardVisualTheme.ColorCyan;
+                    avatarIcon.color = CardVisualTheme.ColorCyan;
                     break;
                 case PlayerSeat.North:
                     nameLabel.text = "PARTNER (North)";
                     nameLabel.color = CardVisualTheme.ColorCyan;
-                    avatarInitialText.text = "N";
-                    avatarInitialText.color = CardVisualTheme.ColorCyan;
+                    avatarIcon.color = CardVisualTheme.ColorCyan;
                     break;
                 case PlayerSeat.East:
                     nameLabel.text = "EAST (Opponent)";
-                    nameLabel.color = new Color(0.95f, 0.55f, 0.35f);
-                    avatarInitialText.text = "E";
-                    avatarInitialText.color = new Color(0.95f, 0.55f, 0.35f);
+                    var orangeE = new Color(0.95f, 0.55f, 0.35f);
+                    nameLabel.color = orangeE;
+                    avatarIcon.color = orangeE;
                     break;
                 case PlayerSeat.West:
                     nameLabel.text = "WEST (Opponent)";
-                    nameLabel.color = new Color(0.95f, 0.55f, 0.35f);
-                    avatarInitialText.text = "W";
-                    avatarInitialText.color = new Color(0.95f, 0.55f, 0.35f);
+                    var orangeW = new Color(0.95f, 0.55f, 0.35f);
+                    nameLabel.color = orangeW;
+                    avatarIcon.color = orangeW;
                     break;
             }
         }
@@ -181,9 +202,9 @@ namespace Game29
         public void SetLayoutPositions(Vector2 avatarPos, Vector2 namePos, Vector2 bubblePos)
         {
             EnsureComponents();
-            if (avatarBg != null) ((RectTransform)avatarBg.transform).anchoredPosition = avatarPos;
-            if (nameLabel != null) ((RectTransform)nameLabel.transform).anchoredPosition = namePos;
-            if (actionBubbleBg != null) ((RectTransform)actionBubbleBg.transform).anchoredPosition = bubblePos;
+            if (avatarBg      != null) ((RectTransform)avatarBg.transform).anchoredPosition      = avatarPos;
+            if (nameLabel     != null) ((RectTransform)nameLabel.transform).anchoredPosition     = namePos;
+            if (actionBubbleBg!= null) ((RectTransform)actionBubbleBg.transform).anchoredPosition= bubblePos;
         }
 
         public void SetActiveTurn(bool isMyTurn)
@@ -195,7 +216,11 @@ namespace Game29
                 if (isMyTurn)
                 {
                     turnGlowBorder.transform.localScale = Vector3.one;
-                    turnGlowBorder.transform.DOScale(1.18f, 0.65f).SetEase(Ease.InOutSine).SetLoops(-1, LoopType.Yoyo);
+                    turnGlowBorder.transform
+                        .DOScale(1.22f, 0.65f)
+                        .SetEase(Ease.InOutSine)
+                        .SetLoops(-1, LoopType.Yoyo)
+                        .SetLink(turnGlowBorder.gameObject);
                 }
             }
         }
@@ -207,7 +232,7 @@ namespace Game29
             actionBubbleBg.gameObject.SetActive(true);
             actionBubbleBg.transform.DOKill();
             actionBubbleBg.transform.localScale = Vector3.one * 0.6f;
-            actionBubbleBg.transform.DOScale(1f, 0.22f).SetEase(Ease.OutBack);
+            actionBubbleBg.transform.DOScale(1f, 0.22f).SetEase(Ease.OutBack).SetLink(actionBubbleBg.gameObject);
 
             if (_actionBubbleCoroutine != null) StopCoroutine(_actionBubbleCoroutine);
             _actionBubbleCoroutine = StartCoroutine(HideActionBubbleRoutine(duration));
@@ -219,20 +244,33 @@ namespace Game29
             if (actionBubbleBg != null)
             {
                 actionBubbleBg.transform.DOKill();
-                actionBubbleBg.transform.DOScale(0.5f, 0.15f).SetEase(Ease.InQuad).OnComplete(() =>
-                {
-                    actionBubbleBg.gameObject.SetActive(false);
-                });
+                actionBubbleBg.transform.DOScale(0.5f, 0.15f).SetEase(Ease.InQuad)
+                    .SetLink(actionBubbleBg.gameObject)
+                    .OnComplete(() =>
+                    {
+                        if (actionBubbleBg != null) actionBubbleBg.gameObject.SetActive(false);
+                    });
             }
             _actionBubbleCoroutine = null;
         }
 
-        /// <summary>Renders South's cards as full interactive CardUI objects.
-        /// When animate=true (deal batch):
-        ///   • First deal: animates all 4 dealt cards.
-        ///   • Second deal: existing 4 cards smoothly slide to new spacing; only the 4 NEW cards animate flight.
-        /// When animate=false (turn change / status refresh):
-        ///   • Updates playability in place without re-animating or recreating cards.
+        /// <summary>Plays a horizontal shake animation on the card matching <paramref name="card"/>.</summary>
+        public void ShakeCard(Card card)
+        {
+            if (card == null) return;
+            for (int i = 0; i < _spawnedCards.Count; i++)
+            {
+                if (_spawnedCards[i] != null && _spawnedCards[i].CurrentCard != null && _spawnedCards[i].CurrentCard.Equals(card))
+                {
+                    _spawnedCards[i].Shake();
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Renders South's cards as full interactive CardUI objects.
+        /// When animate=true, cards fly from the board center to their hand positions.
         /// </summary>
         public void RenderHumanHand(Hand hand, List<Card> validPlays, Action<Card> onCardClick, bool animate = false)
         {
@@ -243,12 +281,13 @@ namespace Game29
             }
 
             int count = hand.Count;
-            float cardW = 105f;
-            float cardH = 155f;
-            float spacing = Mathf.Min(cardW * 0.92f, 850f / Mathf.Max(1, count));
+            float cardW   = HumanCardW;
+            float cardH   = HumanCardH;
+            // Wider spread for landscape — up to 1200px total width
+            float spacing = Mathf.Min(cardW * 0.88f, 1100f / Mathf.Max(1, count));
             float startX  = -(count - 1) * spacing * 0.5f;
 
-            // Check if existing spawned cards match the hand exactly (same cards in same order)
+            // Check if existing spawned cards match the hand exactly
             bool sameHand = _spawnedCards.Count == count;
             if (sameHand)
             {
@@ -262,7 +301,7 @@ namespace Game29
                 }
             }
 
-            // Case 1: Same hand (e.g. bidding turn change, state refresh) -> purely update playability!
+            // Case 1: Same hand — update playability only, no animation
             if (sameHand)
             {
                 for (int i = 0; i < count; i++)
@@ -271,15 +310,14 @@ namespace Game29
                     bool isPlayable = validPlays != null && validPlays.Contains(card);
                     _spawnedCards[i].SetPlayable(isPlayable);
                 }
-                return; // Absolutely NO animation, NO recreation!
+                return;
             }
 
-            // Case 2: Second batch deal (hand grew from existing cards, e.g. 4 -> 8 cards)
+            // Case 2: Second batch deal — existing cards slide to new positions, new cards fly from center
             int existingCount = _spawnedCards.Count;
             bool isAppend = existingCount > 0 && count > existingCount;
             if (isAppend)
             {
-                // Verify the existing cards match prefix
                 for (int i = 0; i < existingCount; i++)
                 {
                     if (_spawnedCards[i] == null || _spawnedCards[i].CurrentCard != hand.Cards[i])
@@ -292,7 +330,7 @@ namespace Game29
 
             if (isAppend)
             {
-                // Smoothly shift existing cards to their new positions in the expanded spread
+                // Slide existing cards to their new positions in the wider spread
                 for (int i = 0; i < existingCount; i++)
                 {
                     Card card = hand.Cards[i];
@@ -305,12 +343,12 @@ namespace Game29
                     if (rtExisting != null)
                     {
                         rtExisting.DOKill();
-                        rtExisting.DOAnchorPos(targetPos, 0.25f).SetEase(Ease.OutQuad);
+                        rtExisting.DOAnchorPos(targetPos, 0.28f).SetEase(Ease.OutQuad);
                     }
                 }
 
-                // Spawn and animate ONLY the new cards (indices existingCount .. count - 1)
-                Vector2 dealOrigin = new Vector2(0, 350f);
+                // Spawn and animate the new cards from the board center
+                Vector2 dealOrigin = GetCenterOffsetInContainer();
                 for (int i = existingCount; i < count; i++)
                 {
                     Card card = hand.Cards[i];
@@ -329,19 +367,17 @@ namespace Game29
                     cardUI.SetBasePosition(pos);
 
                     if (animate)
-                    {
-                        cardUI.AnimateDealFrom(dealOrigin, pos, delay: (i - existingCount) * 0.06f, duration: 0.32f);
-                    }
+                        cardUI.AnimateDealFrom(dealOrigin, pos, delay: (i - existingCount) * 0.07f, duration: 0.35f);
 
                     _spawnedCards.Add(cardUI);
                 }
                 return;
             }
 
-            // Case 3: Fresh deal or full hand reset (e.g. first 4 cards dealt, or new round)
+            // Case 3: Fresh deal or full hand reset
             ClearCards();
 
-            Vector2 origin = new Vector2(0, 350f);
+            Vector2 origin = GetCenterOffsetInContainer();
             for (int i = 0; i < count; i++)
             {
                 Card card = hand.Cards[i];
@@ -360,24 +396,27 @@ namespace Game29
                 cardUI.SetBasePosition(pos);
 
                 if (animate)
-                {
-                    cardUI.AnimateDealFrom(origin, pos, delay: i * 0.06f, duration: 0.32f);
-                }
+                    cardUI.AnimateDealFrom(origin, pos, delay: i * 0.07f, duration: 0.35f);
 
                 _spawnedCards.Add(cardUI);
             }
         }
 
-        /// <summary>Renders AI partner/opponent remaining cards as mini card backs.</summary>
-        public void RenderAICardCount(int cardCount, bool horizontal = true)
+        /// <summary>
+        /// Renders AI partner/opponent remaining cards as mini card backs.
+        /// When animate=true, backs fly in from the board center.
+        /// </summary>
+        public void RenderAICardCount(int cardCount, bool horizontal = true, bool animate = false)
         {
             ClearCards();
             if (cardCount <= 0) return;
 
-            float cardW = 44f;
-            float cardH = 64f;
-            float spacing = 16f;
-            float start = -(cardCount - 1) * spacing * 0.5f;
+            float cardW   = AICardW;
+            float cardH   = AICardH;
+            float spacing = horizontal ? 20f : 22f;
+            float start   = -(cardCount - 1) * spacing * 0.5f;
+
+            Vector2 origin = GetCenterOffsetInContainer();
 
             for (int i = 0; i < cardCount; i++)
             {
@@ -386,15 +425,44 @@ namespace Game29
                 RectTransform rt = cardObj.AddComponent<RectTransform>();
                 rt.sizeDelta = new Vector2(cardW, cardH);
 
-                if (horizontal)
-                    rt.anchoredPosition = new Vector2(start + i * spacing, 0);
-                else
-                    rt.anchoredPosition = new Vector2(0, start + i * spacing);
+                Vector2 pos = horizontal
+                    ? new Vector2(start + i * spacing, 0)
+                    : new Vector2(0, start + i * spacing);
+
+                rt.anchoredPosition = pos;
 
                 CardUI cardUI = cardObj.AddComponent<CardUI>();
                 cardUI.SetFaceDown();
                 _spawnedCards.Add(cardUI);
+
+                if (animate)
+                    cardUI.AnimateDealFrom(origin, pos, delay: i * 0.06f, duration: 0.30f);
             }
+        }
+
+        /// <summary>
+        /// Computes the board center (canvas root world position) in this seat's
+        /// CardContainer local space, so deal animations start from the center of the board.
+        /// Falls back to Vector2.zero if the canvas root is unavailable.
+        /// </summary>
+        private Vector2 GetCenterOffsetInContainer()
+        {
+            RectTransform containerRT = CardContainer as RectTransform;
+            if (containerRT == null) return Vector2.zero;
+
+            // Walk up to find the root Canvas
+            Canvas rootCanvas = GetComponentInParent<Canvas>();
+            if (rootCanvas == null) return Vector2.zero;
+
+            RectTransform canvasRT = rootCanvas.GetComponent<RectTransform>();
+            if (canvasRT == null) return Vector2.zero;
+
+            // Canvas center in world space
+            Vector3 canvasCenter = canvasRT.TransformPoint(Vector3.zero);
+
+            // Convert that world point into the CardContainer's local space
+            Vector2 localCenter = containerRT.InverseTransformPoint(canvasCenter);
+            return localCenter;
         }
 
         public void ClearCards()
@@ -403,14 +471,13 @@ namespace Game29
             {
                 if (_spawnedCards[i] != null && _spawnedCards[i].gameObject != null)
                 {
-                    // Kill all tweens before destroying to prevent MissingReferenceException
                     _spawnedCards[i].transform.DOKill();
                     Destroy(_spawnedCards[i].gameObject);
                 }
             }
             _spawnedCards.Clear();
 
-            // Safety cleanup: also ensure no orphan card GameObjects remain
+            // Safety: remove orphan card objects
             if (CardContainer != null)
             {
                 foreach (Transform child in CardContainer)

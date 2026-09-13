@@ -8,7 +8,8 @@ namespace Game29
     /// <summary>
     /// Visual representation of the center trick table.
     /// Features 4 card slots in a cross pattern for South, North, East, West,
-    /// animated card placement, victory callout banner, and winner trick sweep.
+    /// animated card placement (pop-in on play), victory banner, and a
+    /// sweep-to-winner animation where all cards fly toward the winning seat.
     /// </summary>
     public class TrickAreaUI : MonoBehaviour
     {
@@ -26,6 +27,16 @@ namespace Game29
         private Coroutine _bannerCoroutine;
         private readonly Vector2[] _baseSlotPositions = new Vector2[4];
 
+        // Landscape slot size — bigger and more visible
+        private const float SlotW = 120f;
+        private const float SlotH = 175f;
+
+        // Slot positions in landscape cross layout
+        private static readonly Vector2 SouthPos = new Vector2(0,    -145f);
+        private static readonly Vector2 NorthPos = new Vector2(0,     145f);
+        private static readonly Vector2 WestPos  = new Vector2(-175f,  0);
+        private static readonly Vector2 EastPos  = new Vector2( 175f,  0);
+
         private void Awake()
         {
             EnsureComponents();
@@ -38,31 +49,28 @@ namespace Game29
 
         public void EnsureComponents()
         {
-            float slotW = 100f;
-            float slotH = 145f;
-
             if (southSlot == null)
             {
-                southSlot = CreateSlot("Slot_South", new Vector2(0, -100), slotW, slotH, "You");
-                _baseSlotPositions[(int)PlayerSeat.South] = new Vector2(0, -100);
+                southSlot = CreateSlot("Slot_South", SouthPos, SlotW, SlotH, "You");
+                _baseSlotPositions[(int)PlayerSeat.South] = SouthPos;
             }
 
             if (northSlot == null)
             {
-                northSlot = CreateSlot("Slot_North", new Vector2(0, 100), slotW, slotH, "Partner");
-                _baseSlotPositions[(int)PlayerSeat.North] = new Vector2(0, 100);
+                northSlot = CreateSlot("Slot_North", NorthPos, SlotW, SlotH, "Partner");
+                _baseSlotPositions[(int)PlayerSeat.North] = NorthPos;
             }
 
             if (westSlot == null)
             {
-                westSlot = CreateSlot("Slot_West", new Vector2(-125, 0), slotW, slotH, "West");
-                _baseSlotPositions[(int)PlayerSeat.West] = new Vector2(-125, 0);
+                westSlot = CreateSlot("Slot_West", WestPos, SlotW, SlotH, "West");
+                _baseSlotPositions[(int)PlayerSeat.West] = WestPos;
             }
 
             if (eastSlot == null)
             {
-                eastSlot = CreateSlot("Slot_East", new Vector2(125, 0), slotW, slotH, "East");
-                _baseSlotPositions[(int)PlayerSeat.East] = new Vector2(125, 0);
+                eastSlot = CreateSlot("Slot_East", EastPos, SlotW, SlotH, "East");
+                _baseSlotPositions[(int)PlayerSeat.East] = EastPos;
             }
 
             if (bannerObj == null)
@@ -72,8 +80,8 @@ namespace Game29
                 RectTransform brt = bannerObj.AddComponent<RectTransform>();
                 brt.anchorMin = new Vector2(0.5f, 0.5f);
                 brt.anchorMax = new Vector2(0.5f, 0.5f);
-                brt.sizeDelta = new Vector2(360, 52);
-                brt.anchoredPosition = new Vector2(0, 0);
+                brt.sizeDelta = new Vector2(380, 56);
+                brt.anchoredPosition = Vector2.zero;
 
                 bannerBg = bannerObj.AddComponent<Image>();
                 bannerBg.sprite = CardVisualTheme.RoundedPanel;
@@ -89,7 +97,7 @@ namespace Game29
 
                 bannerText = bt.AddComponent<Text>();
                 bannerText.font = CardVisualTheme.GetFont();
-                bannerText.fontSize = 18;
+                bannerText.fontSize = 19;
                 bannerText.fontStyle = FontStyle.Bold;
                 bannerText.alignment = TextAnchor.MiddleCenter;
                 bannerText.color = CardVisualTheme.ColorGold;
@@ -110,14 +118,14 @@ namespace Game29
             card.EnsureComponents();
             card.SetEmptySlot();
 
-            // Label
+            // Seat label below the slot
             GameObject lblObj = new GameObject("SlotLabel");
             lblObj.transform.SetParent(slotObj.transform, false);
             RectTransform lrt = lblObj.AddComponent<RectTransform>();
             lrt.anchorMin = new Vector2(0.5f, 0.5f);
             lrt.anchorMax = new Vector2(0.5f, 0.5f);
             lrt.sizeDelta = new Vector2(w, 20);
-            lrt.anchoredPosition = new Vector2(0, -h * 0.5f - 14f);
+            lrt.anchoredPosition = new Vector2(0, -h * 0.5f - 15f);
 
             Text txt = lblObj.AddComponent<Text>();
             txt.font = CardVisualTheme.GetFont();
@@ -143,7 +151,6 @@ namespace Game29
                 return;
             }
 
-            // Keep track of which slots are played in this trick
             bool[] hasPlay = new bool[4];
             foreach (var play in trick.Plays)
             {
@@ -157,14 +164,14 @@ namespace Game29
 
                     if (wasEmpty)
                     {
+                        // Pop-in animation when card lands in trick area
                         slot.transform.DOKill();
-                        slot.transform.localScale = Vector3.one * 0.75f;
-                        slot.transform.DOScale(1f, 0.22f).SetEase(Ease.OutBack).SetLink(slot.gameObject);
+                        slot.transform.localScale = Vector3.one * 0.6f;
+                        slot.transform.DOScale(1f, 0.24f).SetEase(Ease.OutBack).SetLink(slot.gameObject);
                     }
                 }
             }
 
-            // Clear any unplayed slots
             for (int i = 0; i < 4; i++)
             {
                 if (!hasPlay[i])
@@ -182,16 +189,16 @@ namespace Game29
                 _                => winner.ToString()
             };
 
-            // Glow and punch winning card
+            // Glow and punch the winning slot
             CardUI winningSlot = GetSlotForSeat(winner);
             if (winningSlot != null)
             {
                 winningSlot.SetGlow(true, CardVisualTheme.ColorGold);
                 winningSlot.transform.DOKill();
-                winningSlot.transform.DOPunchScale(Vector3.one * 0.22f, 0.35f, 6, 1);
+                winningSlot.transform.DOPunchScale(Vector3.one * 0.25f, 0.35f, 6, 1).SetLink(winningSlot.gameObject);
             }
 
-            // Animate banner pop-in
+            // Banner pop-in
             if (bannerObj != null && bannerText != null)
             {
                 bannerText.text = $"★ Trick won by {winnerName} (+{points} pts)";
@@ -199,34 +206,78 @@ namespace Game29
                 bannerObj.transform.DOKill();
                 bannerObj.transform.localScale = Vector3.one * 0.65f;
                 bannerObj.transform.DOScale(1f, 0.25f).SetEase(Ease.OutBack).SetLink(bannerObj);
-
-                if (_bannerCoroutine != null) StopCoroutine(_bannerCoroutine);
-                _bannerCoroutine = StartCoroutine(HideBannerRoutine(1.6f));
             }
+
+            if (_bannerCoroutine != null) StopCoroutine(_bannerCoroutine);
+            _bannerCoroutine = StartCoroutine(SweepAndClearRoutine(winner));
         }
 
-        private System.Collections.IEnumerator HideBannerRoutine(float duration)
+        /// <summary>
+        /// Shows winner banner briefly, then animates all 4 trick cards sweeping
+        /// toward the winner's seat direction, then clears the table.
+        /// </summary>
+        private System.Collections.IEnumerator SweepAndClearRoutine(PlayerSeat winner)
         {
-            yield return new WaitForSeconds(duration);
+            // Wait for punch animation and banner to display
+            yield return new WaitForSeconds(0.85f);
+
+            // Sweep direction: all cards fly toward the winner's side of the screen
+            Vector2 sweepTarget = winner switch
+            {
+                PlayerSeat.South => new Vector2(0,     -500f),
+                PlayerSeat.North => new Vector2(0,      500f),
+                PlayerSeat.West  => new Vector2(-600f,  0),
+                PlayerSeat.East  => new Vector2( 600f,  0),
+                _                => Vector2.zero
+            };
+
+            float sweepDuration = 0.38f;
+            bool anyCard = false;
+
+            CardUI[] slots = { southSlot, northSlot, westSlot, eastSlot };
+            foreach (CardUI slot in slots)
+            {
+                if (slot != null && slot.CurrentCard != null)
+                {
+                    anyCard = true;
+                    slot.AnimateSweepTo(sweepTarget, sweepDuration);
+                }
+            }
+
+            if (anyCard)
+                yield return new WaitForSeconds(sweepDuration + 0.08f);
+
+            // Dismiss banner
             if (bannerObj != null && bannerObj.activeInHierarchy)
             {
                 bannerObj.transform.DOKill();
-                bannerObj.transform.DOScale(0.7f, 0.18f).SetEase(Ease.InQuad).SetLink(bannerObj).OnComplete(() =>
+                bannerObj.transform.DOScale(0.65f, 0.16f).SetEase(Ease.InQuad).SetLink(bannerObj).OnComplete(() =>
                 {
-                    if (bannerObj != null)
-                        bannerObj.SetActive(false);
+                    if (bannerObj != null) bannerObj.SetActive(false);
                 });
             }
+
+            // Reset all slots to empty at their base positions
+            ClearSlot(southSlot, PlayerSeat.South);
+            ClearSlot(northSlot, PlayerSeat.North);
+            ClearSlot(westSlot,  PlayerSeat.West);
+            ClearSlot(eastSlot,  PlayerSeat.East);
+
             _bannerCoroutine = null;
         }
 
         public void ClearAll()
         {
             EnsureComponents();
+            if (_bannerCoroutine != null)
+            {
+                StopCoroutine(_bannerCoroutine);
+                _bannerCoroutine = null;
+            }
             ClearSlot(southSlot, PlayerSeat.South);
             ClearSlot(northSlot, PlayerSeat.North);
-            ClearSlot(westSlot, PlayerSeat.West);
-            ClearSlot(eastSlot, PlayerSeat.East);
+            ClearSlot(westSlot,  PlayerSeat.West);
+            ClearSlot(eastSlot,  PlayerSeat.East);
             if (bannerObj != null) bannerObj.SetActive(false);
         }
 

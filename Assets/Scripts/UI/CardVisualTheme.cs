@@ -30,6 +30,7 @@ namespace Game29
 
         // ── Textures & Sprites ───────────────────────────────────────────────────
         private static Sprite _tableFeltSprite;
+        private static Sprite _boardSprite;
         private static Sprite _cardFrontSprite;
         private static Sprite _cardBackSprite;
         private static Sprite[] _suitSprites; // [Heart, Diamond, Club, Spade]
@@ -37,15 +38,20 @@ namespace Game29
         private static Sprite _roundedCardSlotSprite;
         private static Sprite _pillBadgeSprite;
         private static Sprite _circleAvatarSprite;
+        private static Sprite _vectorAvatarSprite;
         private static Font   _defaultFont;
 
-        public static Sprite TableFelt => _tableFeltSprite ??= LoadOrGenerateFelt();
-        public static Sprite CardFront => _cardFrontSprite ??= LoadOrGenerateCardFront();
-        public static Sprite CardBack  => _cardBackSprite  ??= LoadOrGenerateCardBack();
-        public static Sprite RoundedPanel => _roundedPanelSprite ??= CreateRoundedRectSprite(128, 128, 20, ColorPanelDark, ColorBorderGold, 3);
+        public static Sprite TableFelt       => _tableFeltSprite ??= LoadOrGenerateFelt();
+        public static Sprite BoardBackground => _boardSprite     ??= LoadBoardSprite();
+        public static Sprite CardFront       => _cardFrontSprite ??= LoadOrGenerateCardFront();
+        public static Sprite CardBack        => _cardBackSprite  ??= LoadOrGenerateCardBack();
+        public static Sprite RoundedPanel    => _roundedPanelSprite ??= CreateRoundedRectSprite(128, 128, 20, ColorPanelDark, ColorBorderGold, 3);
         public static Sprite RoundedCardSlot => _roundedCardSlotSprite ??= CreateRoundedRectSprite(128, 192, 16, new Color(0.03f, 0.14f, 0.08f, 0.65f), new Color(0.85f, 0.70f, 0.28f, 0.4f), 2);
-        public static Sprite PillBadge => _pillBadgeSprite ??= CreateRoundedRectSprite(96, 40, 20, Color.white, Color.clear, 0);
-        public static Sprite CircleAvatar => _circleAvatarSprite ??= CreateCircleSprite(128, ColorPanelHeader, ColorBorderGold, 4);
+        public static Sprite PillBadge       => _pillBadgeSprite ??= CreateRoundedRectSprite(96, 40, 20, Color.white, Color.clear, 0);
+        public static Sprite CircleAvatar    => _circleAvatarSprite ??= CreateCircleSprite(128, ColorPanelHeader, ColorBorderGold, 4);
+
+        /// <summary>Loads Vector.png from Resources as the player avatar. Falls back to CircleAvatar if not found.</summary>
+        public static Sprite VectorAvatar => _vectorAvatarSprite ??= LoadVectorAvatar();
 
         public static Font GetFont()
         {
@@ -189,6 +195,31 @@ namespace Game29
                 return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
 
             return CreateRoundedRectSprite(180, 260, 20, new Color(0.10f, 0.15f, 0.28f), ColorBorderGold, 4);
+        }
+
+        private static Sprite LoadVectorAvatar()
+        {
+            // Try loading as Sprite first (if import type is Sprite)
+            Sprite s = Resources.Load<Sprite>("Vector");
+            if (s != null) return s;
+
+            // Fallback: load as Texture2D and wrap into a sprite
+            Texture2D tex = Resources.Load<Texture2D>("Vector");
+            if (tex != null)
+                return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+
+            // Last resort: fall back to the procedural circle
+            return CircleAvatar;
+        }
+
+        private static Sprite LoadBoardSprite()
+        {
+            Sprite s = Resources.Load<Sprite>("board");
+            if (s != null) return s;
+            Texture2D tex = Resources.Load<Texture2D>("board");
+            if (tex != null)
+                return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+            return TableFelt;
         }
 
         private static void EnsureSuitSprites()

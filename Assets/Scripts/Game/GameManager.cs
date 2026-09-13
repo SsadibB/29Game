@@ -33,23 +33,23 @@ namespace Game29
         // SUB-MANAGERS
         // ════════════════════════════════════════════════════════════════════════
 
-        private readonly Deck           _deck           = new Deck();
-        private readonly BiddingManager _biddingMgr     = new BiddingManager();
-        private readonly TrumpManager   _trumpMgr       = new TrumpManager();
-        private readonly ScoreManager   _scoreMgr       = new ScoreManager();
-        private TrickManager            _trickMgr;          // created after trump is ready
+        private readonly Deck _deck = new Deck();
+        private readonly BiddingManager _biddingMgr = new BiddingManager();
+        private readonly TrumpManager _trumpMgr = new TrumpManager();
+        private readonly ScoreManager _scoreMgr = new ScoreManager();
+        private TrickManager _trickMgr;          // created after trump is ready
 
         // Public read access for UI
         public BiddingManager BiddingManager => _biddingMgr;
-        public TrumpManager   TrumpManager   => _trumpMgr;
-        public ScoreManager   ScoreManager   => _scoreMgr;
-        public TrickManager   TrickManager   => _trickMgr;
+        public TrumpManager TrumpManager => _trumpMgr;
+        public ScoreManager ScoreManager => _scoreMgr;
+        public TrickManager TrickManager => _trickMgr;
 
         // ════════════════════════════════════════════════════════════════════════
         // PLAYER DATA
         // ════════════════════════════════════════════════════════════════════════
 
-        private readonly Hand[]     _hands     = new Hand[4];
+        private readonly Hand[] _hands = new Hand[4];
         private readonly AIPlayer[] _aiPlayers = new AIPlayer[3]; // West, North, East
 
         public const PlayerSeat HumanSeat = PlayerSeat.South;
@@ -61,23 +61,23 @@ namespace Game29
         // GAME STATE
         // ════════════════════════════════════════════════════════════════════════
 
-        public GamePhase   CurrentPhase   { get; private set; } = GamePhase.WaitingToStart;
-        public PlayerSeat  Dealer         { get; private set; } = PlayerSeat.West;
-        public PlayerSeat  CurrentPlayer  { get; private set; }
+        public GamePhase CurrentPhase { get; private set; } = GamePhase.WaitingToStart;
+        public PlayerSeat Dealer { get; private set; } = PlayerSeat.West;
+        public PlayerSeat CurrentPlayer { get; private set; }
 
         // ════════════════════════════════════════════════════════════════════════
         // PACING & COROUTINES
         // ════════════════════════════════════════════════════════════════════════
 
         [Header("Pacing & Delays")]
-        [SerializeField] private bool  enablePacing     = true;
-        [SerializeField] private float aiBidDelay       = 0.6f;
-        [SerializeField] private float aiPlayDelay      = 0.6f;
-        [SerializeField] private float trickClearDelay  = 1.2f;
+        [SerializeField] private bool enablePacing = true;
+        [SerializeField] private float aiBidDelay = 0.6f;
+        [SerializeField] private float aiPlayDelay = 0.6f;
+        [SerializeField] private float trickClearDelay = 1.2f;
 
-        public bool  EnablePacing    { get => enablePacing; set => enablePacing = value; }
-        public float AIBidDelay      => aiBidDelay;
-        public float AIPlayDelay     => aiPlayDelay;
+        public bool EnablePacing { get => enablePacing; set => enablePacing = value; }
+        public float AIBidDelay => aiBidDelay;
+        public float AIPlayDelay => aiPlayDelay;
         public float TrickClearDelay => trickClearDelay;
 
         private Coroutine _aiBiddingRoutine;
@@ -155,12 +155,12 @@ namespace Game29
 
             // Wire sub-manager events.
             _biddingMgr.OnBiddingComplete += HandleBiddingComplete;
-            _trickMgr.OnCardPlayed        += HandleCardPlayed;
-            _trickMgr.OnTrickWon          += HandleTrickWon;
-            _trickMgr.OnRoundComplete     += HandleRoundComplete;
-            _trumpMgr.OnTrumpRevealed     += t => { OnTrumpRevealed?.Invoke(t); NotifyStateChanged(); };
-            _scoreMgr.OnRoundScored       += HandleRoundScored;
-            _scoreMgr.OnGameOver          += HandleGameOver;
+            _trickMgr.OnCardPlayed += HandleCardPlayed;
+            _trickMgr.OnTrickWon += HandleTrickWon;
+            _trickMgr.OnRoundComplete += HandleRoundComplete;
+            _trumpMgr.OnTrumpRevealed += t => { OnTrumpRevealed?.Invoke(t); NotifyStateChanged(); };
+            _scoreMgr.OnRoundScored += HandleRoundScored;
+            _scoreMgr.OnGameOver += HandleGameOver;
         }
 
         // ════════════════════════════════════════════════════════════════════════
@@ -253,18 +253,18 @@ namespace Game29
         // PUBLIC QUERY API  (for UI read-only access)
         // ════════════════════════════════════════════════════════════════════════
 
-        public Hand       GetHand(PlayerSeat seat)       => _hands[(int)seat];
-        public int[]      GetGamePoints()                 => _scoreMgr.GamePoints;
-        public int[]      GetRoundPoints()                => _trickMgr?.GetTeamPoints() ?? new int[2];
-        public Trick      GetCurrentTrick()               => _trickMgr?.CurrentTrick;
-        public Trick      LastCompletedTrick              => _trickMgr?.LastCompletedTrick;
-        public int        GetCurrentBid()                 => _biddingMgr.CurrentHighBid;
-        public PlayerSeat GetCurrentHighBidder()          => _biddingMgr.CurrentHighBidder;
-        public int        GetFinalBid()                   => _scoreMgr.CurrentBid;
-        public PlayerSeat GetBidWinner()                  => _scoreMgr.BidWinner;
-        public Suit?      GetTrumpForHuman()              => _trumpMgr.GetVisibleTrump(HumanSeat);
-        public bool       IsTrumpRevealed()               => _trumpMgr.TrumpRevealed;
-        public int        GetMinimumBid()                 => _biddingMgr.MinimumRaiseBid();
+        public Hand GetHand(PlayerSeat seat) => _hands[(int)seat];
+        public int[] GetGamePoints() => _scoreMgr.GamePoints;
+        public int[] GetRoundPoints() => _trickMgr?.GetTeamPoints() ?? new int[2];
+        public Trick GetCurrentTrick() => _trickMgr?.CurrentTrick;
+        public Trick LastCompletedTrick => _trickMgr?.LastCompletedTrick;
+        public int GetCurrentBid() => _biddingMgr.CurrentHighBid;
+        public PlayerSeat GetCurrentHighBidder() => _biddingMgr.CurrentHighBidder;
+        public int GetFinalBid() => _scoreMgr.CurrentBid;
+        public PlayerSeat GetBidWinner() => _scoreMgr.BidWinner;
+        public Suit? GetTrumpForHuman() => _trumpMgr.GetVisibleTrump(HumanSeat);
+        public bool IsTrumpRevealed() => _trumpMgr.TrumpRevealed;
+        public int GetMinimumBid() => _biddingMgr.MinimumRaiseBid();
 
         /// <summary>Returns the legal cards South can play right now (empty if not their turn).</summary>
         public List<Card> GetHumanValidPlays()
@@ -444,9 +444,8 @@ namespace Game29
             }
             else
             {
-                PlayerSeat partner     = GameRules.GetPartner(winner);
-                Hand       partnerHand = _hands[(int)partner];
-                _trumpMgr.SelectTrump(winner, partnerHand);
+                Hand winnerHand = _hands[(int)winner];
+                _trumpMgr.SelectTrump(winner, winnerHand);
                 Debug.Log($"[29] Bid won by {winner} at {bid}. Trump selected (hidden): {_trumpMgr.TrumpSuit}");
                 CompleteTrumpSelectionAndStartPlay();
             }
@@ -484,14 +483,24 @@ namespace Game29
 
         private void CompleteTrumpSelectionAndStartPlay()
         {
-            // Deal second batch of 4 cards to each player (total 8 cards)
-            DealSecondBatch();
-
-            // Begin play — bid winner leads the first trick.
             PlayerSeat winner = _scoreMgr.BidWinner;
+
+            // Transition phase to Playing before dealing second batch
+            // so queries for valid plays recognize the Playing phase immediately
             ChangePhase(GamePhase.Playing);
+
+            // Begin play — bid winner leads the first trick. This MUST happen before
+            // DealSecondBatch(): dealing fires OnHumanHandDealt, which the UI uses to
+            // render the newly dealt cards (with a fly-in animation that bakes in their
+            // "is this playable" state at creation time). If CurrentPlayer/CurrentTrick
+            // aren't set yet, GetHumanValidPlays() sees a stale player, the new cards get
+            // built as (incorrectly) unplayable, and no later correction can fix them
+            // because the deal animation already queued a fade using that stale value.
             _trickMgr.StartRound(winner);
             SetCurrentPlayer(winner);
+
+            // Deal second batch of 4 cards to each player (total 8 cards)
+            DealSecondBatch();
 
             if (CurrentPlayer != HumanSeat)
                 RunAIPlay();
@@ -527,8 +536,8 @@ namespace Game29
                     AIPlayer ai = GetAI(CurrentPlayer);
                     if (ai == null) break;
 
-                    PlayerSeat partner        = GameRules.GetPartner(CurrentPlayer);
-                    Suit?      visibleTrump   = _trumpMgr.GetVisibleTrump(CurrentPlayer);
+                    PlayerSeat partner = GameRules.GetPartner(CurrentPlayer);
+                    Suit? visibleTrump = _trumpMgr.GetVisibleTrump(CurrentPlayer);
 
                     Card card = ai.DecideCardToPlay(
                         _hands[(int)CurrentPlayer],
@@ -558,8 +567,8 @@ namespace Game29
                 AIPlayer ai = GetAI(CurrentPlayer);
                 if (ai == null) yield break;
 
-                PlayerSeat partner        = GameRules.GetPartner(CurrentPlayer);
-                Suit?      visibleTrump   = _trumpMgr.GetVisibleTrump(CurrentPlayer);
+                PlayerSeat partner = GameRules.GetPartner(CurrentPlayer);
+                Suit? visibleTrump = _trumpMgr.GetVisibleTrump(CurrentPlayer);
 
                 Card card = ai.DecideCardToPlay(
                     _hands[(int)CurrentPlayer],
@@ -641,10 +650,10 @@ namespace Game29
         {
             switch (seat)
             {
-                case PlayerSeat.West:  return _aiPlayers[0];
+                case PlayerSeat.West: return _aiPlayers[0];
                 case PlayerSeat.North: return _aiPlayers[1];
-                case PlayerSeat.East:  return _aiPlayers[2];
-                default:               return null; // South = human
+                case PlayerSeat.East: return _aiPlayers[2];
+                default: return null; // South = human
             }
         }
     }

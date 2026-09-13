@@ -25,25 +25,25 @@ namespace Game29
     public class DebugGameDisplay : MonoBehaviour
     {
         // ── Layout ───────────────────────────────────────────────────────────
-        private const float PanelX   = 10f;
-        private const float PanelY   = 10f;
+        private const float PanelX = 10f;
+        private const float PanelY = 10f;
         private const float CardBtnH = 34f;
 
         // ── Runtime ──────────────────────────────────────────────────────────
         private GameManager _gm;
-        private int         _bidSlider;
-        private string      _statusMsg   = "";
-        private GUIStyle    _headerStyle;
-        private GUIStyle    _cardStyle;
-        private GUIStyle    _dimCardStyle;
-        private GUIStyle    _labelStyle;
-        private GUIStyle    _statusStyle;
-        private bool        _stylesBuilt;
+        private int _bidSlider;
+        private string _statusMsg = "";
+        private GUIStyle _headerStyle;
+        private GUIStyle _cardStyle;
+        private GUIStyle _dimCardStyle;
+        private GUIStyle _labelStyle;
+        private GUIStyle _statusStyle;
+        private bool _stylesBuilt;
         [SerializeField] private bool showDebugOverlay = false;
         public bool ShowDebugOverlay { get => showDebugOverlay; set => showDebugOverlay = value; }
 
         // Texture used for the solid background panel
-        private Texture2D   _bgTex;
+        private Texture2D _bgTex;
 
         // ════════════════════════════════════════════════════════════════════════
         // UNITY
@@ -61,11 +61,11 @@ namespace Game29
             _bgTex.SetPixel(0, 0, new Color(0.06f, 0.07f, 0.10f, 0.93f));
             _bgTex.Apply();
 
-            _gm.OnTrickWon      += (s, p) => _statusMsg = $"✔  {s} wins trick  (+{p} pts)";
-            _gm.OnTrumpRevealed += s       => _statusMsg = $"★  Trump revealed: {s}!";
-            _gm.OnRoundScored   += won     => _statusMsg = won ? "Bidding team WON  ✔" : "Bidding team LOST  ✘";
-            _gm.OnGameOver      += team    => _statusMsg = $"GAME OVER — {GameRules.TeamName(team)} WINS!";
-            _gm.OnPhaseChanged  += _       => _bidSlider  = _gm.GetMinimumBid();
+            _gm.OnTrickWon += (s, p) => _statusMsg = $"✔  {s} wins trick  (+{p} pts)";
+            _gm.OnTrumpRevealed += s => _statusMsg = $"★  Trump revealed: {s}!";
+            _gm.OnRoundScored += won => _statusMsg = won ? "Bidding team WON  ✔" : "Bidding team LOST  ✘";
+            _gm.OnGameOver += team => _statusMsg = $"GAME OVER — {GameRules.TeamName(team)} WINS!";
+            _gm.OnPhaseChanged += _ => _bidSlider = _gm.GetMinimumBid();
         }
 
         private void OnGUI()
@@ -83,10 +83,10 @@ namespace Game29
 
             // Thin border
             GUI.color = new Color(0.3f, 0.6f, 1f, 0.6f);
-            GUI.DrawTexture(new Rect(PanelX,               PanelY,               panelW, 1), Texture2D.whiteTexture);
-            GUI.DrawTexture(new Rect(PanelX,               PanelY + panelH - 1,  panelW, 1), Texture2D.whiteTexture);
-            GUI.DrawTexture(new Rect(PanelX,               PanelY,               1, panelH), Texture2D.whiteTexture);
-            GUI.DrawTexture(new Rect(PanelX + panelW - 1,  PanelY,               1, panelH), Texture2D.whiteTexture);
+            GUI.DrawTexture(new Rect(PanelX, PanelY, panelW, 1), Texture2D.whiteTexture);
+            GUI.DrawTexture(new Rect(PanelX, PanelY + panelH - 1, panelW, 1), Texture2D.whiteTexture);
+            GUI.DrawTexture(new Rect(PanelX, PanelY, 1, panelH), Texture2D.whiteTexture);
+            GUI.DrawTexture(new Rect(PanelX + panelW - 1, PanelY, 1, panelH), Texture2D.whiteTexture);
             GUI.color = Color.white;
 
             // ── Content area ──────────────────────────────────────────────
@@ -171,6 +171,10 @@ namespace Game29
                     DrawBiddingPanel(panelW);
                     break;
 
+                case GamePhase.TrumpSelection:
+                    DrawTrumpSelectionPanel();
+                    break;
+
                 case GamePhase.Playing:
                     if (_gm.CurrentPlayer == GameManager.HumanSeat)
                         GUILayout.Label("YOUR TURN — click a card below", _headerStyle);
@@ -223,6 +227,47 @@ namespace Game29
             GUILayout.EndHorizontal();
         }
 
+        private void DrawTrumpSelectionPanel()
+        {
+            GUILayout.Label("--- TRUMP SELECTION ---", _headerStyle);
+
+            PlayerSeat bidWinner = _gm.GetBidWinner();
+            if (bidWinner != GameManager.HumanSeat)
+            {
+                string name = bidWinner == PlayerSeat.North ? "Partner (North)" : bidWinner.ToString();
+                GUILayout.Label(name + " won the bid and is choosing trump...", _labelStyle);
+                return;
+            }
+
+            GUILayout.Label("YOU WON THE BID (" + _gm.GetCurrentBid() + ")! Choose trump:", _labelStyle);
+
+            Hand hand = _gm.HumanHand;
+            GUILayout.BeginHorizontal();
+            foreach (Suit suit in System.Enum.GetValues(typeof(Suit)))
+            {
+                int count = hand.GetCardsBySuit(suit).Count;
+                GUI.color = SuitColour(suit);
+                GUI.enabled = count > 0;
+                if (GUILayout.Button(SuitSymbol(suit) + " " + suit + "\n(" + count + " in hand)",
+                        GUILayout.Height(48)))
+                {
+                    _gm.SelectHumanTrump(suit);
+                }
+                GUI.enabled = true;
+                GUI.color = Color.white;
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.Space(6);
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("🎴 7TH CARD (blind mystery trump)", GUILayout.Height(34)))
+                _gm.SelectHumanSeventhCard();
+            GUILayout.Space(10);
+            if (GUILayout.Button("🃏 JOKER (no trump)", GUILayout.Height(34)))
+                _gm.SelectHumanJoker();
+            GUILayout.EndHorizontal();
+        }
+
         private void DrawRoundOverPanel()
         {
             int[] rp = _gm.GetRoundPoints();
@@ -254,13 +299,13 @@ namespace Game29
 
         private void DrawHand()
         {
-            if (_gm.CurrentPhase != GamePhase.Bidding  &&
-                _gm.CurrentPhase != GamePhase.Playing   &&
+            if (_gm.CurrentPhase != GamePhase.Bidding &&
+                _gm.CurrentPhase != GamePhase.Playing &&
                 _gm.CurrentPhase != GamePhase.TrumpSelection) return;
 
-            Hand       hand       = _gm.HumanHand;
+            Hand hand = _gm.HumanHand;
             List<Card> validPlays = _gm.GetHumanValidPlays();
-            bool       isMyTurn   = _gm.CurrentPhase == GamePhase.Playing
+            bool isMyTurn = _gm.CurrentPhase == GamePhase.Playing
                                     && _gm.CurrentPlayer == GameManager.HumanSeat;
 
             GUILayout.Label("--- YOUR HAND  (" + hand.Count + " cards, " + hand.TotalPoints() + " pts) ---", _labelStyle);
@@ -271,20 +316,20 @@ namespace Game29
                 GUILayout.BeginHorizontal();
                 for (int col = 0; col < 4; col++)
                 {
-                    int  idx     = row * 4 + col;
+                    int idx = row * 4 + col;
                     if (idx >= cards.Count) { GUILayout.Space(CardBtnH + 4); continue; }
 
-                    Card card    = cards[idx];
+                    Card card = cards[idx];
                     bool canPlay = isMyTurn && validPlays.Contains(card);
                     bool isLegal = validPlays.Contains(card);
 
                     Color bgCol = Color.white;
-                    if (isMyTurn && isLegal)   bgCol = new Color(0.15f, 0.75f, 0.25f);  // green — can play
-                    if (isMyTurn && !isLegal)  bgCol = new Color(0.25f, 0.25f, 0.25f);  // grey  — can't play
+                    if (isMyTurn && isLegal) bgCol = new Color(0.15f, 0.75f, 0.25f);  // green — can play
+                    if (isMyTurn && !isLegal) bgCol = new Color(0.25f, 0.25f, 0.25f);  // grey  — can't play
 
                     GUI.backgroundColor = bgCol;
-                    GUI.color           = SuitColour(card.Suit);
-                    GUI.enabled         = canPlay;
+                    GUI.color = SuitColour(card.Suit);
+                    GUI.enabled = canPlay;
 
                     if (GUILayout.Button(CardLabel(card), _cardStyle,
                             GUILayout.Width(CardBtnH * 2.4f), GUILayout.Height(CardBtnH)))
@@ -293,8 +338,8 @@ namespace Game29
                         _statusMsg = ok ? "You played " + card : "Cannot play that card!";
                     }
 
-                    GUI.enabled         = true;
-                    GUI.color           = Color.white;
+                    GUI.enabled = true;
+                    GUI.color = Color.white;
                     GUI.backgroundColor = Color.white;
                 }
                 GUILayout.EndHorizontal();
@@ -331,14 +376,14 @@ namespace Game29
             string rank;
             switch (c.Rank)
             {
-                case Rank.Jack:  rank = "J";  break;
-                case Rank.Queen: rank = "Q";  break;
-                case Rank.King:  rank = "K";  break;
-                case Rank.Ace:   rank = "A";  break;
-                case Rank.Ten:   rank = "10"; break;
-                case Rank.Nine:  rank = "9";  break;
-                case Rank.Eight: rank = "8";  break;
-                default:         rank = "7";  break;
+                case Rank.Jack: rank = "J"; break;
+                case Rank.Queen: rank = "Q"; break;
+                case Rank.King: rank = "K"; break;
+                case Rank.Ace: rank = "A"; break;
+                case Rank.Ten: rank = "10"; break;
+                case Rank.Nine: rank = "9"; break;
+                case Rank.Eight: rank = "8"; break;
+                default: rank = "7"; break;
             }
             string pts = c.PointValue > 0 ? "(" + c.PointValue + ")" : "";
             return rank + SuitSymbol(c.Suit) + pts;
@@ -353,10 +398,10 @@ namespace Game29
         {
             switch (s)
             {
-                case Suit.Hearts:   return "♥";
+                case Suit.Hearts: return "♥";
                 case Suit.Diamonds: return "♦";
-                case Suit.Clubs:    return "♣";
-                default:            return "♠";
+                case Suit.Clubs: return "♣";
+                default: return "♠";
             }
         }
 
@@ -367,7 +412,7 @@ namespace Game29
 
             _headerStyle = new GUIStyle(GUI.skin.box)
             {
-                fontSize  = 13,
+                fontSize = 13,
                 fontStyle = FontStyle.Bold,
                 alignment = TextAnchor.MiddleCenter
             };
@@ -375,7 +420,7 @@ namespace Game29
 
             _cardStyle = new GUIStyle(GUI.skin.button)
             {
-                fontSize  = 12,
+                fontSize = 12,
                 fontStyle = FontStyle.Bold
             };
 
@@ -387,7 +432,7 @@ namespace Game29
 
             _statusStyle = new GUIStyle(GUI.skin.box)
             {
-                fontSize  = 12,
+                fontSize = 12,
                 fontStyle = FontStyle.Bold,
                 alignment = TextAnchor.MiddleLeft
             };

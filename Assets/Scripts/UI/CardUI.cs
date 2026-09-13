@@ -15,29 +15,29 @@ namespace Game29
     {
         // ── Visual Components ───────────────────────────────────────────────────
         [Header("Card Visuals")]
-        [SerializeField] private Image       bgImage;
-        [SerializeField] private Image       glowOutline;
-        [SerializeField] private Text        rankTopLeft;
-        [SerializeField] private Text        suitTopLeft;
-        [SerializeField] private Text        centerSuitText;
-        [SerializeField] private Image       centerSuitImage;
-        [SerializeField] private Text        rankBottomRight;
-        [SerializeField] private Text        suitBottomRight;
-        [SerializeField] private GameObject  pointsBadgeObj;
-        [SerializeField] private Image       pointsBadgeBg;
-        [SerializeField] private Text        pointsBadgeText;
-        [SerializeField] private Button      button;
+        [SerializeField] private Image bgImage;
+        [SerializeField] private Image glowOutline;
+        [SerializeField] private Text rankTopLeft;
+        [SerializeField] private Text suitTopLeft;
+        [SerializeField] private Text centerSuitText;
+        [SerializeField] private Image centerSuitImage;
+        [SerializeField] private Text rankBottomRight;
+        [SerializeField] private Text suitBottomRight;
+        [SerializeField] private GameObject pointsBadgeObj;
+        [SerializeField] private Image pointsBadgeBg;
+        [SerializeField] private Text pointsBadgeText;
+        [SerializeField] private Button button;
         [SerializeField] private CanvasGroup canvasGroup;
         [SerializeField] private RectTransform rectTransform;
 
         // ── State ───────────────────────────────────────────────────────────────
-        public Card   CurrentCard { get; private set; }
-        public bool   IsPlayable  { get; private set; }
-        public bool   IsFaceUp    { get; private set; }
+        public Card CurrentCard { get; private set; }
+        public bool IsPlayable { get; private set; }
+        public bool IsFaceUp { get; private set; }
 
         private Action<Card> _onClickCallback;
-        private Vector2      _basePosition;
-        private bool         _isHovered;
+        private Vector2 _basePosition;
+        private bool _isHovered;
 
         private void Awake()
         {
@@ -49,7 +49,7 @@ namespace Game29
             // Kill all running tweens on this object to prevent MissingReferenceException
             transform.DOKill();
             if (rectTransform != null) rectTransform.DOKill();
-            if (canvasGroup   != null) canvasGroup.DOKill();
+            if (canvasGroup != null) canvasGroup.DOKill();
         }
 
         /// <summary>Ensures all required uGUI components exist on this GameObject.</summary>
@@ -115,7 +115,7 @@ namespace Game29
                 RectTransform rt = pointsBadgeObj.AddComponent<RectTransform>();
                 rt.anchorMin = new Vector2(1, 1);
                 rt.anchorMax = new Vector2(1, 1);
-                rt.pivot     = new Vector2(1, 1);
+                rt.pivot = new Vector2(1, 1);
                 rt.anchoredPosition = new Vector2(-6, -6);
                 rt.sizeDelta = new Vector2(46, 22);
 
@@ -143,19 +143,19 @@ namespace Game29
         {
             EnsureComponents();
             CurrentCard = card;
-            IsPlayable  = isPlayable;
-            IsFaceUp    = true;
+            IsPlayable = isPlayable;
+            IsFaceUp = true;
             _onClickCallback = onClick;
 
             gameObject.SetActive(true);
             bgImage.sprite = CardVisualTheme.CardFront;
-            bgImage.color  = Color.white;
+            bgImage.color = Color.white;
             bgImage.raycastTarget = true;
 
             Color suitColor = CardVisualTheme.GetSuitColor(card.Suit);
-            string suitSym  = CardVisualTheme.GetSuitSymbol(card.Suit);
-            string rankStr  = CardVisualTheme.GetRankString(card.Rank);
-            int pts         = CardVisualTheme.GetPoints(card.Rank);
+            string suitSym = CardVisualTheme.GetSuitSymbol(card.Suit);
+            string rankStr = CardVisualTheme.GetRankString(card.Rank);
+            int pts = CardVisualTheme.GetPoints(card.Rank);
 
             // Labels
             rankTopLeft.text = rankStr;
@@ -199,13 +199,13 @@ namespace Game29
         {
             EnsureComponents();
             CurrentCard = null;
-            IsPlayable  = false;
-            IsFaceUp    = false;
+            IsPlayable = false;
+            IsFaceUp = false;
             _onClickCallback = null;
 
             gameObject.SetActive(true);
             bgImage.sprite = CardVisualTheme.CardBack;
-            bgImage.color  = Color.white;
+            bgImage.color = Color.white;
             bgImage.raycastTarget = false;
 
             rankTopLeft.gameObject.SetActive(false);
@@ -225,12 +225,12 @@ namespace Game29
         {
             EnsureComponents();
             CurrentCard = null;
-            IsPlayable  = false;
-            IsFaceUp    = false;
+            IsPlayable = false;
+            IsFaceUp = false;
             _onClickCallback = null;
 
             bgImage.sprite = CardVisualTheme.RoundedCardSlot;
-            bgImage.color  = new Color(1f, 1f, 1f, 0.45f);
+            bgImage.color = new Color(1f, 1f, 1f, 0.45f);
             bgImage.raycastTarget = false;
 
             rankTopLeft.gameObject.SetActive(false);
@@ -248,13 +248,15 @@ namespace Game29
         public void SetPlayable(bool playable)
         {
             IsPlayable = playable;
-            if (button != null) button.interactable = playable && _onClickCallback != null;
+            if (button != null) button.interactable = _onClickCallback != null;
 
+            // No hint dimming — all cards stay fully opaque regardless of playability.
             if (canvasGroup != null)
-                canvasGroup.alpha = playable ? 1.0f : 0.55f;
+                canvasGroup.alpha = 1.0f;
 
+            // Glow outline is hidden by default
             if (glowOutline != null)
-                glowOutline.gameObject.SetActive(playable);
+                glowOutline.gameObject.SetActive(false);
         }
 
         public void SetGlow(bool glow, Color color)
@@ -272,6 +274,21 @@ namespace Game29
             if (rectTransform != null) rectTransform.anchoredPosition = pos;
         }
 
+        /// <summary>Shakes the card horizontally when an invalid play is attempted.</summary>
+        public void Shake()
+        {
+            if (rectTransform != null)
+            {
+                rectTransform.DOKill();
+                rectTransform.anchoredPosition = _basePosition;
+                rectTransform.DOShakePosition(0.28f, new Vector3(16f, 0f, 0f), 10, 90, false, true).SetLink(gameObject)
+                    .OnComplete(() =>
+                    {
+                        if (rectTransform != null) rectTransform.anchoredPosition = _basePosition;
+                    });
+            }
+        }
+
         // ── DOTween Animations ───────────────────────────────────────────────────
 
         /// <summary>Animates a dealt card flying into the hand with smooth scale and fade.</summary>
@@ -287,8 +304,12 @@ namespace Game29
             Sequence seq = DOTween.Sequence();
             seq.SetDelay(delay);
             seq.SetLink(gameObject);  // auto-kill when this GameObject is destroyed
+            // Match SetPlayable()'s "no hint dimming" design — always fade to fully
+            // opaque. (Previously faded to 0.55 when IsPlayable was false at the moment
+            // this animation was queued, which could get baked-in as stale and never
+            // corrected even after a later SetPlayable(true) call.)
             if (canvasGroup != null)
-                seq.Append(canvasGroup.DOFade(IsPlayable ? 1f : 0.55f, 0.1f));
+                seq.Append(canvasGroup.DOFade(1f, 0.1f));
             seq.Join(rectTransform.DOAnchorPos(endPos, duration).SetEase(Ease.OutCubic));
             seq.Join(rectTransform.DOScale(1f, duration).SetEase(Ease.OutBack));
             if (onComplete != null)
@@ -339,11 +360,11 @@ namespace Game29
 
         private void HandleClick()
         {
-            if (!IsPlayable || CurrentCard == null) return;
+            if (CurrentCard == null) return;
 
-            Card cardToPlay = CurrentCard; // capture before DOTween async
+            Card cardToPlay = CurrentCard;
             transform.DOKill();
-            transform.DOPunchScale(Vector3.one * 0.15f, 0.15f, 8, 1).SetLink(gameObject).OnComplete(() =>
+            transform.DOPunchScale(Vector3.one * 0.12f, 0.12f, 8, 1).SetLink(gameObject).OnComplete(() =>
             {
                 if (this != null && gameObject != null)
                     _onClickCallback?.Invoke(cardToPlay);
@@ -352,13 +373,13 @@ namespace Game29
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (!IsPlayable) return;
+            if (_onClickCallback == null) return;
             _isHovered = true;
             if (rectTransform != null)
             {
                 rectTransform.DOKill();
-                rectTransform.DOAnchorPosY(_basePosition.y + 22f, 0.14f).SetEase(Ease.OutQuad);
-                rectTransform.DOScale(1.06f, 0.14f).SetEase(Ease.OutQuad);
+                rectTransform.DOAnchorPosY(_basePosition.y + 22f, 0.12f).SetEase(Ease.OutQuad);
+                rectTransform.DOScale(1.05f, 0.12f).SetEase(Ease.OutQuad);
             }
         }
 
@@ -369,8 +390,8 @@ namespace Game29
             if (rectTransform != null)
             {
                 rectTransform.DOKill();
-                rectTransform.DOAnchorPosY(_basePosition.y, 0.14f).SetEase(Ease.OutQuad);
-                rectTransform.DOScale(1.0f, 0.14f).SetEase(Ease.OutQuad);
+                rectTransform.DOAnchorPosY(_basePosition.y, 0.12f).SetEase(Ease.OutQuad);
+                rectTransform.DOScale(1.0f, 0.12f).SetEase(Ease.OutQuad);
             }
         }
 
@@ -397,7 +418,7 @@ namespace Game29
             RectTransform rt = go.AddComponent<RectTransform>();
             rt.anchorMin = anchorMin;
             rt.anchorMax = anchorMax;
-            rt.pivot     = anchorMin;
+            rt.pivot = anchorMin;
             rt.anchoredPosition = pos;
             if (size != Vector2.zero) rt.sizeDelta = size;
 
