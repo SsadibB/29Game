@@ -9,6 +9,7 @@ namespace Game29
     /// Tracks team game-points (first to 6), round card-points, active bid,
     /// trump suit indicator, and interactive "Reveal Trump" button.
     /// </summary>
+    [ExecuteAlways]
     public class ScoreHUDUI : MonoBehaviour
     {
         [Header("Team 0 (South + North)")]
@@ -20,14 +21,14 @@ namespace Game29
         [SerializeField] private Text team1RoundPointsText;
 
         [Header("Center Trump & Bid")]
-        [SerializeField] private Text   bidInfoText;
-        [SerializeField] private Text   trumpInfoText;
+        [SerializeField] private Text bidInfoText;
+        [SerializeField] private Text trumpInfoText;
         [SerializeField] private Button revealTrumpBtn;
-        [SerializeField] private Text   trickProgressText;
+        [SerializeField] private Text trickProgressText;
 
         [Header("Status Banner")]
         [SerializeField] private GameObject statusBannerObj;
-        [SerializeField] private Text       statusBannerText;
+        [SerializeField] private Text statusBannerText;
 
         private void Awake()
         {
@@ -46,12 +47,27 @@ namespace Game29
         public void EnsureComponents()
         {
             RectTransform rt = GetComponent<RectTransform>();
-            if (rt == null) rt = gameObject.AddComponent<RectTransform>();
-            rt.anchorMin = new Vector2(0, 1);
-            rt.anchorMax = new Vector2(1, 1);
-            rt.pivot     = new Vector2(0.5f, 1);
-            rt.anchoredPosition = Vector2.zero;
-            rt.sizeDelta = new Vector2(0, 140);
+            bool isNewRect = rt == null;
+            if (isNewRect) rt = gameObject.AddComponent<RectTransform>();
+
+            // Only apply the default full-width top-bar layout the first time
+            // this RectTransform is created. This method runs on every Awake()
+            // AND on every UpdateHUD() call, so if we always forced these
+            // values here, any anchor/position/size you set by hand in the
+            // Inspector or Scene view would get stomped the moment you hit
+            // Play (and again on every HUD refresh afterwards).
+            // Default layout: fixed-size box anchored to top-center (not the old
+            // full-width stretch), matching the position/size you set by hand
+            // in the Inspector — anchor/pivot (0.5,1), pos (358,-172), size
+            // 384.58x140.
+            if (isNewRect)
+            {
+                rt.anchorMin = new Vector2(0.5f, 1f);
+                rt.anchorMax = new Vector2(0.5f, 1f);
+                rt.pivot = new Vector2(0.5f, 1f);
+                rt.anchoredPosition = new Vector2(358f, -172f);
+                rt.sizeDelta = new Vector2(384.58f, 140f);
+            }
 
             // Background top bar
             Image barBg = gameObject.GetComponent<Image>();
@@ -65,7 +81,7 @@ namespace Game29
             if (team0GamePointsText == null)
             {
                 GameObject box0 = CreateScoreBox("Team0Box", new Vector2(170, -65), new Vector2(240, 105), "YOU & PARTNER", CardVisualTheme.ColorCyan);
-                team0GamePointsText  = box0.transform.Find("GamePts").GetComponent<Text>();
+                team0GamePointsText = box0.transform.Find("GamePts").GetComponent<Text>();
                 team0RoundPointsText = box0.transform.Find("RoundPts").GetComponent<Text>();
             }
 
@@ -73,7 +89,7 @@ namespace Game29
             if (team1GamePointsText == null)
             {
                 GameObject box1 = CreateScoreBox("Team1Box", new Vector2(-170, -65), new Vector2(240, 105), "OPPONENTS", new Color(0.95f, 0.55f, 0.35f), true);
-                team1GamePointsText  = box1.transform.Find("GamePts").GetComponent<Text>();
+                team1GamePointsText = box1.transform.Find("GamePts").GetComponent<Text>();
                 team1RoundPointsText = box1.transform.Find("RoundPts").GetComponent<Text>();
             }
 
@@ -85,7 +101,7 @@ namespace Game29
                 RectTransform crt = centerBox.AddComponent<RectTransform>();
                 crt.anchorMin = new Vector2(0.5f, 1f);
                 crt.anchorMax = new Vector2(0.5f, 1f);
-                crt.pivot     = new Vector2(0.5f, 1f);
+                crt.pivot = new Vector2(0.5f, 1f);
                 crt.anchoredPosition = new Vector2(0, -10);
                 crt.sizeDelta = new Vector2(400, 120);
 
@@ -122,7 +138,7 @@ namespace Game29
                 RectTransform srt = statusBannerObj.AddComponent<RectTransform>();
                 srt.anchorMin = new Vector2(0.5f, 0);
                 srt.anchorMax = new Vector2(0.5f, 0);
-                srt.pivot     = new Vector2(0.5f, 1);
+                srt.pivot = new Vector2(0.5f, 1);
                 srt.anchoredPosition = new Vector2(0, -12);
                 srt.sizeDelta = new Vector2(620, 38);
 
@@ -144,16 +160,24 @@ namespace Game29
             int[] roundPts = gm.GetRoundPoints();
 
             if (team0GamePointsText != null)
-                team0GamePointsText.text = $"{gamePts[0]} / 6";
+            {
+                int g = gamePts[0];
+                string sign = g > 0 ? $"+{g}" : g.ToString();
+                team0GamePointsText.text = $"{sign} / 6";
+            }
 
             if (team0RoundPointsText != null)
-                team0RoundPointsText.text = $"{roundPts[0]} pts";
+                team0RoundPointsText.text = $"Team: <b>{roundPts[0]}</b>";
 
             if (team1GamePointsText != null)
-                team1GamePointsText.text = $"{gamePts[1]} / 6";
+            {
+                int g = gamePts[1];
+                string sign = g > 0 ? $"+{g}" : g.ToString();
+                team1GamePointsText.text = $"{sign} / 6";
+            }
 
             if (team1RoundPointsText != null)
-                team1RoundPointsText.text = $"{roundPts[1]} pts";
+                team1RoundPointsText.text = $"Opponent: <b>{roundPts[1]}</b>";
 
             // Bid
             int currentBid = gm.GetCurrentBid();
@@ -176,12 +200,9 @@ namespace Game29
             {
                 bool canReveal = gm.CanHumanRevealTrump();
                 revealTrumpBtn.gameObject.SetActive(canReveal);
-                RectTransform rrt = revealTrumpBtn.GetComponent<RectTransform>();
-                if (rrt != null)
-                {
-                    rrt.anchoredPosition = new Vector2(0, -58);
-                    rrt.sizeDelta = new Vector2(180, 32);
-                }
+                // Position/size are set once in EnsureComponents() at creation
+                // time — re-applying them here on every HUD update would
+                // stomp any manual repositioning of this button.
             }
 
             if (tm != null && tm.IsJoker)
@@ -243,7 +264,7 @@ namespace Game29
             RectTransform rt = box.AddComponent<RectTransform>();
             rt.anchorMin = rightAlign ? new Vector2(1, 1) : new Vector2(0, 1);
             rt.anchorMax = rightAlign ? new Vector2(1, 1) : new Vector2(0, 1);
-            rt.pivot     = rightAlign ? new Vector2(1, 1) : new Vector2(0, 1);
+            rt.pivot = rightAlign ? new Vector2(1, 1) : new Vector2(0, 1);
             rt.anchoredPosition = pos;
             rt.sizeDelta = size;
 
@@ -271,7 +292,7 @@ namespace Game29
             RectTransform rt = obj.AddComponent<RectTransform>();
             rt.anchorMin = new Vector2(0.5f, 1f);
             rt.anchorMax = new Vector2(0.5f, 1f);
-            rt.pivot     = new Vector2(0.5f, 1f);
+            rt.pivot = new Vector2(0.5f, 1f);
             rt.anchoredPosition = pos;
             rt.sizeDelta = new Vector2(380, 26);
 

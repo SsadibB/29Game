@@ -311,9 +311,10 @@ namespace Game29
             _aiBiddingRoutine = null;
             _aiPlayRoutine = null;
 
-            // Clear hands.
+            // Clear hands and reset round/trick points.
             for (int i = 0; i < 4; i++) _hands[i].Clear();
             _trumpMgr.Reset();
+            _trickMgr.ResetPoints();
 
             // Advance dealer clockwise.
             Dealer = GameRules.NextPlayer(Dealer);

@@ -47,12 +47,20 @@ namespace Game29
 
         // ── API ─────────────────────────────────────────────────────────────────
 
+        /// <summary>Resets accumulated card points to 0–0 at the start of a new board/deal.</summary>
+        public void ResetPoints()
+        {
+            _teamPoints      = new int[2];
+            _tricksCompleted = 0;
+            _tricksTaken     = new int[4];
+            _currentTrick    = null;
+            LastCompletedTrick = null;
+        }
+
         /// <summary>Resets state and starts the first trick led by <paramref name="firstLeader"/>.</summary>
         public void StartRound(PlayerSeat firstLeader)
         {
-            _tricksCompleted = 0;
-            _teamPoints      = new int[2];
-            _tricksTaken     = new int[4];
+            ResetPoints();
             BeginTrick(firstLeader);
         }
 

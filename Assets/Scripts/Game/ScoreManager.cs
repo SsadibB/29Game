@@ -54,16 +54,15 @@ namespace Game29
             else
                 GamePoints[BiddingTeam]--;
 
+            GamePoints[BiddingTeam] = Math.Max(-GameRules.GamePointsToWin, Math.Min(GameRules.GamePointsToWin, GamePoints[BiddingTeam]));
+
             OnRoundScored?.Invoke(BiddingTeam, CurrentBid, biddingTeamWon);
 
-            // Check for game-over.
-            for (int t = 0; t < 2; t++)
+            // Check for game-over (+6 wins, -6 loses to opposing team).
+            int winningTeam = GetWinningTeam();
+            if (winningTeam >= 0)
             {
-                if (GamePoints[t] >= GameRules.GamePointsToWin)
-                {
-                    OnGameOver?.Invoke(t);
-                    return;
-                }
+                OnGameOver?.Invoke(winningTeam);
             }
         }
 
@@ -79,7 +78,10 @@ namespace Game29
         public int GetWinningTeam()
         {
             for (int t = 0; t < 2; t++)
+            {
                 if (GamePoints[t] >= GameRules.GamePointsToWin) return t;
+                if (GamePoints[t] <= -GameRules.GamePointsToWin) return 1 - t;
+            }
             return -1;
         }
 

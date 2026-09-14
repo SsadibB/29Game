@@ -41,6 +41,10 @@ namespace Game29
         [SerializeField] private TrumpSelectionModalUI trumpSelectionModal;
         [SerializeField] private TrumpCardSlotUI trumpCardSlot;
 
+        [Header("Point Card System (-6 to +6)")]
+        [SerializeField] private PointCardSlotUI yourTeamPointCard;
+        [SerializeField] private PointCardSlotUI opponentPointCard;
+
         private GameManager _gm;
         private bool _isInitialized;
         private bool _animateNextDeal;
@@ -292,6 +296,11 @@ namespace Game29
             RefreshAICardCounts();
             if (trumpCardSlot != null) trumpCardSlot.UpdateDisplay(_gm);
 
+            int[] gamePts = _gm.GetGamePoints();
+            int[] roundPts = _gm.GetRoundPoints();
+            if (yourTeamPointCard != null) yourTeamPointCard.UpdateDisplay(gamePts[0], roundPts[0]);
+            if (opponentPointCard != null) opponentPointCard.UpdateDisplay(gamePts[1], roundPts[1]);
+
             if (_gm.CurrentPhase == GamePhase.Playing)
             {
                 Trick currentTrick = _gm.GetCurrentTrick();
@@ -427,19 +436,11 @@ namespace Game29
                 tableBackground.transform.SetAsFirstSibling();
             }
 
-            // 3. Score HUD (top stretch)
-            if (scoreHUD != null)
-            {
-                RectTransform hrt = scoreHUD.GetComponent<RectTransform>();
-                if (hrt != null)
-                {
-                    hrt.anchorMin = new Vector2(0f, 1f);
-                    hrt.anchorMax = new Vector2(1f, 1f);
-                    hrt.pivot = new Vector2(0.5f, 1f);
-                    hrt.anchoredPosition = new Vector2(0, 0);
-                    hrt.sizeDelta = new Vector2(0, 96);
-                }
-            }
+            // 3. Score HUD — intentionally NOT touched here. ScoreHUDUI owns its
+            // own RectTransform (default set once in EnsureComponents(), or
+            // whatever you've positioned it to by hand). This block used to
+            // force it back to a full-width top stretch on every Awake()/Start(),
+            // which is why manual repositioning kept reverting on Play.
 
             // 4. North (Partner) — top center
             if (northSeat != null)
@@ -547,7 +548,7 @@ namespace Game29
                 }
             }
 
-            // 9. Trump Card Slot — single card on the board to the left of TrickArea
+            // 9. Trump Card Slot — sits between Opponent Point Card and TrickArea
             if (trumpCardSlot != null)
             {
                 RectTransform trt = trumpCardSlot.GetComponent<RectTransform>();
@@ -556,16 +557,51 @@ namespace Game29
                     trt.anchorMin = new Vector2(0.5f, 0.5f);
                     trt.anchorMax = new Vector2(0.5f, 0.5f);
                     trt.pivot = new Vector2(0.5f, 0.5f);
-                    trt.anchoredPosition = new Vector2(-340, 20);
+                    trt.anchoredPosition = new Vector2(-310, 20);
                     trt.sizeDelta = new Vector2(115, 165);
                     trt.localScale = Vector3.one;
                     Vector3 lp = trt.localPosition;
                     trt.localPosition = new Vector3(lp.x, lp.y, 0f);
                 }
-                trumpCardSlot.transform.SetAsLastSibling();
             }
 
-            // 10. Bidding Panel — popup in center
+            // 10. Opponent Point Card Slot — left side of table
+            if (opponentPointCard != null)
+            {
+                RectTransform ort = opponentPointCard.GetComponent<RectTransform>();
+                if (ort != null)
+                {
+                    ort.anchorMin = new Vector2(0.5f, 0.5f);
+                    ort.anchorMax = new Vector2(0.5f, 0.5f);
+                    ort.pivot = new Vector2(0.5f, 0.5f);
+                    ort.anchoredPosition = new Vector2(-540, 20);
+                    ort.sizeDelta = new Vector2(130, 220);
+                    ort.localScale = Vector3.one;
+                    Vector3 lp = ort.localPosition;
+                    ort.localPosition = new Vector3(lp.x, lp.y, 0f);
+                }
+                opponentPointCard.EnsureComponents();
+            }
+
+            // 11. Your Team Point Card Slot — right side of table
+            if (yourTeamPointCard != null)
+            {
+                RectTransform yrt = yourTeamPointCard.GetComponent<RectTransform>();
+                if (yrt != null)
+                {
+                    yrt.anchorMin = new Vector2(0.5f, 0.5f);
+                    yrt.anchorMax = new Vector2(0.5f, 0.5f);
+                    yrt.pivot = new Vector2(0.5f, 0.5f);
+                    yrt.anchoredPosition = new Vector2(540, 20);
+                    yrt.sizeDelta = new Vector2(130, 220);
+                    yrt.localScale = Vector3.one;
+                    Vector3 lp = yrt.localPosition;
+                    yrt.localPosition = new Vector3(lp.x, lp.y, 0f);
+                }
+                yourTeamPointCard.EnsureComponents();
+            }
+
+            // 12. Bidding Panel — popup in center
             if (biddingPanel != null)
             {
                 RectTransform brt = biddingPanel.GetComponent<RectTransform>();
@@ -731,6 +767,30 @@ namespace Game29
                 Debug.LogWarning("[29 GameTableUI] TrumpSelectionModal was parented outside the " +
                     "GameTable Canvas — reparenting it now so it can actually render.");
                 trumpSelectionModal.transform.SetParent(transform, false);
+            }
+
+            // Opponent Point Card (Left table board)
+            if (opponentPointCard == null)
+            {
+                Transform existing = transform.Find("PointCard_Opponent");
+                GameObject obj = existing != null ? existing.gameObject : new GameObject("PointCard_Opponent");
+                if (existing == null) obj.transform.SetParent(transform, false);
+                opponentPointCard = obj.GetComponent<PointCardSlotUI>() ?? obj.AddComponent<PointCardSlotUI>();
+                opponentPointCard.TeamIndex = 1;
+                opponentPointCard.TeamTitle = "Opponent";
+                opponentPointCard.EnsureComponents();
+            }
+
+            // Your Team Point Card (Right table board)
+            if (yourTeamPointCard == null)
+            {
+                Transform existing = transform.Find("PointCard_YourTeam");
+                GameObject obj = existing != null ? existing.gameObject : new GameObject("PointCard_YourTeam");
+                if (existing == null) obj.transform.SetParent(transform, false);
+                yourTeamPointCard = obj.GetComponent<PointCardSlotUI>() ?? obj.AddComponent<PointCardSlotUI>();
+                yourTeamPointCard.TeamIndex = 0;
+                yourTeamPointCard.TeamTitle = "Your Team";
+                yourTeamPointCard.EnsureComponents();
             }
 
             ApplyLandscapeLayout();

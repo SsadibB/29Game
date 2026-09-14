@@ -33,6 +33,7 @@ namespace Game29
         private static Sprite _boardSprite;
         private static Sprite _cardFrontSprite;
         private static Sprite _cardBackSprite;
+        private static Sprite _redCardBackSprite;
         private static Sprite[] _suitSprites; // [Heart, Diamond, Club, Spade]
         private static Sprite _roundedPanelSprite;
         private static Sprite _roundedCardSlotSprite;
@@ -45,6 +46,7 @@ namespace Game29
         public static Sprite BoardBackground => _boardSprite ??= LoadBoardSprite();
         public static Sprite CardFront => _cardFrontSprite ??= LoadOrGenerateCardFront();
         public static Sprite CardBack => _cardBackSprite ??= LoadOrGenerateCardBack();
+        public static Sprite RedCardBack => _redCardBackSprite ??= (Resources.Load<Sprite>("RedCardBack") ?? CardBack);
         public static Sprite RoundedPanel => _roundedPanelSprite ??= CreateRoundedRectSprite(128, 128, 20, ColorPanelDark, ColorBorderGold, 3);
         public static Sprite RoundedCardSlot => _roundedCardSlotSprite ??= CreateRoundedRectSprite(128, 192, 16, new Color(0.03f, 0.14f, 0.08f, 0.65f), new Color(0.85f, 0.70f, 0.28f, 0.4f), 2);
         public static Sprite PillBadge => _pillBadgeSprite ??= CreateRoundedRectSprite(96, 40, 20, Color.white, Color.clear, 0);
