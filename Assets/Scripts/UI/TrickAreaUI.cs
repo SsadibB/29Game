@@ -21,8 +21,8 @@ namespace Game29
 
         [Header("Winner Announcement")]
         [SerializeField] private GameObject bannerObj;
-        [SerializeField] private Text       bannerText;
-        [SerializeField] private Image      bannerBg;
+        [SerializeField] private Text bannerText;
+        [SerializeField] private Image bannerBg;
 
         private Coroutine _bannerCoroutine;
         private readonly Vector2[] _baseSlotPositions = new Vector2[4];
@@ -31,11 +31,19 @@ namespace Game29
         private const float SlotW = 120f;
         private const float SlotH = 175f;
 
-        // Slot positions in landscape cross layout
-        private static readonly Vector2 SouthPos = new Vector2(0,    -145f);
-        private static readonly Vector2 NorthPos = new Vector2(0,     145f);
-        private static readonly Vector2 WestPos  = new Vector2(-175f,  0);
-        private static readonly Vector2 EastPos  = new Vector2( 175f,  0);
+        // Slot positions: pulled in tight around the table center so the four
+        // played cards visually overlap each other (like a real trick pile)
+        // instead of sitting in four separated cross-arm slots. Small per-seat
+        // rotations added for the same "loosely tossed onto the table" look.
+        private static readonly Vector2 SouthPos = new Vector2(8f, -55f);
+        private static readonly Vector2 NorthPos = new Vector2(-8f, 55f);
+        private static readonly Vector2 WestPos = new Vector2(-60f, 5f);
+        private static readonly Vector2 EastPos = new Vector2(60f, -5f);
+
+        private const float SouthRot = -5f;
+        private const float NorthRot = 6f;
+        private const float WestRot = -9f;
+        private const float EastRot = 8f;
 
         private void Awake()
         {
@@ -51,25 +59,25 @@ namespace Game29
         {
             if (southSlot == null)
             {
-                southSlot = CreateSlot("Slot_South", SouthPos, SlotW, SlotH, "You");
+                southSlot = CreateSlot("Slot_South", SouthPos, SlotW, SlotH, SouthRot);
                 _baseSlotPositions[(int)PlayerSeat.South] = SouthPos;
             }
 
             if (northSlot == null)
             {
-                northSlot = CreateSlot("Slot_North", NorthPos, SlotW, SlotH, "Partner");
+                northSlot = CreateSlot("Slot_North", NorthPos, SlotW, SlotH, NorthRot);
                 _baseSlotPositions[(int)PlayerSeat.North] = NorthPos;
             }
 
             if (westSlot == null)
             {
-                westSlot = CreateSlot("Slot_West", WestPos, SlotW, SlotH, "West");
+                westSlot = CreateSlot("Slot_West", WestPos, SlotW, SlotH, WestRot);
                 _baseSlotPositions[(int)PlayerSeat.West] = WestPos;
             }
 
             if (eastSlot == null)
             {
-                eastSlot = CreateSlot("Slot_East", EastPos, SlotW, SlotH, "East");
+                eastSlot = CreateSlot("Slot_East", EastPos, SlotW, SlotH, EastRot);
                 _baseSlotPositions[(int)PlayerSeat.East] = EastPos;
             }
 
@@ -106,34 +114,18 @@ namespace Game29
             }
         }
 
-        private CardUI CreateSlot(string name, Vector2 pos, float w, float h, string label)
+        private CardUI CreateSlot(string name, Vector2 pos, float w, float h, float rotationZ)
         {
             GameObject slotObj = new GameObject(name);
             slotObj.transform.SetParent(transform, false);
             RectTransform rt = slotObj.AddComponent<RectTransform>();
             rt.sizeDelta = new Vector2(w, h);
             rt.anchoredPosition = pos;
+            rt.localEulerAngles = new Vector3(0, 0, rotationZ);
 
             CardUI card = slotObj.AddComponent<CardUI>();
             card.EnsureComponents();
             card.SetEmptySlot();
-
-            // Seat label below the slot
-            GameObject lblObj = new GameObject("SlotLabel");
-            lblObj.transform.SetParent(slotObj.transform, false);
-            RectTransform lrt = lblObj.AddComponent<RectTransform>();
-            lrt.anchorMin = new Vector2(0.5f, 0.5f);
-            lrt.anchorMax = new Vector2(0.5f, 0.5f);
-            lrt.sizeDelta = new Vector2(w, 20);
-            lrt.anchoredPosition = new Vector2(0, -h * 0.5f - 15f);
-
-            Text txt = lblObj.AddComponent<Text>();
-            txt.font = CardVisualTheme.GetFont();
-            txt.fontSize = 13;
-            txt.fontStyle = FontStyle.Bold;
-            txt.alignment = TextAnchor.MiddleCenter;
-            txt.color = new Color(0.7f, 0.8f, 0.9f, 0.75f);
-            txt.text = label;
 
             return card;
         }
@@ -212,7 +204,7 @@ namespace Game29
             {
                 PlayerSeat.South => "You",
                 PlayerSeat.North => "Partner",
-                _                => winner.ToString()
+                _ => winner.ToString()
             };
 
             // Glow and punch the winning slot
@@ -250,11 +242,11 @@ namespace Game29
             // Sweep direction: all cards fly toward the winner's side of the screen
             Vector2 sweepTarget = winner switch
             {
-                PlayerSeat.South => new Vector2(0,     -500f),
-                PlayerSeat.North => new Vector2(0,      500f),
-                PlayerSeat.West  => new Vector2(-600f,  0),
-                PlayerSeat.East  => new Vector2( 600f,  0),
-                _                => Vector2.zero
+                PlayerSeat.South => new Vector2(0, -500f),
+                PlayerSeat.North => new Vector2(0, 500f),
+                PlayerSeat.West => new Vector2(-600f, 0),
+                PlayerSeat.East => new Vector2(600f, 0),
+                _ => Vector2.zero
             };
 
             float sweepDuration = 0.38f;
@@ -286,8 +278,8 @@ namespace Game29
             // Reset all slots to empty at their base positions
             ClearSlot(southSlot, PlayerSeat.South);
             ClearSlot(northSlot, PlayerSeat.North);
-            ClearSlot(westSlot,  PlayerSeat.West);
-            ClearSlot(eastSlot,  PlayerSeat.East);
+            ClearSlot(westSlot, PlayerSeat.West);
+            ClearSlot(eastSlot, PlayerSeat.East);
 
             _bannerCoroutine = null;
         }
@@ -302,8 +294,8 @@ namespace Game29
             }
             ClearSlot(southSlot, PlayerSeat.South);
             ClearSlot(northSlot, PlayerSeat.North);
-            ClearSlot(westSlot,  PlayerSeat.West);
-            ClearSlot(eastSlot,  PlayerSeat.East);
+            ClearSlot(westSlot, PlayerSeat.West);
+            ClearSlot(eastSlot, PlayerSeat.East);
             if (bannerObj != null) bannerObj.SetActive(false);
         }
 
@@ -325,9 +317,9 @@ namespace Game29
             {
                 PlayerSeat.South => southSlot,
                 PlayerSeat.North => northSlot,
-                PlayerSeat.West  => westSlot,
-                PlayerSeat.East  => eastSlot,
-                _                => null
+                PlayerSeat.West => westSlot,
+                PlayerSeat.East => eastSlot,
+                _ => null
             };
         }
     }

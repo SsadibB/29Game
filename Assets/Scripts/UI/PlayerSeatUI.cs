@@ -30,6 +30,25 @@ namespace Game29
 
         public Transform CardContainer => cardContainer != null ? cardContainer : transform;
 
+        // Fan-out look for the hand: each card gets a small rotation and a
+        // slight downward arc toward the edges, so the hand reads as a fan
+        // held from below (bottom edges angling toward the table) instead of
+        // a flat row. Approximated with a parabola + linear rotation rather
+        // than true polar placement around a pivot point, so it drops into
+        // the existing anchoredPosition/hover/DOTween code with no other
+        // changes needed.
+        private const float FanMaxRotationDeg = 24f;
+        private const float FanArcHeight = 34f;
+
+        /// <summary>Returns the (extra Y offset, rotation) for hand card index i of count.</summary>
+        private (float yOffset, float rotZ) GetFanOffset(int i, int count)
+        {
+            if (count <= 1) return (0f, 0f);
+            float u = (i / (float)(count - 1)) * 2f - 1f; // -1 (leftmost) .. 1 (rightmost)
+            float rot = Mathf.Clamp(count * 1.4f, 6f, FanMaxRotationDeg);
+            return (-FanArcHeight * (u * u), -u * rot);
+        }
+
         // Card dimensions for landscape layout
         private const float HumanCardW = 130f;
         private const float HumanCardH = 190f;
@@ -75,9 +94,14 @@ namespace Game29
                 avatarBg.color = new Color(0.10f, 0.16f, 0.24f, 0.95f);
                 avatarBg.raycastTarget = false;
 
-                // Hide any legacy single-letter "Initial" text inside Avatar
+                // Delete any legacy single-letter "Initial" text inside Avatar —
+                // no longer wanted, not just hidden.
                 Transform oldInit = av.transform.Find("Initial");
-                if (oldInit != null) oldInit.gameObject.SetActive(false);
+                if (oldInit != null)
+                {
+                    if (Application.isPlaying) Destroy(oldInit.gameObject);
+                    else DestroyImmediate(oldInit.gameObject);
+                }
             }
 
             if (avatarIcon == null)
@@ -93,10 +117,13 @@ namespace Game29
                 GameObject icon = existingIcon != null ? existingIcon.gameObject : new GameObject("AvatarIcon", typeof(RectTransform));
                 if (existingIcon == null) icon.transform.SetParent(avatarBg.transform, false);
                 RectTransform irt = icon.GetComponent<RectTransform>();
-                irt.anchorMin = new Vector2(0.12f, 0.12f);
-                irt.anchorMax = new Vector2(0.88f, 0.88f);
-                irt.offsetMin = Vector2.zero;
-                irt.offsetMax = Vector2.zero;
+                // Fixed 35x35 box, anchored/pivoted dead center of the avatar
+                // (instead of the old 12%-88% stretch-to-fit).
+                irt.anchorMin = new Vector2(0.5f, 0.5f);
+                irt.anchorMax = new Vector2(0.5f, 0.5f);
+                irt.pivot = new Vector2(0.5f, 0.5f);
+                irt.anchoredPosition = Vector2.zero;
+                irt.sizeDelta = new Vector2(35, 35);
                 avatarIcon = icon.GetComponent<Image>() ?? icon.AddComponent<Image>();
                 avatarIcon.sprite = CardVisualTheme.VectorAvatar;
                 avatarIcon.color = Color.white;
@@ -175,23 +202,23 @@ namespace Game29
             switch (Seat)
             {
                 case PlayerSeat.South:
-                    nameLabel.text = "YOU (South) ★";
+                    nameLabel.text = "SOUTH";
                     nameLabel.color = CardVisualTheme.ColorCyan;
                     avatarIcon.color = CardVisualTheme.ColorCyan;
                     break;
                 case PlayerSeat.North:
-                    nameLabel.text = "PARTNER (North)";
+                    nameLabel.text = "NORTH";
                     nameLabel.color = CardVisualTheme.ColorCyan;
                     avatarIcon.color = CardVisualTheme.ColorCyan;
                     break;
                 case PlayerSeat.East:
-                    nameLabel.text = "EAST (Opponent)";
+                    nameLabel.text = "EAST";
                     var orangeE = new Color(0.95f, 0.55f, 0.35f);
                     nameLabel.color = orangeE;
                     avatarIcon.color = orangeE;
                     break;
                 case PlayerSeat.West:
-                    nameLabel.text = "WEST (Opponent)";
+                    nameLabel.text = "WEST";
                     var orangeW = new Color(0.95f, 0.55f, 0.35f);
                     nameLabel.color = orangeW;
                     avatarIcon.color = orangeW;
@@ -361,13 +388,15 @@ namespace Game29
                     _spawnedCards[i].BindClick(onCardClick);
                     _spawnedCards[i].SetPlayable(isPlayable);
 
-                    Vector2 targetPos = new Vector2(startX + i * spacing, 0);
+                    var (yOff, rotZ) = GetFanOffset(i, count);
+                    Vector2 targetPos = new Vector2(startX + i * spacing, yOff);
                     _spawnedCards[i].SetBasePosition(targetPos);
                     RectTransform rtExisting = _spawnedCards[i].GetComponent<RectTransform>();
                     if (rtExisting != null)
                     {
                         rtExisting.DOKill();
                         rtExisting.DOAnchorPos(targetPos, 0.28f).SetEase(Ease.OutQuad);
+                        rtExisting.DORotate(new Vector3(0, 0, rotZ), 0.28f).SetEase(Ease.OutQuad);
                     }
                 }
 
@@ -383,8 +412,10 @@ namespace Game29
                     RectTransform rt = cardObj.AddComponent<RectTransform>();
                     rt.sizeDelta = new Vector2(cardW, cardH);
 
-                    Vector2 pos = new Vector2(startX + i * spacing, 0);
+                    var (yOffA, rotZA) = GetFanOffset(i, count);
+                    Vector2 pos = new Vector2(startX + i * spacing, yOffA);
                     rt.anchoredPosition = pos;
+                    rt.localEulerAngles = new Vector3(0, 0, rotZA);
 
                     CardUI cardUI = cardObj.AddComponent<CardUI>();
                     cardUI.SetCard(card, isPlayable, onCardClick);
@@ -412,8 +443,10 @@ namespace Game29
                 RectTransform rt = cardObj.AddComponent<RectTransform>();
                 rt.sizeDelta = new Vector2(cardW, cardH);
 
-                Vector2 pos = new Vector2(startX + i * spacing, 0);
+                var (yOff, rotZ) = GetFanOffset(i, count);
+                Vector2 pos = new Vector2(startX + i * spacing, yOff);
                 rt.anchoredPosition = pos;
+                rt.localEulerAngles = new Vector3(0, 0, rotZ);
 
                 CardUI cardUI = cardObj.AddComponent<CardUI>();
                 cardUI.SetCard(card, isPlayable, onCardClick);

@@ -16,6 +16,7 @@ namespace Game29
         // ── Visual Components ───────────────────────────────────────────────────
         [Header("Card Visuals")]
         [SerializeField] private Image bgImage;
+        [SerializeField] private Image cardBorder;
         [SerializeField] private Image glowOutline;
         [SerializeField] private Text rankTopLeft;
         [SerializeField] private Text suitTopLeft;
@@ -87,6 +88,24 @@ namespace Game29
             button.onClick.AddListener(HandleClick);
 
             // Create child elements if not yet built
+            if (cardBorder == null)
+            {
+                // Thin, always-on outline hugging the card's edge — gives every
+                // card a bit of visual separation/definition against the table
+                // and against other overlapping cards, matching the reference look.
+                cardBorder = CreateChildImage("CardBorder", new Vector2(0, 0), new Vector2(1, 1), 0f, 0f);
+                // Smaller radius than before (was 18) — at the small Trick-area slot
+                // size (120x175) an 18px radius cut in far enough that the corner
+                // rank/suit labels (12px inset) landed inside the rounded cut and
+                // appeared to spill outside the border. 12 keeps the cut shallow
+                // enough that the 12px-inset labels stay safely inside it at every
+                // card size currently used across the project.
+                cardBorder.sprite = CardVisualTheme.CreateRoundedRectSprite(180, 260, 12, Color.clear, Color.white, 3);
+                cardBorder.type = Image.Type.Sliced;
+                cardBorder.color = new Color(1f, 1f, 1f, 0.8f);
+                cardBorder.raycastTarget = false;
+            }
+
             if (glowOutline == null)
                 glowOutline = CreateChildImage("GlowOutline", new Vector2(0, 0), new Vector2(1, 1), 0f, 0f);
 
@@ -121,7 +140,7 @@ namespace Game29
 
             if (glowOutline != null)
             {
-                glowOutline.sprite = CardVisualTheme.CreateRoundedRectSprite(180, 260, 22, Color.clear, CardVisualTheme.ColorGold, 6);
+                glowOutline.sprite = CardVisualTheme.CreateRoundedRectSprite(180, 260, 16, Color.clear, CardVisualTheme.ColorGold, 6);
                 glowOutline.type = Image.Type.Sliced;
                 glowOutline.gameObject.SetActive(false);
             }
@@ -133,6 +152,11 @@ namespace Game29
         public void SetCard(Card card, bool isPlayable, Action<Card> onClick)
         {
             EnsureComponents();
+            // Stop any leftover fade (e.g. from AnimateSweepTo on a trick this slot
+            // just collected) before we hand it a new card — otherwise that old
+            // tween keeps running afterward and drags the new card's alpha back
+            // toward 0, which is what makes freshly-played cards look transparent.
+            if (canvasGroup != null) canvasGroup.DOKill();
             CurrentCard = card;
             IsPlayable = isPlayable;
             IsFaceUp = true;
@@ -142,6 +166,7 @@ namespace Game29
             bgImage.sprite = CardVisualTheme.CardFront;
             bgImage.color = Color.white;
             bgImage.raycastTarget = true;
+            if (cardBorder != null) cardBorder.gameObject.SetActive(true);
 
             Color suitColor = CardVisualTheme.GetSuitColor(card.Suit);
             string suitSym = CardVisualTheme.GetSuitSymbol(card.Suit);
@@ -190,6 +215,7 @@ namespace Game29
         public void SetFaceDown()
         {
             EnsureComponents();
+            if (canvasGroup != null) canvasGroup.DOKill();
             CurrentCard = null;
             IsPlayable = false;
             IsFaceUp = false;
@@ -199,6 +225,7 @@ namespace Game29
             bgImage.sprite = CardVisualTheme.CardBack;
             bgImage.color = Color.white;
             bgImage.raycastTarget = false;
+            if (cardBorder != null) cardBorder.gameObject.SetActive(true);
 
             rankTopLeft.gameObject.SetActive(false);
             suitTopLeft.gameObject.SetActive(false);
@@ -216,14 +243,19 @@ namespace Game29
         public void SetEmptySlot()
         {
             EnsureComponents();
+            if (canvasGroup != null) canvasGroup.DOKill();
             CurrentCard = null;
             IsPlayable = false;
             IsFaceUp = false;
             _onClickCallback = null;
 
-            bgImage.sprite = CardVisualTheme.RoundedCardSlot;
-            bgImage.color = new Color(1f, 1f, 1f, 0.45f);
+            // No background at all for an empty trick slot — fully invisible
+            // until a card is actually played into it (previously showed a
+            // translucent RoundedCardSlot placeholder here).
+            bgImage.sprite = null;
+            bgImage.color = new Color(1f, 1f, 1f, 0f);
             bgImage.raycastTarget = false;
+            if (cardBorder != null) cardBorder.gameObject.SetActive(false);
 
             rankTopLeft.gameObject.SetActive(false);
             suitTopLeft.gameObject.SetActive(false);
