@@ -20,14 +20,14 @@ namespace Game29
 
         // ── State ───────────────────────────────────────────────────────────────
         private Trick _currentTrick;
-        private int   _tricksCompleted;
-        private int[] _teamPoints    = new int[2];
-        private int[] _tricksTaken   = new int[4]; // per seat
+        private int _tricksCompleted;
+        private int[] _teamPoints = new int[2];
+        private int[] _tricksTaken = new int[4]; // per seat
 
-        public Trick CurrentTrick        => _currentTrick;
-        public Trick LastCompletedTrick  { get; private set; }
-        public int   TricksCompleted     => _tricksCompleted;
-        public bool  RoundComplete   => _tricksCompleted >= GameRules.TricksPerRound;
+        public Trick CurrentTrick => _currentTrick;
+        public Trick LastCompletedTrick { get; private set; }
+        public int TricksCompleted => _tricksCompleted;
+        public bool RoundComplete => _tricksCompleted >= GameRules.TricksPerRound;
 
         // ── Events ──────────────────────────────────────────────────────────────
         /// <summary>Fired immediately after each card is played to the trick.</summary>
@@ -50,10 +50,10 @@ namespace Game29
         /// <summary>Resets accumulated card points to 0–0 at the start of a new board/deal.</summary>
         public void ResetPoints()
         {
-            _teamPoints      = new int[2];
+            _teamPoints = new int[2];
             _tricksCompleted = 0;
-            _tricksTaken     = new int[4];
-            _currentTrick    = null;
+            _tricksTaken = new int[4];
+            _currentTrick = null;
             LastCompletedTrick = null;
         }
 
@@ -105,13 +105,32 @@ namespace Game29
             return seat;
         }
 
+        /// <summary>
+        /// Ends the round immediately without playing out the remaining
+        /// tricks — backs the "Skip" button once the round's outcome is
+        /// already decided. Legal at any point, including mid-trick: if the
+        /// current trick has some cards already played, that partial trick
+        /// is simply discarded unresolved (no team gets credit for it).
+        /// Whatever card-points earlier, fully-resolved tricks already won
+        /// stand as-is.
+        /// </summary>
+        public bool SkipRemaining()
+        {
+            if (RoundComplete) return false;
+
+            _tricksCompleted = GameRules.TricksPerRound;
+            _currentTrick = null;
+            OnRoundComplete?.Invoke();
+            return true;
+        }
+
         // ── Accessors ───────────────────────────────────────────────────────────
 
         /// <summary>Returns a copy of per-team card-point totals.</summary>
-        public int[] GetTeamPoints()    => (int[])_teamPoints.Clone();
+        public int[] GetTeamPoints() => (int[])_teamPoints.Clone();
 
         /// <summary>Returns a copy of tricks-taken counts per seat.</summary>
-        public int[] GetTricksTaken()   => (int[])_tricksTaken.Clone();
+        public int[] GetTricksTaken() => (int[])_tricksTaken.Clone();
 
         public int GetTeamPoints(int team) => _teamPoints[team];
 
@@ -127,7 +146,7 @@ namespace Game29
             // Hidden trump does not count until it has been revealed.
             Suit? effectiveTrump = _trump.TrumpRevealed ? _trump.TrumpSuit : null;
             PlayerSeat winner = _currentTrick.DetermineWinner(effectiveTrump, _trump.Mode);
-            int        points = _currentTrick.TotalPoints();
+            int points = _currentTrick.TotalPoints();
 
             // The team that wins the 8th (final) trick scores +1, for 29 total points.
             bool isFinalTrick = _tricksCompleted == GameRules.TricksPerRound - 1;

@@ -14,15 +14,30 @@ namespace Game29
         public const int MaxBid = 28;
 
         // ── Round structure ────────────────────────────────────────────────────
-        public const int TricksPerRound   = 8;
-        public const int CardsPerPlayer   = 8;
-        public const int TotalCardPoints  = 28; // 4×(J3 + 9=2 + A1 + 10=1) = 28
-        public const int FinalTrickBonus  = 1;  // 8th trick is worth +1, making 29 total
+        public const int TricksPerRound = 8;
+        public const int CardsPerPlayer = 8;
+        public const int TotalCardPoints = 28; // 4×(J3 + 9=2 + A1 + 10=1) = 28
+        public const int FinalTrickBonus = 1;  // 8th trick is worth +1, making 29 total
         public const int TotalRoundPoints = 29;
 
         // ── Game scoring ────────────────────────────────────────────────────────
         /// <summary>First team to reach this many game-points wins the game.</summary>
         public const int GamePointsToWin = 6;
+
+        /// <summary>Standard game-point award when the calling team meets its target.</summary>
+        public const int RoundWinBonus = 1;
+
+        /// <summary>Game-point penalty when the calling team fails to meet its target.</summary>
+        public const int RoundLossPenalty = -1;
+
+        /// <summary>
+        /// Game-point award instead of <see cref="RoundWinBonus"/> when the calling
+        /// team sweeps all <see cref="TotalCardPoints"/> card points in the board.
+        /// </summary>
+        public const int AllPointsBonus = 2;
+
+        /// <summary>How much a declared Marriage shifts the calling team's target, up or down.</summary>
+        public const int MarriageTargetShift = 4;
 
         // ── Seat / team helpers ────────────────────────────────────────────────
 
@@ -33,9 +48,9 @@ namespace Game29
             {
                 case PlayerSeat.South: return PlayerSeat.North;
                 case PlayerSeat.North: return PlayerSeat.South;
-                case PlayerSeat.East:  return PlayerSeat.West;
-                case PlayerSeat.West:  return PlayerSeat.East;
-                default:               return seat;
+                case PlayerSeat.East: return PlayerSeat.West;
+                case PlayerSeat.West: return PlayerSeat.East;
+                default: return seat;
             }
         }
 
@@ -63,26 +78,26 @@ namespace Game29
         {
             switch (suit)
             {
-                case Suit.Spades:   return 0;
-                case Suit.Clubs:    return 1;
-                case Suit.Hearts:   return 2;
+                case Suit.Spades: return 0;
+                case Suit.Clubs: return 1;
+                case Suit.Hearts: return 2;
                 case Suit.Diamonds: return 3;
-                default:            return 4;
+                default: return 4;
             }
         }
         public static int GetTrickRank(Rank rank)
         {
             switch (rank)
             {
-                case Rank.Jack:  return 8;
-                case Rank.Nine:  return 7;
-                case Rank.Ace:   return 6;
-                case Rank.Ten:   return 5;
-                case Rank.King:  return 4;
+                case Rank.Jack: return 8;
+                case Rank.Nine: return 7;
+                case Rank.Ace: return 6;
+                case Rank.Ten: return 5;
+                case Rank.King: return 4;
                 case Rank.Queen: return 3;
                 case Rank.Eight: return 2;
                 case Rank.Seven: return 1;
-                default:         return 0;
+                default: return 0;
             }
         }
 
@@ -108,10 +123,10 @@ namespace Game29
                 return BeatsJoker(challenger, current, ledSuit);
 
             bool challengerIsTrump = trumpSuit.HasValue && challenger.Suit == trumpSuit.Value;
-            bool currentIsTrump    = trumpSuit.HasValue && current.Suit    == trumpSuit.Value;
+            bool currentIsTrump = trumpSuit.HasValue && current.Suit == trumpSuit.Value;
 
             if (challengerIsTrump && !currentIsTrump) return true;
-            if (!challengerIsTrump && currentIsTrump)  return false;
+            if (!challengerIsTrump && currentIsTrump) return false;
 
             if (challenger.Suit == current.Suit)
                 return GetTrickRank(challenger.Rank) > GetTrickRank(current.Rank);
@@ -125,10 +140,10 @@ namespace Game29
         private static bool BeatsJoker(Card challenger, Card current, Suit? ledSuit)
         {
             bool challengerJoker = IsJokerCard(challenger);
-            bool currentJoker    = IsJokerCard(current);
+            bool currentJoker = IsJokerCard(current);
 
             if (challengerJoker && !currentJoker) return true;
-            if (!challengerJoker && currentJoker)  return false;
+            if (!challengerJoker && currentJoker) return false;
             if (challengerJoker && currentJoker)
                 return GetJokerRank(challenger.Suit) > GetJokerRank(current.Suit);
 

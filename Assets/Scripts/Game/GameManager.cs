@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Game29
@@ -276,6 +277,96 @@ namespace Game29
 
         public bool CanHumanRevealTrump() => CanRevealTrump(HumanSeat);
 
+        // ── MARRIAGE ────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// True if <paramref name="player"/> may declare a Marriage right now:
+        /// trump has been revealed, they still hold both the King and Queen of
+        /// the trump suit, their team has won at least one trick this round,
+        /// and no Marriage has been declared yet this round.
+        /// </summary>
+        public bool CanDeclareMarriage(PlayerSeat player)
+        {
+            if (CurrentPhase != GamePhase.Playing) return false;
+            if (_trumpMgr == null || !_trumpMgr.TrumpRevealed || !_trumpMgr.TrumpSuit.HasValue) return false;
+            if (_scoreMgr.MarriageDeclared) return false;
+
+            Suit trump = _trumpMgr.TrumpSuit.Value;
+            List<Card> trumpCards = _hands[(int)player].GetCardsBySuit(trump);
+            bool hasKing = trumpCards.Any(c => c.Rank == Rank.King);
+            bool hasQueen = trumpCards.Any(c => c.Rank == Rank.Queen);
+            if (!hasKing || !hasQueen) return false;
+
+            int team = GameRules.GetTeam(player);
+            int[] tricksTaken = _trickMgr != null ? _trickMgr.GetTricksTaken() : new int[4];
+            int teamTricks = 0;
+            for (int s = 0; s < 4; s++)
+                if (GameRules.GetTeam((PlayerSeat)s) == team) teamTricks += tricksTaken[s];
+
+            return teamTricks >= 1;
+        }
+
+        public bool CanHumanDeclareMarriage() => CanDeclareMarriage(HumanSeat);
+
+        /// <summary>
+        /// Declares a Marriage for <paramref name="player"/>'s team, shifting the
+        /// calling team's target ±4 (see <see cref="ScoreManager.DeclareMarriage"/>).
+        /// Returns false if <see cref="CanDeclareMarriage"/> would return false.
+        /// </summary>
+        public bool DeclareMarriage(PlayerSeat player)
+        {
+            if (!CanDeclareMarriage(player)) return false;
+
+            bool applied = _scoreMgr.DeclareMarriage(GameRules.GetTeam(player));
+            if (applied) NotifyStateChanged();
+            return applied;
+        }
+
+        public bool DeclareHumanMarriage() => DeclareMarriage(HumanSeat);
+
+        // ── SKIP (early finish once the round's outcome is already decided) ─
+
+        /// <summary>
+        /// True if it's currently <paramref name="player"/>'s turn to act,
+        /// their team is the calling (bidding) team, and the round's outcome
+        /// is already mathematically settled either way:
+        ///   • the bidding team has already reached <see cref="ScoreManager.EffectiveTarget"/>
+        ///     in card points this round (an early win), or
+        ///   • the opposing team already holds enough card points that the
+        ///     bidding team can no longer reach that target even by winning
+        ///     every remaining point (an early loss) — i.e. opposing points
+        ///     ≥ <see cref="GameRules.TotalCardPoints"/> − EffectiveTarget.
+        /// Available any time it's this player's turn, including mid-trick —
+        /// not just between tricks — since tying it to an empty trick meant
+        /// the window could pass without the player (who isn't always the
+        /// next trick's leader) ever getting a turn to use it.
+        /// </summary>
+        public bool IsSkipAvailable(PlayerSeat player)
+        {
+            if (CurrentPhase != GamePhase.Playing) return false;
+            if (_trickMgr == null || _trickMgr.RoundComplete) return false;
+            if (GameRules.GetTeam(player) != _scoreMgr.BiddingTeam) return false;
+            if (CurrentPlayer != player) return false;
+
+            int biddingTeam = _scoreMgr.BiddingTeam;
+            int opposingTeam = 1 - biddingTeam;
+            int target = _scoreMgr.EffectiveTarget;
+
+            bool alreadyWon = _trickMgr.GetTeamPoints(biddingTeam) >= target;
+            bool alreadyLost = _trickMgr.GetTeamPoints(opposingTeam) >= (GameRules.TotalCardPoints - target);
+
+            return alreadyWon || alreadyLost;
+        }
+
+        public bool IsHumanSkipAvailable() => IsSkipAvailable(HumanSeat);
+
+        /// <summary>Ends the round immediately, forfeiting the remaining unplayed tricks.</summary>
+        public bool SkipRemainingPlay()
+        {
+            if (!IsHumanSkipAvailable()) return false;
+            return _trickMgr.SkipRemaining();
+        }
+
         // ════════════════════════════════════════════════════════════════════════
         // PUBLIC QUERY API  (for UI read-only access)
         // ════════════════════════════════════════════════════════════════════════
@@ -288,6 +379,7 @@ namespace Game29
         public int GetCurrentBid() => _biddingMgr.CurrentHighBid;
         public PlayerSeat GetCurrentHighBidder() => _biddingMgr.CurrentHighBidder;
         public int GetFinalBid() => _scoreMgr.CurrentBid;
+        public int GetEffectiveTarget() => _scoreMgr.EffectiveTarget;
         public PlayerSeat GetBidWinner() => _scoreMgr.BidWinner;
         public Suit? GetTrumpForHuman() => _trumpMgr.GetVisibleTrump(HumanSeat);
         public bool IsTrumpRevealed() => _trumpMgr.TrumpRevealed;

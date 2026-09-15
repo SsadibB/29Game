@@ -101,6 +101,9 @@ namespace Game29
             _gm.OnGameOver += HandleGameOver;
             _gm.OnHumanTrumpSelectionRequired += HandleHumanTrumpSelectionRequired;
             _gm.OnStateChanged += RefreshAllDisplay;
+            _gm.ScoreManager.OnMarriageDeclared += HandleMarriageDeclared;
+
+            if (southSeat != null) southSeat.BindSkipButton(OnSkipClicked);
 
             RefreshAllDisplay();
         }
@@ -119,6 +122,7 @@ namespace Game29
             _gm.OnGameOver -= HandleGameOver;
             _gm.OnHumanTrumpSelectionRequired -= HandleHumanTrumpSelectionRequired;
             _gm.OnStateChanged -= RefreshAllDisplay;
+            _gm.ScoreManager.OnMarriageDeclared -= HandleMarriageDeclared;
         }
 
         // ════════════════════════════════════════════════════════════════════════
@@ -277,6 +281,15 @@ namespace Game29
             if (roundEndModal != null) roundEndModal.ShowRoundOver(_gm.ScoreManager, biddingTeamWon);
         }
 
+        private void HandleMarriageDeclared(int declaringTeam, int newTarget)
+        {
+            string teamName = declaringTeam == 0 ? "You & Partner" : "Opponents";
+            bool loweredTarget = declaringTeam == _gm.ScoreManager.BiddingTeam;
+            string verb = loweredTarget ? "lowered" : "raised";
+            scoreHUD.SetStatusMessage($"♥♠ MARRIAGE! {teamName} declared — target {verb} to {newTarget} ♠♥");
+            scoreHUD.UpdateHUD(_gm);
+        }
+
         private void HandleGameOver(int winningTeam)
         {
             if (roundEndModal != null) roundEndModal.ShowGameOver(_gm.ScoreManager, winningTeam);
@@ -294,6 +307,7 @@ namespace Game29
             UpdateTurnHighlights(_gm.CurrentPlayer);
             RefreshHumanCards();
             RefreshAICardCounts();
+            if (southSeat != null) southSeat.SetSkipButtonActive(_gm.IsHumanSkipAvailable());
             if (trumpCardSlot != null) trumpCardSlot.UpdateDisplay(_gm);
 
             int[] gamePts = _gm.GetGamePoints();
@@ -377,6 +391,23 @@ namespace Game29
 
             Debug.Log($"[29 GameTableUI] Playing {card}");
             _gm.PlayHumanCard(card);
+        }
+
+        private void OnSkipClicked()
+        {
+            if (_gm == null) return;
+
+            bool skipped = _gm.SkipRemainingPlay();
+            if (!skipped)
+            {
+                // Guards against a stale/late click racing a state change (e.g. a
+                // trick started mid-play right as the button was tapped) — the
+                // button will hide itself on the next RefreshAllDisplay anyway.
+                Debug.Log("[29 GameTableUI] Skip clicked but not available anymore.");
+                return;
+            }
+
+            Debug.Log("[29 GameTableUI] Round skipped early.");
         }
 
         private PlayerSeatUI GetSeatUI(PlayerSeat seat)

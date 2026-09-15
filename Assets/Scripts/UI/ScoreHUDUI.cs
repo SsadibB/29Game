@@ -24,6 +24,7 @@ namespace Game29
         [SerializeField] private Text bidInfoText;
         [SerializeField] private Text trumpInfoText;
         [SerializeField] private Button revealTrumpBtn;
+        [SerializeField] private Button marriageBtn;
         [SerializeField] private Text trickProgressText;
 
         [Header("Status Banner")]
@@ -41,6 +42,11 @@ namespace Game29
             {
                 revealTrumpBtn.onClick.RemoveAllListeners();
                 revealTrumpBtn.onClick.AddListener(OnRevealTrumpClicked);
+            }
+            if (marriageBtn != null)
+            {
+                marriageBtn.onClick.RemoveAllListeners();
+                marriageBtn.onClick.AddListener(OnMarriageClicked);
             }
         }
 
@@ -103,7 +109,7 @@ namespace Game29
                 crt.anchorMax = new Vector2(0.5f, 1f);
                 crt.pivot = new Vector2(0.5f, 1f);
                 crt.anchoredPosition = new Vector2(0, -10);
-                crt.sizeDelta = new Vector2(400, 120);
+                crt.sizeDelta = new Vector2(400, 160);
 
                 bidInfoText = CreateText("BidInfo", centerBox.transform, new Vector2(0, -14), 16, FontStyle.Bold, CardVisualTheme.ColorGold);
                 trumpInfoText = CreateText("TrumpInfo", centerBox.transform, new Vector2(0, -42), 17, FontStyle.Bold, Color.white);
@@ -128,6 +134,37 @@ namespace Game29
                 Text rtxt = CreateText("Label", rBtn.transform, Vector2.zero, 13, FontStyle.Bold, Color.black);
                 rtxt.text = "REVEAL TRUMP";
                 rBtn.SetActive(false);
+            }
+
+            // Declare Marriage button — same row as Reveal Trump but offset so
+            // both can coexist if eligibility ever overlaps. Standalone guard
+            // (not nested in the centerBox-only-if-missing block above) so it
+            // still gets created on a scene that was already built before this
+            // button existed.
+            if (marriageBtn == null)
+            {
+                Transform centerBoxT = bidInfoText != null ? bidInfoText.transform.parent : null;
+                if (centerBoxT != null)
+                {
+                    GameObject mBtn = new GameObject("MarriageBtn");
+                    mBtn.transform.SetParent(centerBoxT, false);
+                    RectTransform mrt = mBtn.AddComponent<RectTransform>();
+                    mrt.anchoredPosition = new Vector2(0, -92);
+                    mrt.sizeDelta = new Vector2(180, 32);
+
+                    Image mimg = mBtn.AddComponent<Image>();
+                    mimg.sprite = CardVisualTheme.PillBadge;
+                    mimg.type = Image.Type.Sliced;
+                    mimg.color = new Color(0.65f, 0.20f, 0.55f, 0.96f);
+
+                    marriageBtn = mBtn.AddComponent<Button>();
+                    marriageBtn.targetGraphic = mimg;
+                    marriageBtn.onClick.AddListener(OnMarriageClicked);
+
+                    Text mtxt = CreateText("Label", mBtn.transform, Vector2.zero, 13, FontStyle.Bold, Color.white);
+                    mtxt.text = "DECLARE MARRIAGE";
+                    mBtn.SetActive(false);
+                }
             }
 
             // Status Banner below top bar
@@ -185,7 +222,10 @@ namespace Game29
             {
                 PlayerSeat bidder = gm.GetCurrentHighBidder();
                 string bidderName = bidder == PlayerSeat.North ? "Partner" : (bidder == PlayerSeat.South ? "You" : bidder.ToString());
-                bidInfoText.text = $"TARGET BID: <b>{currentBid}</b> ({bidderName})";
+                int target = gm.CurrentPhase == GamePhase.Playing ? gm.GetEffectiveTarget() : currentBid;
+                bidInfoText.text = target != currentBid
+                    ? $"TARGET: <b>{target}</b> (bid {currentBid}, {bidderName})"
+                    : $"TARGET BID: <b>{currentBid}</b> ({bidderName})";
             }
             else
             {
@@ -203,6 +243,13 @@ namespace Game29
                 // Position/size are set once in EnsureComponents() at creation
                 // time — re-applying them here on every HUD update would
                 // stomp any manual repositioning of this button.
+            }
+
+            if (marriageBtn != null)
+            {
+                bool canMarriage = gm.CanHumanDeclareMarriage();
+                marriageBtn.gameObject.SetActive(canMarriage);
+                // Same note as revealTrumpBtn above — position is set once.
             }
 
             if (tm != null && tm.IsJoker)
@@ -253,6 +300,13 @@ namespace Game29
         private void OnRevealTrumpClicked()
         {
             GameManager.Instance.RevealTrump();
+        }
+
+        private void OnMarriageClicked()
+        {
+            // Confirmation/target-shift text is pushed into this same status
+            // banner via GameTableUI's ScoreManager.OnMarriageDeclared subscription.
+            GameManager.Instance.DeclareHumanMarriage();
         }
 
         // ── Helpers ──────────────────────────────────────────────────────────────

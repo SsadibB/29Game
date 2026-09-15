@@ -23,10 +23,13 @@ namespace Game29
         [SerializeField] private Text nameLabel;
         [SerializeField] private Image actionBubbleBg;
         [SerializeField] private Text actionBubbleText;
+        [SerializeField] private Button skipButton;
         [SerializeField] private Transform cardContainer;
 
         private readonly List<CardUI> _spawnedCards = new List<CardUI>();
         private Coroutine _actionBubbleCoroutine;
+        private bool _skipButtonInitialized;
+        private bool _skipButtonVisible;
 
         public Transform CardContainer => cardContainer != null ? cardContainer : transform;
 
@@ -210,6 +213,17 @@ namespace Game29
                 ab.SetActive(false);
             }
 
+            // Skip_Text is hand-created/wired in the Editor (Button component
+            // already added), so it isn't null here — just force it hidden the
+            // first time this seat initializes, regardless of whatever active
+            // state it was left in in the Editor. GameTableUI turns it back on
+            // via SetSkipButtonActive once the calling team hits its target.
+            if (skipButton != null && !_skipButtonInitialized)
+            {
+                skipButton.gameObject.SetActive(false);
+                _skipButtonInitialized = true;
+            }
+
             SetupIdentity();
         }
 
@@ -277,11 +291,28 @@ namespace Game29
         public void ShowActionBubble(string text, float duration = 2.5f)
         {
             if (actionBubbleBg == null || actionBubbleText == null) return;
+
+            // Skip_Text (once available) owns the shared bubble — Bid_Text
+            // ("Text") doesn't get to interrupt it with a trick-win message
+            // until Skip goes unavailable again.
+            if (_skipButtonVisible) return;
+
             actionBubbleText.text = text;
+            actionBubbleText.gameObject.SetActive(true);
+
+            // Skip_Text lives under this same ActionBubble root, so the root
+            // may already be active/scaled-up because Skip is currently
+            // showing — only replay the pop-in animation when the root itself
+            // was actually off, otherwise a live Skip button would flicker
+            // every time a message bubble fires.
+            bool rootWasActive = actionBubbleBg.gameObject.activeSelf;
             actionBubbleBg.gameObject.SetActive(true);
-            actionBubbleBg.transform.DOKill();
-            actionBubbleBg.transform.localScale = Vector3.one * 0.6f;
-            actionBubbleBg.transform.DOScale(1f, 0.22f).SetEase(Ease.OutBack).SetLink(actionBubbleBg.gameObject);
+            if (!rootWasActive)
+            {
+                actionBubbleBg.transform.DOKill();
+                actionBubbleBg.transform.localScale = Vector3.one * 0.6f;
+                actionBubbleBg.transform.DOScale(1f, 0.22f).SetEase(Ease.OutBack).SetLink(actionBubbleBg.gameObject);
+            }
 
             if (_actionBubbleCoroutine != null) StopCoroutine(_actionBubbleCoroutine);
             _actionBubbleCoroutine = StartCoroutine(HideActionBubbleRoutine(duration));
@@ -290,17 +321,69 @@ namespace Game29
         private System.Collections.IEnumerator HideActionBubbleRoutine(float duration)
         {
             yield return new WaitForSeconds(duration);
-            if (actionBubbleBg != null)
+
+            // Only the timed message text goes away here — Skip_Text (if
+            // active) is managed independently by SetSkipButtonActive and
+            // must not be pulled down along with the message.
+            if (actionBubbleText != null) actionBubbleText.gameObject.SetActive(false);
+
+            if (!_skipButtonVisible && actionBubbleBg != null)
             {
                 actionBubbleBg.transform.DOKill();
                 actionBubbleBg.transform.DOScale(0.5f, 0.15f).SetEase(Ease.InQuad)
                     .SetLink(actionBubbleBg.gameObject)
                     .OnComplete(() =>
                     {
-                        if (actionBubbleBg != null) actionBubbleBg.gameObject.SetActive(false);
+                        if (actionBubbleBg != null && !_skipButtonVisible)
+                            actionBubbleBg.gameObject.SetActive(false);
                     });
             }
             _actionBubbleCoroutine = null;
+        }
+
+        /// <summary>
+        /// Shows or hides the Skip button (Skip_Text). GameTableUI drives this
+        /// every refresh from GameManager.IsHumanSkipAvailable(), which is now
+        /// true once the round's outcome is decided either way — the bidding
+        /// team already hit its target, or the opponent already put it out of
+        /// reach — and no trick is currently mid-play.
+        ///
+        /// Skip_Text shares the ActionBubble root with Bid_Text ("Text"), so
+        /// turning Skip on both forces that shared root active and hides
+        /// Bid_Text (Skip takes over the bubble); turning Skip off lets
+        /// Bid_Text resume showing its normal messages.
+        /// </summary>
+        public void SetSkipButtonActive(bool active)
+        {
+            _skipButtonVisible = active;
+            if (skipButton != null) skipButton.gameObject.SetActive(active);
+
+            if (actionBubbleBg == null) return;
+
+            if (active)
+            {
+                if (actionBubbleText != null) actionBubbleText.gameObject.SetActive(false);
+                actionBubbleBg.gameObject.SetActive(true);
+            }
+            else if (_actionBubbleCoroutine == null
+                     && (actionBubbleText == null || !actionBubbleText.gameObject.activeSelf))
+            {
+                // Nothing else (no in-flight message) still needs the shared
+                // root open, so it's safe to close it now.
+                actionBubbleBg.gameObject.SetActive(false);
+            }
+        }
+
+        /// <summary>
+        /// Wires the Skip button's click handler. Call once during setup. Clears
+        /// any previous listener first so repeated calls don't stack. No-op if
+        /// skipButton hasn't been assigned in the Inspector.
+        /// </summary>
+        public void BindSkipButton(UnityEngine.Events.UnityAction onSkipClicked)
+        {
+            if (skipButton == null) return;
+            skipButton.onClick.RemoveAllListeners();
+            skipButton.onClick.AddListener(onSkipClicked);
         }
 
         /// <summary>World position to fly a played card from this seat toward the trick area.</summary>
