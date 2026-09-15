@@ -57,28 +57,54 @@ namespace Game29
 
         public void EnsureComponents()
         {
+            // _baseSlotPositions must always reflect the current SouthPos/NorthPos/
+            // WestPos/EastPos constants — not just when a slot is freshly created.
+            // If a slot GameObject was already wired up in the Inspector/prefab from
+            // a previous session, its RectTransform keeps whatever anchoredPosition
+            // was last saved there; it does NOT jump to match new constants on its
+            // own. Without this, ClearSlot() would fall back to a stale/zeroed
+            // _baseSlotPositions entry for that seat instead of the intended overlap
+            // position. Setting these unconditionally, and pushing the values onto
+            // any pre-existing slot's RectTransform, keeps both in sync with the code.
+            _baseSlotPositions[(int)PlayerSeat.South] = SouthPos;
+            _baseSlotPositions[(int)PlayerSeat.North] = NorthPos;
+            _baseSlotPositions[(int)PlayerSeat.West] = WestPos;
+            _baseSlotPositions[(int)PlayerSeat.East] = EastPos;
+
             if (southSlot == null)
             {
                 southSlot = CreateSlot("Slot_South", SouthPos, SlotW, SlotH, SouthRot);
-                _baseSlotPositions[(int)PlayerSeat.South] = SouthPos;
+            }
+            else
+            {
+                ApplySlotTransform(southSlot, SouthPos, SouthRot);
             }
 
             if (northSlot == null)
             {
                 northSlot = CreateSlot("Slot_North", NorthPos, SlotW, SlotH, NorthRot);
-                _baseSlotPositions[(int)PlayerSeat.North] = NorthPos;
+            }
+            else
+            {
+                ApplySlotTransform(northSlot, NorthPos, NorthRot);
             }
 
             if (westSlot == null)
             {
                 westSlot = CreateSlot("Slot_West", WestPos, SlotW, SlotH, WestRot);
-                _baseSlotPositions[(int)PlayerSeat.West] = WestPos;
+            }
+            else
+            {
+                ApplySlotTransform(westSlot, WestPos, WestRot);
             }
 
             if (eastSlot == null)
             {
                 eastSlot = CreateSlot("Slot_East", EastPos, SlotW, SlotH, EastRot);
-                _baseSlotPositions[(int)PlayerSeat.East] = EastPos;
+            }
+            else
+            {
+                ApplySlotTransform(eastSlot, EastPos, EastRot);
             }
 
             if (bannerObj == null)
@@ -112,6 +138,23 @@ namespace Game29
 
                 bannerObj.SetActive(false);
             }
+        }
+
+        // Pushes the current position/rotation constants onto a slot that already
+        // existed before this pass (e.g. wired up in the Inspector/prefab). Only
+        // touches empty slots — a slot with a card on it may be mid-animation
+        // (AnimatePlayTo / AnimateSweepTo), and snapping its transform here would
+        // fight that tween every time EnsureComponents() runs.
+        private void ApplySlotTransform(CardUI slot, Vector2 pos, float rotationZ)
+        {
+            if (slot == null || slot.CurrentCard != null) return;
+
+            RectTransform rt = slot.GetComponent<RectTransform>();
+            if (rt == null) return;
+
+            rt.sizeDelta = new Vector2(SlotW, SlotH);
+            rt.anchoredPosition = pos;
+            rt.localEulerAngles = new Vector3(0, 0, rotationZ);
         }
 
         private CardUI CreateSlot(string name, Vector2 pos, float w, float h, float rotationZ)
@@ -157,6 +200,26 @@ namespace Game29
                 bool isNew = slot.CurrentCard == null;
                 slot.SetCard(play.Card, false, null);
                 slot.SetGlow(false, Color.clear);
+                // Cards played into the trick area must stay fully visible —
+                // never fade/transparent, even if this slot still had a fade
+                // tween left over from a previous trick's collection sweep.
+                slot.SetFullyOpaque();
+
+                if (isNew)
+                {
+                    // Move the freshly played card to the top of the render
+                    // order so the pile overlaps in play order (each new card
+                    // sits over the ones already on the table) instead of a
+                    // fixed South/North/West/East hierarchy order.
+                    slot.transform.SetAsLastSibling();
+
+                    // The winner banner must always stay above every card,
+                    // even ones played (or still animating in) after the
+                    // banner appeared — otherwise the SetAsLastSibling() call
+                    // above would push this card in front of it.
+                    if (bannerObj != null)
+                        bannerObj.transform.SetAsLastSibling();
+                }
 
                 if (isNew && flyFromSeat.HasValue && flyFromSeat.Value == play.Player)
                     AnimateCardFromWorld(slot, play.Player, flyFromWorld);
@@ -220,6 +283,7 @@ namespace Game29
             if (bannerObj != null && bannerText != null)
             {
                 bannerText.text = $"★ Trick won by {winnerName} (+{points} pts)";
+                bannerObj.transform.SetAsLastSibling();
                 bannerObj.SetActive(true);
                 bannerObj.transform.DOKill();
                 bannerObj.transform.localScale = Vector3.one * 0.65f;

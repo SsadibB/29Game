@@ -51,6 +51,7 @@ namespace Game29
         }
 
         /// <summary>Ensures all required uGUI components exist on this GameObject.</summary>
+        /// <summary>Ensures all required uGUI components exist on this GameObject.</summary>
         public void EnsureComponents()
         {
             if (rectTransform == null)
@@ -86,6 +87,25 @@ namespace Game29
             button.targetGraphic = bgImage;
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(HandleClick);
+
+            // Force every ColorBlock state — including Disabled — to full
+            // opaque white. Unity's default Button ColorBlock multiplies the
+            // targetGraphic (bgImage) by disabledColor whenever
+            // button.interactable == false, and the stock disabledColor is
+            // white at ~50% alpha. Since every slot goes through
+            // interactable = false at some point (empty slots, face-down
+            // cards, and any card marked not-playable), that default tint is
+            // what makes cards look translucent even though canvasGroup and
+            // bgImage are both fully opaque — so pin every state to alpha
+            // 255 here instead of relying on the transition system.
+            ColorBlock colors = button.colors;
+            colors.normalColor = Color.white;
+            colors.highlightedColor = Color.white;
+            colors.pressedColor = Color.white;
+            colors.selectedColor = Color.white;
+            colors.disabledColor = Color.white;
+            colors.colorMultiplier = 1f;
+            button.colors = colors;
 
             // Create child elements if not yet built
             if (cardBorder == null)
@@ -295,6 +315,21 @@ namespace Game29
             {
                 glowOutline.gameObject.SetActive(glow);
                 glowOutline.color = color;
+            }
+        }
+
+        /// <summary>
+        /// Forces the card to full opacity and cancels any in-progress fade.
+        /// Used when a card is placed into the trick area so it always
+        /// renders fully visible, even if a leftover fade tween (e.g. from a
+        /// previous trick's collection sweep) is still running on this slot.
+        /// </summary>
+        public void SetFullyOpaque()
+        {
+            if (canvasGroup != null)
+            {
+                canvasGroup.DOKill();
+                canvasGroup.alpha = 1f;
             }
         }
 

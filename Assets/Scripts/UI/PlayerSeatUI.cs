@@ -49,6 +49,23 @@ namespace Game29
             return (-FanArcHeight * (u * u), -u * rot);
         }
 
+        // Same arc/fan treatment as the human hand above, scaled down for the
+        // smaller face-down AI card backs (55×80 vs 130×190). The center card
+        // sits closest to straight (u≈0 → near-zero offset/rotation); cards
+        // toward either end curve outward and rotate away from center, same
+        // parabola-arc + linear-rotation approximation as GetFanOffset.
+        private const float AIFanMaxRotationDeg = 16f;
+        private const float AIFanArcHeight = 14f;
+
+        /// <summary>Returns the (extra arc offset, rotation) for AI card back index i of count.</summary>
+        private (float arcOffset, float rotZ) GetAIFanOffset(int i, int count)
+        {
+            if (count <= 1) return (0f, 0f);
+            float u = (i / (float)(count - 1)) * 2f - 1f; // -1 (leftmost/topmost) .. 1 (rightmost/bottommost)
+            float rot = Mathf.Clamp(count * 1.6f, 5f, AIFanMaxRotationDeg);
+            return (-AIFanArcHeight * (u * u), -u * rot);
+        }
+
         // Card dimensions for landscape layout
         private const float HumanCardW = 130f;
         private const float HumanCardH = 190f;
@@ -226,12 +243,17 @@ namespace Game29
             }
         }
 
-        public void SetLayoutPositions(Vector2 avatarPos, Vector2 namePos, Vector2 bubblePos)
+        // Deliberately does NOT touch actionBubbleBg's anchor/position. The action
+        // bubble is anchored and positioned by hand in the Editor per seat, and this
+        // method used to overwrite that with a hardcoded bubblePos on every call
+        // (GameTableUI calls this from Start/Awake for every seat), which is why the
+        // bubble appeared to "reset to default" the moment you pressed Play — it
+        // wasn't reverting, this was actively repositioning it every time.
+        public void SetLayoutPositions(Vector2 avatarPos, Vector2 namePos)
         {
             EnsureComponents();
             if (avatarBg != null) ((RectTransform)avatarBg.transform).anchoredPosition = avatarPos;
             if (nameLabel != null) ((RectTransform)nameLabel.transform).anchoredPosition = namePos;
-            if (actionBubbleBg != null) ((RectTransform)actionBubbleBg.transform).anchoredPosition = bubblePos;
         }
 
         public void SetActiveTurn(bool isMyTurn)
@@ -494,11 +516,19 @@ namespace Game29
                 RectTransform rt = cardObj.AddComponent<RectTransform>();
                 rt.sizeDelta = new Vector2(cardW, cardH);
 
+                var (arcOffset, rotZ) = GetAIFanOffset(i, cardCount);
+
+                // Arc formation: cards spread along the main axis (X for a
+                // horizontal row, Y for a vertical stack) at even spacing, with
+                // a perpendicular arc offset + rotation from GetAIFanOffset so
+                // the center card sits straight and the ones toward either end
+                // curve/rotate outward — same fan treatment as the human hand.
                 Vector2 pos = horizontal
-                    ? new Vector2(start + i * spacing, 0)
-                    : new Vector2(0, start + i * spacing);
+                    ? new Vector2(start + i * spacing, arcOffset)
+                    : new Vector2(arcOffset, start + i * spacing);
 
                 rt.anchoredPosition = pos;
+                rt.localEulerAngles = new Vector3(0, 0, rotZ);
 
                 CardUI cardUI = cardObj.AddComponent<CardUI>();
                 cardUI.SetFaceDown();

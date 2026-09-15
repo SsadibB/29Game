@@ -442,179 +442,41 @@ namespace Game29
             // force it back to a full-width top stretch on every Awake()/Start(),
             // which is why manual repositioning kept reverting on Play.
 
-            // 4. North (Partner) — top center
-            if (northSeat != null)
-            {
-                RectTransform nrt = northSeat.GetComponent<RectTransform>();
-                if (nrt != null)
-                {
-                    nrt.anchorMin = new Vector2(0.5f, 1f);
-                    nrt.anchorMax = new Vector2(0.5f, 1f);
-                    nrt.pivot = new Vector2(0.5f, 1f);
-                    nrt.anchoredPosition = new Vector2(0, -72);
-                    nrt.sizeDelta = new Vector2(480, 110);
-                }
-                northSeat.SetLayoutPositions(new Vector2(0, -16), new Vector2(0, -52), new Vector2(0, -80));
-                RectTransform ccrtN = (RectTransform)northSeat.CardContainer;
-                if (ccrtN != null)
-                {
-                    ccrtN.anchorMin = new Vector2(0.5f, 0.5f);
-                    ccrtN.anchorMax = new Vector2(0.5f, 0.5f);
-                    ccrtN.anchoredPosition = new Vector2(0, -82);
-                    ccrtN.sizeDelta = new Vector2(460, 65);
-                }
-            }
+            // 4. North (Partner) — intentionally NOT touched here. northSeat owns its
+            // own RectTransform position/anchor/size (whatever you've set by hand in
+            // the Editor, or the prefab default), same as the Score HUD above. This
+            // block used to force anchorMin/anchorMax/pivot/anchoredPosition/sizeDelta
+            // — on both the seat panel and its CardContainer (and the avatar/name
+            // position via SetLayoutPositions) — back to a hardcoded layout on every
+            // Awake()/Start(), which is why manual repositioning/resizing kept
+            // reverting on Play.
 
-            // 5. South (Human) — bottom center
-            if (southSeat != null)
-            {
-                RectTransform srt = southSeat.GetComponent<RectTransform>();
-                if (srt != null)
-                {
-                    srt.anchorMin = new Vector2(0.5f, 0f);
-                    srt.anchorMax = new Vector2(0.5f, 0f);
-                    srt.pivot = new Vector2(0.5f, 0f);
-                    srt.anchoredPosition = new Vector2(0, 8);
-                    srt.sizeDelta = new Vector2(1840, 235);
-                }
-                southSeat.SetLayoutPositions(new Vector2(-760, 110), new Vector2(-760, 65), new Vector2(-760, 160));
-                RectTransform ccrtS = (RectTransform)southSeat.CardContainer;
-                if (ccrtS != null)
-                {
-                    ccrtS.anchorMin = new Vector2(0.5f, 0.5f);
-                    ccrtS.anchorMax = new Vector2(0.5f, 0.5f);
-                    ccrtS.anchoredPosition = new Vector2(50, 75);
-                    ccrtS.sizeDelta = new Vector2(1460, 200);
-                }
-            }
+            // 5. South (Human) — not touched here either; see note above.
 
-            // 6. West (Opponent) — left middle
-            if (westSeat != null)
-            {
-                RectTransform wrt = westSeat.GetComponent<RectTransform>();
-                if (wrt != null)
-                {
-                    wrt.anchorMin = new Vector2(0f, 0.5f);
-                    wrt.anchorMax = new Vector2(0f, 0.5f);
-                    wrt.pivot = new Vector2(0f, 0.5f);
-                    wrt.anchoredPosition = new Vector2(35, 20);
-                    wrt.sizeDelta = new Vector2(140, 360);
-                }
-                westSeat.SetLayoutPositions(new Vector2(0, 110), new Vector2(0, 72), new Vector2(0, 155));
-                RectTransform ccrtW = (RectTransform)westSeat.CardContainer;
-                if (ccrtW != null)
-                {
-                    ccrtW.anchorMin = new Vector2(0.5f, 0.5f);
-                    ccrtW.anchorMax = new Vector2(0.5f, 0.5f);
-                    ccrtW.anchoredPosition = new Vector2(0, -25);
-                    ccrtW.sizeDelta = new Vector2(130, 200);
-                }
-            }
+            // 6. West (Opponent) — not touched here either; see note above.
 
-            // 7. East (Opponent) — right middle
-            if (eastSeat != null)
-            {
-                RectTransform ert = eastSeat.GetComponent<RectTransform>();
-                if (ert != null)
-                {
-                    ert.anchorMin = new Vector2(1f, 0.5f);
-                    ert.anchorMax = new Vector2(1f, 0.5f);
-                    ert.pivot = new Vector2(1f, 0.5f);
-                    ert.anchoredPosition = new Vector2(-35, 20);
-                    ert.sizeDelta = new Vector2(140, 360);
-                }
-                eastSeat.SetLayoutPositions(new Vector2(0, 110), new Vector2(0, 72), new Vector2(0, 155));
-                RectTransform ccrtE = (RectTransform)eastSeat.CardContainer;
-                if (ccrtE != null)
-                {
-                    ccrtE.anchorMin = new Vector2(0.5f, 0.5f);
-                    ccrtE.anchorMax = new Vector2(0.5f, 0.5f);
-                    ccrtE.anchoredPosition = new Vector2(0, -25);
-                    ccrtE.sizeDelta = new Vector2(130, 200);
-                }
-            }
+            // 7. East (Opponent) — not touched here either; see note above.
 
-            // 8. Trick Area — center of the board
-            if (trickArea != null)
-            {
-                RectTransform trt = trickArea.GetComponent<RectTransform>();
-                if (trt != null)
-                {
-                    trt.anchorMin = new Vector2(0.5f, 0.5f);
-                    trt.anchorMax = new Vector2(0.5f, 0.5f);
-                    trt.pivot = new Vector2(0.5f, 0.5f);
-                    trt.anchoredPosition = new Vector2(50, 20);
-                    trt.sizeDelta = new Vector2(500, 440);
-                }
-            }
+            // 8. Trick Area — intentionally NOT touched here. TrickAreaUI owns its own
+            // RectTransform (default set once in EnsureComponents(), or whatever
+            // you've positioned/sized it to by hand), same as the elements above.
 
-            // 9. Trump Card Slot — sits between Opponent Point Card and TrickArea
-            if (trumpCardSlot != null)
-            {
-                RectTransform trt = trumpCardSlot.GetComponent<RectTransform>();
-                if (trt != null)
-                {
-                    trt.anchorMin = new Vector2(0.5f, 0.5f);
-                    trt.anchorMax = new Vector2(0.5f, 0.5f);
-                    trt.pivot = new Vector2(0.5f, 0.5f);
-                    trt.anchoredPosition = new Vector2(-310, 20);
-                    trt.sizeDelta = new Vector2(115, 165);
-                    trt.localScale = Vector3.one;
-                    Vector3 lp = trt.localPosition;
-                    trt.localPosition = new Vector3(lp.x, lp.y, 0f);
-                }
-            }
+            // 9. Trump Card Slot — not touched here either; see note above.
 
-            // 10. Opponent Point Card Slot — left side of table
+            // 10. Opponent Point Card Slot — not touched here either; see note above.
+            //     EnsureComponents() is still called so its internal children exist.
             if (opponentPointCard != null)
-            {
-                RectTransform ort = opponentPointCard.GetComponent<RectTransform>();
-                if (ort != null)
-                {
-                    ort.anchorMin = new Vector2(0.5f, 0.5f);
-                    ort.anchorMax = new Vector2(0.5f, 0.5f);
-                    ort.pivot = new Vector2(0.5f, 0.5f);
-                    ort.anchoredPosition = new Vector2(-540, 20);
-                    ort.sizeDelta = new Vector2(130, 220);
-                    ort.localScale = Vector3.one;
-                    Vector3 lp = ort.localPosition;
-                    ort.localPosition = new Vector3(lp.x, lp.y, 0f);
-                }
                 opponentPointCard.EnsureComponents();
-            }
 
-            // 11. Your Team Point Card Slot — right side of table
+            // 11. Your Team Point Card Slot — not touched here either; see note above.
+            //     EnsureComponents() is still called so its internal children exist.
             if (yourTeamPointCard != null)
-            {
-                RectTransform yrt = yourTeamPointCard.GetComponent<RectTransform>();
-                if (yrt != null)
-                {
-                    yrt.anchorMin = new Vector2(0.5f, 0.5f);
-                    yrt.anchorMax = new Vector2(0.5f, 0.5f);
-                    yrt.pivot = new Vector2(0.5f, 0.5f);
-                    yrt.anchoredPosition = new Vector2(540, 20);
-                    yrt.sizeDelta = new Vector2(130, 220);
-                    yrt.localScale = Vector3.one;
-                    Vector3 lp = yrt.localPosition;
-                    yrt.localPosition = new Vector3(lp.x, lp.y, 0f);
-                }
                 yourTeamPointCard.EnsureComponents();
-            }
 
-            // 12. Bidding Panel — popup in center
+            // 12. Bidding Panel — not touched here either; see note above. Still kept
+            // on top of the render order so it shows above other board elements.
             if (biddingPanel != null)
-            {
-                RectTransform brt = biddingPanel.GetComponent<RectTransform>();
-                if (brt != null)
-                {
-                    brt.anchorMin = new Vector2(0.5f, 0.5f);
-                    brt.anchorMax = new Vector2(0.5f, 0.5f);
-                    brt.pivot = new Vector2(0.5f, 0.5f);
-                    brt.anchoredPosition = new Vector2(0, -20);
-                    brt.sizeDelta = new Vector2(460, 250);
-                }
                 biddingPanel.transform.SetAsLastSibling();
-            }
 
             if (trumpSelectionModal != null)
                 trumpSelectionModal.transform.SetAsLastSibling();
