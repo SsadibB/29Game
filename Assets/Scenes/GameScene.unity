@@ -1750,7 +1750,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -22.79}
-  m_SizeDelta: {x: 56, y: 56}
+  m_SizeDelta: {x: 70, y: 70}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &199665068
 MonoBehaviour:
@@ -13645,12 +13645,12 @@ MonoBehaviour:
   panelBg: {fileID: 0}
   titleText: {fileID: 0}
   subtitleText: {fileID: 0}
-  heartsBtn: {fileID: 0}
-  diamondsBtn: {fileID: 0}
-  clubsBtn: {fileID: 0}
   spadesBtn: {fileID: 0}
-  seventhCardBtn: {fileID: 0}
+  heartsBtn: {fileID: 0}
+  clubsBtn: {fileID: 0}
+  diamondsBtn: {fileID: 0}
   jokerBtn: {fileID: 0}
+  seventhCardBtn: {fileID: 0}
   dividerText: {fileID: 0}
 --- !u!1 &1824171083
 GameObject:

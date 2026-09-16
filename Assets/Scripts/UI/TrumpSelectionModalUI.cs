@@ -1,51 +1,73 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using DG.Tweening;
 
 namespace Game29
 {
     /// <summary>
-    /// Full-screen Trump Selection overlay shown when Human (South) wins the bid.
-    /// Layout:
-    ///   ┌─────────────── full screen overlay ──────────────────┐
-    ///   │  ╔══════════════ glass panel ═══════════════╗        │
-    ///   │  ║  ★ YOU WON THE BID (17)! ★               ║        │
-    ///   │  ║  Choose your trump carefully              ║        │
-    ///   │  ║                                           ║        │
-    ///   │  ║  [♥ Hearts] [♦ Diamonds] [♣ Clubs] [♠ Spades]  ║  │
-    ///   │  ║     3 cards     1 card    2 cards    0 cards    ║  │
-    ///   │  ║                                           ║        │
-    ///   │  ║  [🎴 7TH CARD - Blind Mystery Trump]      ║        │
-    ///   │  ║  [🃏 JOKER   - No Trump Mode      ]       ║        │
-    ///   │  ╚═══════════════════════════════════════════╝        │
-    ///   └──────────────────────────────────────────────────────┘
+    /// Interactive hover and elevation effect for trump selection cards.
+    /// </summary>
+    public class TrumpCardHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    {
+        public GameObject glowOutline;
+        private Vector3 _originalScale = Vector3.one;
+
+        private void Awake()
+        {
+            _originalScale = transform.localScale;
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            transform.DOKill();
+            transform.DOScale(_originalScale * 1.06f, 0.16f).SetEase(Ease.OutQuad).SetLink(gameObject);
+            if (glowOutline != null) glowOutline.SetActive(true);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            transform.DOKill();
+            transform.DOScale(_originalScale, 0.16f).SetEase(Ease.OutQuad).SetLink(gameObject);
+            if (glowOutline != null) glowOutline.SetActive(false);
+        }
+    }
+
+    /// <summary>
+    /// Full-screen Trump Selection modal overlay shown when Human (South) wins the bid.
+    /// Displays 6 consistent, selectable card visuals (without bottom badges):
+    ///   1. 2 of Spades (representing Spades)
+    ///   2. 2 of Hearts (representing Hearts)
+    ///   3. 2 of Clubs (representing Clubs)
+    ///   4. 2 of Diamonds (representing Diamonds)
+    ///   5. JOKER (Vertical J-O-K-E-R text corners, CenterGraphix image displaying "JOKER", no normal suit)
+    ///   6. 7th Card (Dynamic suit display matching player's 7-rank card, using project identifier '7thCard')
     /// </summary>
     public class TrumpSelectionModalUI : MonoBehaviour
     {
         // ── Backdrop overlay ────────────────────────────────────────────────
-        [SerializeField] private Image  backdropImage;
+        [SerializeField] private Image backdropImage;
 
         // ── Panel ──────────────────────────────────────────────────────────
         [SerializeField] private RectTransform panelRT;
-        [SerializeField] private Image         panelBg;
+        [SerializeField] private Image panelBg;
 
         // ── Header ─────────────────────────────────────────────────────────
         [SerializeField] private Text titleText;
         [SerializeField] private Text subtitleText;
 
-        // ── Suit buttons ───────────────────────────────────────────────────
-        [SerializeField] private Button heartsBtn;
-        [SerializeField] private Button diamondsBtn;
-        [SerializeField] private Button clubsBtn;
+        // ── 6 Selectable Card Buttons ───────────────────────────────────────
         [SerializeField] private Button spadesBtn;
-
-        // ── Special mode buttons ────────────────────────────────────────────
-        [SerializeField] private Button seventhCardBtn;
+        [SerializeField] private Button heartsBtn;
+        [SerializeField] private Button clubsBtn;
+        [SerializeField] private Button diamondsBtn;
         [SerializeField] private Button jokerBtn;
+        [SerializeField] private Button seventhCardBtn;
 
-        // ── Divider text ───────────────────────────────────────────────────
+        // ── Legacy serialized fields kept for scene backwards compatibility ──
         [SerializeField] private Text dividerText;
 
         private void Awake()
@@ -64,7 +86,7 @@ namespace Game29
 
         public void EnsureComponents()
         {
-            // This component lives on the root object which is full-screen
+            // Root RectTransform setup
             RectTransform rt = GetComponent<RectTransform>();
             if (rt == null) rt = gameObject.AddComponent<RectTransform>();
             rt.anchorMin = Vector2.zero;
@@ -76,7 +98,7 @@ namespace Game29
             rt.localScale = Vector3.one;
             rt.localRotation = Quaternion.identity;
 
-            // ── Full-screen semi-transparent backdrop ──
+            // Full-screen semi-transparent backdrop
             if (backdropImage == null)
             {
                 backdropImage = GetComponent<Image>();
@@ -85,7 +107,17 @@ namespace Game29
                 backdropImage.raycastTarget = true;
             }
 
-            // ── Centered glass panel ──
+            // Centered modal panel
+            if (panelRT == null)
+            {
+                Transform existing = transform.Find("TrumpPanel");
+                if (existing != null)
+                {
+                    panelRT = existing.GetComponent<RectTransform>();
+                    panelBg = existing.GetComponent<Image>();
+                }
+            }
+
             if (panelRT == null)
             {
                 GameObject panelGO = new GameObject("TrumpPanel");
@@ -93,78 +125,170 @@ namespace Game29
                 panelRT = panelGO.AddComponent<RectTransform>();
                 panelRT.anchorMin = new Vector2(0.5f, 0.5f);
                 panelRT.anchorMax = new Vector2(0.5f, 0.5f);
-                panelRT.pivot     = new Vector2(0.5f, 0.5f);
-                panelRT.sizeDelta = new Vector2(580, 620);
+                panelRT.pivot = new Vector2(0.5f, 0.5f);
                 panelRT.anchoredPosition = Vector2.zero;
 
                 panelBg = panelGO.AddComponent<Image>();
                 panelBg.sprite = CardVisualTheme.RoundedPanel;
-                panelBg.type   = Image.Type.Sliced;
-                panelBg.color  = new Color(0.06f, 0.09f, 0.16f, 0.97f);
+                panelBg.type = Image.Type.Sliced;
+                panelBg.color = new Color(0.06f, 0.09f, 0.16f, 0.97f);
+            }
 
-                // Gold border outline
+            // Standardize panel geometry: 940x390 holds all 6 cards horizontally with generous margins
+            panelRT.sizeDelta = new Vector2(940, 390);
+
+            // Gold border
+            Transform borderT = panelRT.Find("Border");
+            if (borderT == null)
+            {
                 GameObject borderGO = new GameObject("Border");
-                borderGO.transform.SetParent(panelGO.transform, false);
+                borderGO.transform.SetParent(panelRT, false);
                 RectTransform brt = borderGO.AddComponent<RectTransform>();
                 brt.anchorMin = Vector2.zero;
                 brt.anchorMax = Vector2.one;
                 brt.offsetMin = Vector2.zero;
                 brt.offsetMax = Vector2.zero;
                 Image borderImg = borderGO.AddComponent<Image>();
-                borderImg.sprite = CardVisualTheme.CreateRoundedRectSprite(580, 520, 28, Color.clear, CardVisualTheme.ColorGold, 2);
+                borderImg.sprite = CardVisualTheme.CreateRoundedRectSprite(940, 390, 24, Color.clear, CardVisualTheme.ColorGold, 2);
                 borderImg.type = Image.Type.Sliced;
                 borderImg.raycastTarget = false;
             }
 
-            // ── Header ──
+            // Detect and clear any legacy layout (e.g. old layout with bottom badges or old wide buttons)
+            bool needsRebuild = false;
+            Transform existingJoker = panelRT.Find("JOKER");
+            if (existingJoker != null && (existingJoker.Find("BottomBadge") != null || existingJoker.Find("CornerTL/Suit") != null))
+                needsRebuild = true;
+            Transform existingSpades = panelRT.Find("2OfSpades");
+            if (existingSpades != null && existingSpades.Find("BottomBadge") != null)
+                needsRebuild = true;
+            if (panelRT.Find("DividerLabel") != null || panelRT.Find("SeventhCardBtn") != null || panelRT.Find("HeartsBtn") != null)
+                needsRebuild = true;
+
+            if (needsRebuild)
+            {
+                for (int i = panelRT.childCount - 1; i >= 0; i--)
+                {
+                    Transform child = panelRT.GetChild(i);
+                    if (child.name == "Border") continue;
+                    if (Application.isPlaying) Destroy(child.gameObject);
+                    else DestroyImmediate(child.gameObject);
+                }
+                titleText = null;
+                subtitleText = null;
+                spadesBtn = null;
+                heartsBtn = null;
+                clubsBtn = null;
+                diamondsBtn = null;
+                jokerBtn = null;
+                seventhCardBtn = null;
+            }
+
+            // Header Title
+            if (titleText == null)
+            {
+                Transform t = panelRT.Find("Title");
+                if (t != null) titleText = t.GetComponent<Text>();
+            }
             if (titleText == null)
             {
                 titleText = CreateText(panelRT, "Title",
-                    new Vector2(0, 260), new Vector2(540, 46),
+                    new Vector2(0, 142), new Vector2(880, 42),
                     24, FontStyle.Bold, CardVisualTheme.ColorGold);
                 titleText.text = "★  YOU WON THE BID!  ★";
             }
 
+            // Header Subtitle
+            if (subtitleText == null)
+            {
+                Transform st = panelRT.Find("Subtitle");
+                if (st != null) subtitleText = st.GetComponent<Text>();
+            }
             if (subtitleText == null)
             {
                 subtitleText = CreateText(panelRT, "Subtitle",
-                    new Vector2(0, 222), new Vector2(540, 28),
+                    new Vector2(0, 108), new Vector2(880, 26),
                     14, FontStyle.Normal, new Color(0.75f, 0.82f, 0.92f));
-                subtitleText.text = "Bid Winner chooses trump — J > 9 > A > 10 > K > Q > 8 > 7";
+                subtitleText.text = "Select Trump: 4 Fixed Suits, JOKER, or dynamic 7th Card";
             }
 
-            // ── Thin separator ──
-            CreateSeparator(panelRT, new Vector2(0, 198), new Vector2(510, 2));
+            // Separator line
+            if (panelRT.Find("Separator") == null)
+            {
+                CreateSeparator(panelRT, new Vector2(0, 84), new Vector2(880, 2));
+            }
 
-            // ── Suit card buttons (top row) ──
+            // ── The 6 Selectable Card Visuals (No Bottom Badges) ──
+            // Card dimensions: 130x190. Spacing: 18px.
+            // X-centers: -370, -222, -74, +74, +222, +370. Centered Y = -25.
+            if (spadesBtn == null)
+            {
+                Transform t = panelRT.Find("2OfSpades");
+                if (t != null) spadesBtn = t.GetComponent<Button>();
+                if (spadesBtn == null)
+                {
+                    spadesBtn = CreateCardButton(panelRT, "2OfSpades", new Vector2(-370, -25),
+                        "2", CardVisualTheme.GetSuitSymbol(Suit.Spades), CardVisualTheme.GetSuitColor(Suit.Spades),
+                        CardVisualTheme.GetSuitSprite(Suit.Spades), CardVisualTheme.GetSuitSymbol(Suit.Spades));
+                }
+            }
+
             if (heartsBtn == null)
             {
-                heartsBtn   = CreateSuitBtn(panelRT, "HeartsBtn",   new Vector2(-195, 90), Suit.Hearts);
-                diamondsBtn = CreateSuitBtn(panelRT, "DiamondsBtn", new Vector2(-65,  90), Suit.Diamonds);
-                clubsBtn    = CreateSuitBtn(panelRT, "ClubsBtn",    new Vector2( 65,  90), Suit.Clubs);
-                spadesBtn   = CreateSuitBtn(panelRT, "SpadesBtn",   new Vector2( 195, 90), Suit.Spades);
+                Transform t = panelRT.Find("2OfHearts");
+                if (t != null) heartsBtn = t.GetComponent<Button>();
+                if (heartsBtn == null)
+                {
+                    heartsBtn = CreateCardButton(panelRT, "2OfHearts", new Vector2(-222, -25),
+                        "2", CardVisualTheme.GetSuitSymbol(Suit.Hearts), CardVisualTheme.GetSuitColor(Suit.Hearts),
+                        CardVisualTheme.GetSuitSprite(Suit.Hearts), CardVisualTheme.GetSuitSymbol(Suit.Hearts));
+                }
             }
 
-            if (dividerText == null)
+            if (clubsBtn == null)
             {
-                dividerText = CreateText(panelRT, "DividerLabel",
-                    new Vector2(0, -10), new Vector2(500, 24),
-                    13, FontStyle.Bold, new Color(0.75f, 0.80f, 0.88f));
-                dividerText.text = "—  or special trump  —";
+                Transform t = panelRT.Find("2OfClubs");
+                if (t != null) clubsBtn = t.GetComponent<Button>();
+                if (clubsBtn == null)
+                {
+                    clubsBtn = CreateCardButton(panelRT, "2OfClubs", new Vector2(-74, -25),
+                        "2", CardVisualTheme.GetSuitSymbol(Suit.Clubs), CardVisualTheme.GetSuitColor(Suit.Clubs),
+                        CardVisualTheme.GetSuitSprite(Suit.Clubs), CardVisualTheme.GetSuitSymbol(Suit.Clubs));
+                }
             }
 
-            if (seventhCardBtn == null)
+            if (diamondsBtn == null)
             {
-                seventhCardBtn = CreateSpecialBtn(panelRT, "SeventhCardBtn", new Vector2(0, -58),
-                    "🎴", "7TH CARD", "Blind trump = your 7th dealt card (face-down until revealed)",
-                    CardVisualTheme.ColorGold, new Color(0.16f, 0.14f, 0.08f, 0.97f));
+                Transform t = panelRT.Find("2OfDiamonds");
+                if (t != null) diamondsBtn = t.GetComponent<Button>();
+                if (diamondsBtn == null)
+                {
+                    diamondsBtn = CreateCardButton(panelRT, "2OfDiamonds", new Vector2(74, -25),
+                        "2", CardVisualTheme.GetSuitSymbol(Suit.Diamonds), CardVisualTheme.GetSuitColor(Suit.Diamonds),
+                        CardVisualTheme.GetSuitSprite(Suit.Diamonds), CardVisualTheme.GetSuitSymbol(Suit.Diamonds));
+                }
             }
 
             if (jokerBtn == null)
             {
-                jokerBtn = CreateSpecialBtn(panelRT, "JokerBtn", new Vector2(0, -128),
-                    "🃏", "JOKER", "Jacks are super-trumps: ♠J > ♥J > ♦J > ♣J",
-                    new Color(0.5f, 0.85f, 1f), new Color(0.08f, 0.16f, 0.24f, 0.97f));
+                Transform t = panelRT.Find("JOKER");
+                if (t != null) jokerBtn = t.GetComponent<Button>();
+                if (jokerBtn == null)
+                {
+                    jokerBtn = CreateJokerCardButton(panelRT, new Vector2(222, -25));
+                }
+            }
+
+            if (seventhCardBtn == null)
+            {
+                Transform t = panelRT.Find("7thCard");
+                if (t != null) seventhCardBtn = t.GetComponent<Button>();
+                if (seventhCardBtn == null)
+                {
+                    seventhCardBtn = CreateCardButton(panelRT, "7thCard", new Vector2(370, -25),
+                        "7", CardVisualTheme.GetSuitSymbol(Suit.Hearts), CardVisualTheme.GetSuitColor(Suit.Hearts),
+                        CardVisualTheme.GetSuitSprite(Suit.Hearts), CardVisualTheme.GetSuitSymbol(Suit.Hearts));
+                }
             }
 
             HookButtonListeners();
@@ -172,21 +296,21 @@ namespace Game29
 
         private void HookButtonListeners()
         {
-            HookSuit(heartsBtn,   Suit.Hearts);
-            HookSuit(diamondsBtn, Suit.Diamonds);
-            HookSuit(clubsBtn,    Suit.Clubs);
             HookSuit(spadesBtn,   Suit.Spades);
-
-            if (seventhCardBtn != null)
-            {
-                seventhCardBtn.onClick.RemoveAllListeners();
-                seventhCardBtn.onClick.AddListener(OnSeventhCardSelected);
-            }
+            HookSuit(heartsBtn,   Suit.Hearts);
+            HookSuit(clubsBtn,    Suit.Clubs);
+            HookSuit(diamondsBtn, Suit.Diamonds);
 
             if (jokerBtn != null)
             {
                 jokerBtn.onClick.RemoveAllListeners();
                 jokerBtn.onClick.AddListener(OnJokerSelected);
+            }
+
+            if (seventhCardBtn != null)
+            {
+                seventhCardBtn.onClick.RemoveAllListeners();
+                seventhCardBtn.onClick.AddListener(OnSeventhCardSelected);
             }
         }
 
@@ -210,19 +334,12 @@ namespace Game29
             if (titleText != null)
                 titleText.text = $"★  YOU WON THE BID  ( {winningBid} )  ★";
             if (subtitleText != null)
-                subtitleText.text = "Choose a suit, 7th Card, or Joker. Ranking: J > 9 > A > 10 > K > Q > 8 > 7";
+                subtitleText.text = "Select Trump: 4 Fixed Suits, JOKER, or dynamic 7th Card";
 
-            // Update suit card counts
-            UpdateSuitBtn(heartsBtn,   Suit.Hearts,   hand);
-            UpdateSuitBtn(diamondsBtn, Suit.Diamonds, hand);
-            UpdateSuitBtn(clubsBtn,    Suit.Clubs,    hand);
-            UpdateSuitBtn(spadesBtn,   Suit.Spades,   hand);
-
-            if (panelRT != null)
-                panelRT.sizeDelta = new Vector2(580, 620);
-            if (dividerText != null) dividerText.gameObject.SetActive(true);
-            if (seventhCardBtn != null) seventhCardBtn.gameObject.SetActive(true);
-            if (jokerBtn != null) jokerBtn.gameObject.SetActive(true);
+            // Dynamically determine the 7th Card's suit from the 7-number card owned by player
+            Card sevenCard = hand?.Cards != null ? hand.Cards.FirstOrDefault(c => c.Rank == Rank.Seven) : null;
+            Suit dynamicSuit = sevenCard != null ? sevenCard.Suit : Suit.Hearts;
+            UpdateSeventhCardVisual(dynamicSuit);
 
             // Backdrop fade in
             if (backdropImage != null)
@@ -232,7 +349,7 @@ namespace Game29
                 backdropImage.DOFade(0.82f, 0.2f).SetLink(gameObject);
             }
 
-            // Panel punch-in from center
+            // Panel punch-in
             if (panelRT != null)
             {
                 panelRT.DOKill();
@@ -240,13 +357,13 @@ namespace Game29
                 panelRT.DOScale(1f, 0.32f).SetEase(Ease.OutBack).SetLink(gameObject);
             }
 
-            // Staggered button entrance animations
-            AnimateButtonEntrance(heartsBtn,   0.08f);
-            AnimateButtonEntrance(diamondsBtn, 0.14f);
-            AnimateButtonEntrance(clubsBtn,    0.20f);
-            AnimateButtonEntrance(spadesBtn,   0.26f);
-            AnimateButtonEntrance(seventhCardBtn, 0.32f);
-            AnimateButtonEntrance(jokerBtn,    0.38f);
+            // Staggered card entrance animations across the 6 cards
+            AnimateButtonEntrance(spadesBtn,      0.05f);
+            AnimateButtonEntrance(heartsBtn,      0.10f);
+            AnimateButtonEntrance(clubsBtn,       0.15f);
+            AnimateButtonEntrance(diamondsBtn,    0.20f);
+            AnimateButtonEntrance(jokerBtn,       0.25f);
+            AnimateButtonEntrance(seventhCardBtn, 0.30f);
         }
 
         public void Hide()
@@ -254,9 +371,6 @@ namespace Game29
             transform.DOKill();
             if (panelRT != null) panelRT.DOKill();
 
-            // Drop the full-screen raycast immediately. Waiting on a hide tween
-            // left an invisible overlay on top of the hand, so card clicks after
-            // trump selection never reached the cards and play could not start.
             if (backdropImage != null)
                 backdropImage.raycastTarget = false;
 
@@ -271,7 +385,7 @@ namespace Game29
         {
             Debug.Log($"[29 TrumpSelection] Human South selected Trump: {suit}");
             if (btn != null)
-                btn.transform.DOPunchScale(Vector3.one * 0.25f, 0.2f, 10, 1).SetLink(gameObject);
+                btn.transform.DOPunchScale(Vector3.one * 0.18f, 0.2f, 10, 1).SetLink(gameObject);
 
             Hide();
             GameManager.Instance.SelectHumanTrump(suit);
@@ -281,7 +395,7 @@ namespace Game29
         {
             Debug.Log("[29 TrumpSelection] Human South selected 7th Card!");
             if (seventhCardBtn != null)
-                seventhCardBtn.transform.DOPunchScale(Vector3.one * 0.2f, 0.2f, 10, 1).SetLink(gameObject);
+                seventhCardBtn.transform.DOPunchScale(Vector3.one * 0.18f, 0.2f, 10, 1).SetLink(gameObject);
 
             Hide();
             GameManager.Instance.SelectHumanSeventhCard();
@@ -291,164 +405,364 @@ namespace Game29
         {
             Debug.Log("[29 TrumpSelection] Human South selected Joker!");
             if (jokerBtn != null)
-                jokerBtn.transform.DOPunchScale(Vector3.one * 0.2f, 0.2f, 10, 1).SetLink(gameObject);
+                jokerBtn.transform.DOPunchScale(Vector3.one * 0.18f, 0.2f, 10, 1).SetLink(gameObject);
 
             Hide();
             GameManager.Instance.SelectHumanJoker();
         }
 
         // ════════════════════════════════════════════════════════════════════
-        // HELPERS
+        // DYNAMIC UPDATES & CARD BUILDERS
         // ════════════════════════════════════════════════════════════════════
 
-        private void UpdateSuitBtn(Button btn, Suit suit, Hand hand)
+        /// <summary>
+        /// Dynamically updates the 7th Card visual to match the player's 7-rank card suit.
+        /// </summary>
+        public void UpdateSeventhCardVisual(Suit suit)
         {
-            if (btn == null) return;
-            int count = hand != null ? hand.GetCardsBySuit(suit).Count : 0;
+            if (seventhCardBtn == null) return;
+            Transform t = seventhCardBtn.transform;
+            Color suitCol = CardVisualTheme.GetSuitColor(suit);
+            string sym = CardVisualTheme.GetSuitSymbol(suit);
 
-            // Find the count sub-text
-            Text countTxt = btn.transform.Find("Count")?.GetComponent<Text>();
-            if (countTxt != null)
+            // Corner Top-Left
+            Transform tl = t.Find("CornerTL");
+            if (tl != null)
             {
-                countTxt.text = count > 0 ? $"{count} in hand" : "none";
-                countTxt.color = count > 0 ? new Color(0.75f, 0.95f, 0.75f) : new Color(0.5f, 0.5f, 0.55f);
+                Text rTxt = tl.Find("Rank")?.GetComponent<Text>();
+                if (rTxt != null) { rTxt.text = "7"; rTxt.color = suitCol; }
+                Text sTxt = tl.Find("Suit")?.GetComponent<Text>();
+                if (sTxt != null) { sTxt.text = sym; sTxt.color = suitCol; }
             }
 
-            // Dim buttons with no cards
-            Image bg = btn.GetComponent<Image>();
-            if (bg != null)
-                bg.color = count > 0
-                    ? new Color(0.12f, 0.18f, 0.28f, 0.97f)
-                    : new Color(0.08f, 0.10f, 0.15f, 0.6f);
+            // Corner Bottom-Right
+            Transform br = t.Find("CornerBR");
+            if (br != null)
+            {
+                Text rTxt = br.Find("Rank")?.GetComponent<Text>();
+                if (rTxt != null) { rTxt.text = "7"; rTxt.color = suitCol; }
+                Text sTxt = br.Find("Suit")?.GetComponent<Text>();
+                if (sTxt != null) { sTxt.text = sym; sTxt.color = suitCol; }
+            }
+
+            // Center Graphic
+            Sprite suitSprite = CardVisualTheme.GetSuitSprite(suit);
+            Image centerImg = t.Find("CenterGraphix")?.GetComponent<Image>() ?? t.Find("CenterGraphic")?.GetComponent<Image>();
+            Text centerTxt = t.Find("CenterText")?.GetComponent<Text>();
+
+            if (suitSprite != null && centerImg != null)
+            {
+                centerImg.sprite = suitSprite;
+                centerImg.color = Color.white;
+                centerImg.gameObject.SetActive(true);
+                if (centerTxt != null) centerTxt.gameObject.SetActive(false);
+            }
+            else if (centerTxt != null)
+            {
+                centerTxt.text = sym;
+                centerTxt.color = suitCol;
+                centerTxt.gameObject.SetActive(true);
+                if (centerImg != null) centerImg.gameObject.SetActive(false);
+            }
         }
 
         private void AnimateButtonEntrance(Button btn, float delay)
         {
             if (btn == null) return;
             btn.transform.DOKill();
-            btn.transform.localScale = Vector3.one * 0.5f;
-            btn.transform.DOScale(1f, 0.22f).SetDelay(delay).SetEase(Ease.OutBack).SetLink(gameObject);
+            btn.transform.localScale = Vector3.one * 0.4f;
+            btn.transform.DOScale(1f, 0.24f).SetDelay(delay).SetEase(Ease.OutBack).SetLink(gameObject);
         }
 
-        // ════════════════════════════════════════════════════════════════════
-        // WIDGET BUILDERS
-        // ════════════════════════════════════════════════════════════════════
-
-        /// <summary>Creates a large suit card button with symbol, suit name and card count.</summary>
-        private Button CreateSuitBtn(RectTransform parent, string name, Vector2 pos, Suit suit)
+        /// <summary>
+        /// Builds standard card button (130x190) with corner rank+suit and centered artwork,
+        /// without bottom badges.
+        /// </summary>
+        private Button CreateCardButton(RectTransform parent, string goName, Vector2 pos,
+            string rankText, string suitSymbol, Color suitColor, Sprite centerSprite, string centerTextFallback)
         {
-            string sym      = CardVisualTheme.GetSuitSymbol(suit);
-            Color  suitCol  = CardVisualTheme.GetSuitColor(suit);
-            string suitName = CardVisualTheme.GetSuitName(suit).ToUpper();
-
-            GameObject btnGO = new GameObject(name);
-            btnGO.transform.SetParent(parent, false);
-            RectTransform rt = btnGO.AddComponent<RectTransform>();
+            GameObject cardGO = new GameObject(goName);
+            cardGO.transform.SetParent(parent, false);
+            RectTransform rt = cardGO.AddComponent<RectTransform>();
+            rt.sizeDelta = new Vector2(130, 190);
             rt.anchoredPosition = pos;
-            rt.sizeDelta        = new Vector2(118, 148);
 
-            // Background card shape
-            Image bg = btnGO.AddComponent<Image>();
-            bg.sprite         = CardVisualTheme.RoundedCardSlot;
-            bg.type           = Image.Type.Sliced;
-            bg.color          = new Color(0.12f, 0.18f, 0.28f, 0.97f);
-            bg.raycastTarget  = true;
+            // Card Face Background
+            Image bg = cardGO.AddComponent<Image>();
+            bg.sprite = CardVisualTheme.CardFront;
+            bg.color = Color.white;
+            bg.type = Image.Type.Simple;
+            bg.preserveAspect = false;
+            bg.raycastTarget = true;
 
-            // Colored left accent strip
-            GameObject accent = new GameObject("Accent");
-            accent.transform.SetParent(btnGO.transform, false);
-            RectTransform art = accent.AddComponent<RectTransform>();
-            art.anchorMin = new Vector2(0, 0);
-            art.anchorMax = new Vector2(0, 1);
-            art.offsetMin = Vector2.zero;
-            art.offsetMax = new Vector2(5, 0);
-            Image accentImg = accent.AddComponent<Image>();
-            accentImg.color = new Color(suitCol.r, suitCol.g, suitCol.b, 0.85f);
-            accentImg.raycastTarget = false;
+            // Card Border Outline
+            GameObject borderGO = new GameObject("CardBorder");
+            borderGO.transform.SetParent(cardGO.transform, false);
+            RectTransform brt = borderGO.AddComponent<RectTransform>();
+            brt.anchorMin = Vector2.zero;
+            brt.anchorMax = Vector2.one;
+            brt.offsetMin = Vector2.zero;
+            brt.offsetMax = Vector2.zero;
+            Image borderImg = borderGO.AddComponent<Image>();
+            borderImg.sprite = CardVisualTheme.CreateRoundedRectSprite(130, 190, 12, Color.clear, new Color(0.85f, 0.70f, 0.28f, 0.6f), 2);
+            borderImg.type = Image.Type.Sliced;
+            borderImg.raycastTarget = false;
 
-            // Suit symbol (large, centered top)
-            Text symTxt = CreateText(rt, "Symbol", new Vector2(0, 28), new Vector2(110, 68),
-                52, FontStyle.Bold, suitCol);
-            symTxt.text = sym;
+            // Glow Outline on Hover
+            GameObject glowGO = new GameObject("GlowOutline");
+            glowGO.transform.SetParent(cardGO.transform, false);
+            RectTransform grt = glowGO.AddComponent<RectTransform>();
+            grt.anchorMin = Vector2.zero;
+            grt.anchorMax = Vector2.one;
+            grt.offsetMin = new Vector2(-6, -6);
+            grt.offsetMax = new Vector2(6, 6);
+            Image glowImg = glowGO.AddComponent<Image>();
+            glowImg.sprite = CardVisualTheme.CreateRoundedRectSprite(142, 202, 16, Color.clear, CardVisualTheme.ColorGold, 4);
+            glowImg.type = Image.Type.Sliced;
+            glowImg.raycastTarget = false;
+            glowGO.SetActive(false);
 
-            // Suit name
-            Text nameTxt = CreateText(rt, "Name", new Vector2(0, -22), new Vector2(110, 26),
-                13, FontStyle.Bold, Color.white);
-            nameTxt.text = suitName;
+            // Corner Indicators (Top-Left & Bottom-Right)
+            CreateCornerIndicator(rt, "CornerTL", new Vector2(0, 1), new Vector2(0, 1),
+                new Vector2(11, -8), rankText, suitSymbol, suitColor, TextAnchor.UpperLeft);
 
-            // Card count
-            Text countTxt = CreateText(rt, "Count", new Vector2(0, -46), new Vector2(110, 22),
-                11, FontStyle.Normal, new Color(0.7f, 0.85f, 0.7f));
-            countTxt.text = "0 in hand";
+            CreateCornerIndicator(rt, "CornerBR", new Vector2(1, 0), new Vector2(1, 0),
+                new Vector2(-11, 8), rankText, suitSymbol, suitColor, TextAnchor.LowerRight);
 
-            Button btn = btnGO.AddComponent<Button>();
+            // Center Artwork Graphic
+            GameObject centerGO = new GameObject("CenterGraphix");
+            centerGO.transform.SetParent(cardGO.transform, false);
+            RectTransform crt = centerGO.AddComponent<RectTransform>();
+            crt.anchoredPosition = Vector2.zero;
+            crt.sizeDelta = new Vector2(64, 64);
+            Image centerImg = centerGO.AddComponent<Image>();
+            centerImg.preserveAspect = true;
+            centerImg.raycastTarget = false;
+
+            // Center Artwork Fallback Text
+            GameObject centerTxtGO = new GameObject("CenterText");
+            centerTxtGO.transform.SetParent(cardGO.transform, false);
+            RectTransform ctrt = centerTxtGO.AddComponent<RectTransform>();
+            ctrt.anchoredPosition = Vector2.zero;
+            ctrt.sizeDelta = new Vector2(64, 64);
+            Text centerTxt = centerTxtGO.AddComponent<Text>();
+            centerTxt.font = CardVisualTheme.GetFont();
+            centerTxt.fontSize = 54;
+            centerTxt.fontStyle = FontStyle.Normal;
+            centerTxt.alignment = TextAnchor.MiddleCenter;
+            centerTxt.color = suitColor;
+            centerTxt.raycastTarget = false;
+
+            if (centerSprite != null)
+            {
+                centerImg.sprite = centerSprite;
+                centerImg.color = Color.white;
+                centerImg.gameObject.SetActive(true);
+                centerTxt.gameObject.SetActive(false);
+            }
+            else
+            {
+                centerImg.gameObject.SetActive(false);
+                centerTxt.text = centerTextFallback;
+                centerTxt.gameObject.SetActive(true);
+            }
+
+            // Button Component
+            Button btn = cardGO.AddComponent<Button>();
             btn.targetGraphic = bg;
-
-            // Button tint colors
             ColorBlock cb = btn.colors;
-            cb.normalColor      = Color.white;
-            cb.highlightedColor = new Color(1.3f, 1.3f, 1.3f, 1f);
-            cb.pressedColor     = new Color(0.85f, 0.85f, 0.85f, 1f);
+            cb.normalColor = Color.white;
+            cb.highlightedColor = new Color(1.08f, 1.08f, 1.08f, 1f);
+            cb.pressedColor = new Color(0.88f, 0.88f, 0.88f, 1f);
+            cb.selectedColor = Color.white;
             btn.colors = cb;
+
+            // Hover Elevation and Glow Effect
+            TrumpCardHoverEffect hover = cardGO.AddComponent<TrumpCardHoverEffect>();
+            hover.glowOutline = glowGO;
 
             return btn;
         }
 
-        /// <summary>Creates a wide special mode button (7th Card / Joker).</summary>
-        private Button CreateSpecialBtn(RectTransform parent, string name, Vector2 pos,
-            string emoji, string label, string description, Color accentColor, Color bgColor)
+        /// <summary>
+        /// Creates the special JOKER card:
+        /// - Identifier: 'JOKER'
+        /// - CornerTL & CornerBR display vertical "J\nO\nK\nE\nR" with no suit icon
+        /// - CenterGraphix displays "JOKER"
+        /// - No normal suit assigned
+        /// - No bottom badge
+        /// </summary>
+        private Button CreateJokerCardButton(RectTransform parent, Vector2 pos)
         {
-            GameObject btnGO = new GameObject(name);
-            btnGO.transform.SetParent(parent, false);
-            RectTransform rt = btnGO.AddComponent<RectTransform>();
+            GameObject cardGO = new GameObject("JOKER");
+            cardGO.transform.SetParent(parent, false);
+            RectTransform rt = cardGO.AddComponent<RectTransform>();
+            rt.sizeDelta = new Vector2(130, 190);
             rt.anchoredPosition = pos;
-            rt.sizeDelta        = new Vector2(510, 58);
 
-            Image bg = btnGO.AddComponent<Image>();
-            bg.sprite         = CardVisualTheme.RoundedCardSlot;
-            bg.type           = Image.Type.Sliced;
-            bg.color          = bgColor;
-            bg.raycastTarget  = true;
+            // Card Face Background
+            Image bg = cardGO.AddComponent<Image>();
+            bg.sprite = CardVisualTheme.CardFront;
+            bg.color = Color.white;
+            bg.type = Image.Type.Simple;
+            bg.preserveAspect = false;
+            bg.raycastTarget = true;
 
-            // Left accent bar
-            GameObject accent = new GameObject("Accent");
-            accent.transform.SetParent(btnGO.transform, false);
-            RectTransform art = accent.AddComponent<RectTransform>();
-            art.anchorMin = new Vector2(0, 0);
-            art.anchorMax = new Vector2(0, 1);
-            art.offsetMin = Vector2.zero;
-            art.offsetMax = new Vector2(5, 0);
-            Image accentImg = accent.AddComponent<Image>();
-            accentImg.color = new Color(accentColor.r, accentColor.g, accentColor.b, 0.9f);
-            accentImg.raycastTarget = false;
+            // Card Border Outline
+            GameObject borderGO = new GameObject("CardBorder");
+            borderGO.transform.SetParent(cardGO.transform, false);
+            RectTransform brt = borderGO.AddComponent<RectTransform>();
+            brt.anchorMin = Vector2.zero;
+            brt.anchorMax = Vector2.one;
+            brt.offsetMin = Vector2.zero;
+            brt.offsetMax = Vector2.zero;
+            Image borderImg = borderGO.AddComponent<Image>();
+            borderImg.sprite = CardVisualTheme.CreateRoundedRectSprite(130, 190, 12, Color.clear, CardVisualTheme.ColorGold, 2);
+            borderImg.type = Image.Type.Sliced;
+            borderImg.raycastTarget = false;
 
-            // Emoji icon
-            Text emojiTxt = CreateText(rt, "Emoji", new Vector2(-218, 0), new Vector2(40, 50),
-                26, FontStyle.Normal, Color.white);
-            emojiTxt.text = emoji;
+            // Glow Outline on Hover
+            GameObject glowGO = new GameObject("GlowOutline");
+            glowGO.transform.SetParent(cardGO.transform, false);
+            RectTransform grt = glowGO.AddComponent<RectTransform>();
+            grt.anchorMin = Vector2.zero;
+            grt.anchorMax = Vector2.one;
+            grt.offsetMin = new Vector2(-6, -6);
+            grt.offsetMax = new Vector2(6, 6);
+            Image glowImg = glowGO.AddComponent<Image>();
+            glowImg.sprite = CardVisualTheme.CreateRoundedRectSprite(142, 202, 16, Color.clear, CardVisualTheme.ColorGold, 4);
+            glowImg.type = Image.Type.Sliced;
+            glowImg.raycastTarget = false;
+            glowGO.SetActive(false);
 
-            // Label (bold title)
-            Text lblTxt = CreateText(rt, "Label", new Vector2(20, 10), new Vector2(380, 28),
-                16, FontStyle.Bold, accentColor);
-            lblTxt.text      = label;
-            lblTxt.alignment = TextAnchor.MiddleLeft;
+            // ── CornerTL: Vertical "J\nO\nK\nE\nR" with NO suit icon ──
+            CreateJokerCornerText(rt, "CornerTL", new Vector2(0, 1), new Vector2(0, 1),
+                new Vector2(11, -8), TextAnchor.UpperLeft);
 
-            // Description (small subtitle)
-            Text descTxt = CreateText(rt, "Desc", new Vector2(20, -12), new Vector2(380, 22),
-                11, FontStyle.Normal, new Color(0.75f, 0.80f, 0.88f));
-            descTxt.text      = description;
-            descTxt.alignment = TextAnchor.MiddleLeft;
+            // ── CornerBR: Vertical "J\nO\nK\nE\nR" with NO suit icon ──
+            CreateJokerCornerText(rt, "CornerBR", new Vector2(1, 0), new Vector2(1, 0),
+                new Vector2(-11, 8), TextAnchor.LowerRight);
 
-            Button btn = btnGO.AddComponent<Button>();
+            // ── CenterGraphix: Image component set to the JOKER named resource sprite, no children ──
+            GameObject centerGO = new GameObject("CenterGraphix");
+            centerGO.transform.SetParent(cardGO.transform, false);
+            RectTransform crt = centerGO.AddComponent<RectTransform>();
+            crt.anchoredPosition = Vector2.zero;
+            crt.sizeDelta = new Vector2(96, 96);
+
+            Image centerImg = centerGO.AddComponent<Image>();
+            Sprite jokerSprite = Resources.Load<Sprite>("JOKER");
+            if (jokerSprite == null)
+            {
+                // Fallback: try as Texture2D and wrap
+                Texture2D jokerTex = Resources.Load<Texture2D>("JOKER");
+                if (jokerTex != null)
+                    jokerSprite = Sprite.Create(jokerTex, new Rect(0, 0, jokerTex.width, jokerTex.height), new Vector2(0.5f, 0.5f));
+            }
+            centerImg.sprite = jokerSprite;
+            centerImg.color = Color.white;
+            centerImg.preserveAspect = true;
+            centerImg.type = Image.Type.Simple;
+            centerImg.raycastTarget = false;
+
+
+            // Button Component
+            Button btn = cardGO.AddComponent<Button>();
             btn.targetGraphic = bg;
-
             ColorBlock cb = btn.colors;
-            cb.normalColor      = Color.white;
-            cb.highlightedColor = new Color(1.25f, 1.25f, 1.25f, 1f);
-            cb.pressedColor     = new Color(0.85f, 0.85f, 0.85f, 1f);
+            cb.normalColor = Color.white;
+            cb.highlightedColor = new Color(1.08f, 1.08f, 1.08f, 1f);
+            cb.pressedColor = new Color(0.88f, 0.88f, 0.88f, 1f);
+            cb.selectedColor = Color.white;
             btn.colors = cb;
 
+            // Hover Effect
+            TrumpCardHoverEffect hover = cardGO.AddComponent<TrumpCardHoverEffect>();
+            hover.glowOutline = glowGO;
+
             return btn;
+        }
+
+        /// <summary>
+        /// Helper to create vertical J-O-K-E-R text in card corner without suit icon.
+        /// </summary>
+        private void CreateJokerCornerText(RectTransform parent, string name, Vector2 anchor, Vector2 pivot, Vector2 pos, TextAnchor alignment)
+        {
+            GameObject cornerGO = new GameObject(name);
+            cornerGO.transform.SetParent(parent, false);
+            RectTransform rt = cornerGO.AddComponent<RectTransform>();
+            rt.anchorMin = anchor;
+            rt.anchorMax = anchor;
+            rt.pivot = pivot;
+            rt.anchoredPosition = pos;
+            rt.sizeDelta = new Vector2(24, 88);
+
+            GameObject rankGO = new GameObject("Rank");
+            rankGO.transform.SetParent(cornerGO.transform, false);
+            RectTransform rrt = rankGO.AddComponent<RectTransform>();
+            rrt.anchorMin = Vector2.zero;
+            rrt.anchorMax = Vector2.one;
+            rrt.offsetMin = Vector2.zero;
+            rrt.offsetMax = Vector2.zero;
+
+            Text rTxt = rankGO.AddComponent<Text>();
+            rTxt.font = CardVisualTheme.GetFont();
+            rTxt.fontSize = 12;
+            rTxt.fontStyle = FontStyle.Bold;
+            rTxt.lineSpacing = 0.85f;
+            rTxt.alignment = alignment;
+            rTxt.color = new Color(0.12f, 0.14f, 0.18f, 1f);
+            rTxt.text = "J\nO\nK\nE\nR";
+            rTxt.raycastTarget = false;
+        }
+
+        private void CreateCornerIndicator(RectTransform parent, string name, Vector2 anchor, Vector2 pivot,
+            Vector2 pos, string rank, string suitSym, Color color, TextAnchor alignment)
+        {
+            GameObject cornerGO = new GameObject(name);
+            cornerGO.transform.SetParent(parent, false);
+            RectTransform rt = cornerGO.AddComponent<RectTransform>();
+            rt.anchorMin = anchor;
+            rt.anchorMax = anchor;
+            rt.pivot = pivot;
+            rt.anchoredPosition = pos;
+            rt.sizeDelta = new Vector2(34, 48);
+
+            // Rank
+            GameObject rankGO = new GameObject("Rank");
+            rankGO.transform.SetParent(cornerGO.transform, false);
+            RectTransform rrt = rankGO.AddComponent<RectTransform>();
+            rrt.anchorMin = new Vector2(0.5f, 1f);
+            rrt.anchorMax = new Vector2(0.5f, 1f);
+            rrt.pivot = new Vector2(0.5f, 1f);
+            rrt.anchoredPosition = Vector2.zero;
+            rrt.sizeDelta = new Vector2(34, 24);
+            Text rTxt = rankGO.AddComponent<Text>();
+            rTxt.font = CardVisualTheme.GetFont();
+            rTxt.fontSize = 20;
+            rTxt.fontStyle = FontStyle.Bold;
+            rTxt.alignment = alignment;
+            rTxt.color = color;
+            rTxt.text = rank;
+            rTxt.raycastTarget = false;
+
+            // Suit
+            GameObject suitGO = new GameObject("Suit");
+            suitGO.transform.SetParent(cornerGO.transform, false);
+            RectTransform srt = suitGO.AddComponent<RectTransform>();
+            srt.anchorMin = new Vector2(0.5f, 0f);
+            srt.anchorMax = new Vector2(0.5f, 0f);
+            srt.pivot = new Vector2(0.5f, 0f);
+            srt.anchoredPosition = Vector2.zero;
+            srt.sizeDelta = new Vector2(34, 22);
+            Text sTxt = suitGO.AddComponent<Text>();
+            sTxt.font = CardVisualTheme.GetFont();
+            sTxt.fontSize = 18;
+            sTxt.fontStyle = FontStyle.Normal;
+            sTxt.alignment = alignment;
+            sTxt.color = color;
+            sTxt.text = suitSym;
+            sTxt.raycastTarget = false;
         }
 
         private void CreateSeparator(RectTransform parent, Vector2 pos, Vector2 size)
@@ -457,10 +771,10 @@ namespace Game29
             sep.transform.SetParent(parent, false);
             RectTransform rt = sep.AddComponent<RectTransform>();
             rt.anchoredPosition = pos;
-            rt.sizeDelta        = size;
+            rt.sizeDelta = size;
             Image img = sep.AddComponent<Image>();
-            img.color          = new Color(1f, 1f, 1f, 0.08f);
-            img.raycastTarget  = false;
+            img.color = new Color(1f, 1f, 1f, 0.12f);
+            img.raycastTarget = false;
         }
 
         private Text CreateText(RectTransform parent, string name, Vector2 pos, Vector2 size,
@@ -469,18 +783,18 @@ namespace Game29
             GameObject obj = new GameObject(name);
             obj.transform.SetParent(parent, false);
             RectTransform rt = obj.AddComponent<RectTransform>();
-            rt.anchorMin        = new Vector2(0.5f, 0.5f);
-            rt.anchorMax        = new Vector2(0.5f, 0.5f);
-            rt.pivot            = new Vector2(0.5f, 0.5f);
+            rt.anchorMin = new Vector2(0.5f, 0.5f);
+            rt.anchorMax = new Vector2(0.5f, 0.5f);
+            rt.pivot = new Vector2(0.5f, 0.5f);
             rt.anchoredPosition = pos;
-            rt.sizeDelta        = size;
+            rt.sizeDelta = size;
 
             Text txt = obj.AddComponent<Text>();
-            txt.font          = CardVisualTheme.GetFont();
-            txt.fontSize      = fontSize;
-            txt.fontStyle     = style;
-            txt.alignment     = TextAnchor.MiddleCenter;
-            txt.color         = color;
+            txt.font = CardVisualTheme.GetFont();
+            txt.fontSize = fontSize;
+            txt.fontStyle = style;
+            txt.alignment = TextAnchor.MiddleCenter;
+            txt.color = color;
             txt.raycastTarget = false;
             return txt;
         }
