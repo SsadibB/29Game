@@ -40,6 +40,7 @@ namespace Game29
         [SerializeField] private RoundEndModalUI roundEndModal;
         [SerializeField] private TrumpSelectionModalUI trumpSelectionModal;
         [SerializeField] private TrumpCardSlotUI trumpCardSlot;
+        [SerializeField] private DecisionPanelUI decisionPanel;
 
         [Header("Point Card System (-6 to +6)")]
         [SerializeField] private PointCardSlotUI yourTeamPointCard;
@@ -100,6 +101,9 @@ namespace Game29
             _gm.OnRoundScored += HandleRoundScored;
             _gm.OnGameOver += HandleGameOver;
             _gm.OnHumanTrumpSelectionRequired += HandleHumanTrumpSelectionRequired;
+            _gm.OnSinglePlayEligible += HandleSinglePlayEligible;
+            _gm.OnDoubleDecisionRequired += HandleDoubleDecisionRequired;
+            _gm.OnReDoubleDecisionRequired += HandleReDoubleDecisionRequired;
             _gm.OnStateChanged += RefreshAllDisplay;
             _gm.ScoreManager.OnMarriageDeclared += HandleMarriageDeclared;
 
@@ -121,6 +125,9 @@ namespace Game29
             _gm.OnRoundScored -= HandleRoundScored;
             _gm.OnGameOver -= HandleGameOver;
             _gm.OnHumanTrumpSelectionRequired -= HandleHumanTrumpSelectionRequired;
+            _gm.OnSinglePlayEligible -= HandleSinglePlayEligible;
+            _gm.OnDoubleDecisionRequired -= HandleDoubleDecisionRequired;
+            _gm.OnReDoubleDecisionRequired -= HandleReDoubleDecisionRequired;
             _gm.OnStateChanged -= RefreshAllDisplay;
             _gm.ScoreManager.OnMarriageDeclared -= HandleMarriageDeclared;
         }
@@ -276,6 +283,51 @@ namespace Game29
             scoreHUD.SetStatusMessage("★ YOU WON THE BID! Choose your Trump card ★");
         }
 
+        private void HandleSinglePlayEligible()
+        {
+            if (decisionPanel == null) BuildUIIfMissing();
+            if (decisionPanel != null)
+            {
+                bool eligible = _gm != null && GameRules.IsEligibleForSinglePlay(_gm.HumanHand);
+                string msg = eligible
+                    ? "Hand meets Single Play condition! Choose SINGLE to play alone, or NO to play with partner."
+                    : "Do you want to play single alone? Choose SINGLE to play alone, or NO to play with partner.";
+                scoreHUD.SetStatusMessage(msg);
+                decisionPanel.ShowSinglePlay(
+                    onConfirm: () => _gm.AcceptSinglePlay(),
+                    onReject: () => _gm.RejectSinglePlay()
+                );
+            }
+        }
+
+        private void HandleDoubleDecisionRequired()
+        {
+            if (decisionPanel == null) BuildUIIfMissing();
+            if (decisionPanel != null)
+            {
+                scoreHUD.SetStatusMessage("Do you want to set DOUBLE against the bidding team?");
+                decisionPanel.ShowDouble(
+                    onConfirm: () => _gm.AcceptHumanDouble(),
+                    onReject: () => _gm.RejectHumanDouble()
+                );
+            }
+        }
+
+        private void HandleReDoubleDecisionRequired(PlayerSeat doubler)
+        {
+            if (decisionPanel == null) BuildUIIfMissing();
+            if (decisionPanel != null)
+            {
+                string doublerPos = doubler.ToString().ToUpper();
+                scoreHUD.SetStatusMessage($"{doublerPos} set DOUBLE! Do you want to RE-DOUBLE?");
+                decisionPanel.ShowReDouble(
+                    doublerPos,
+                    onConfirm: () => _gm.AcceptHumanReDouble(),
+                    onReject: () => _gm.RejectHumanReDouble()
+                );
+            }
+        }
+
         private void HandleRoundScored(bool biddingTeamWon)
         {
             if (roundEndModal != null) roundEndModal.ShowRoundOver(_gm.ScoreManager, biddingTeamWon);
@@ -305,6 +357,10 @@ namespace Game29
 
             scoreHUD.UpdateHUD(_gm);
             UpdateTurnHighlights(_gm.CurrentPlayer);
+            if (northSeat != null)
+                northSeat.SetDisabledPartner(_gm.IsSinglePlayActive && _gm.DisabledPartnerSeat == PlayerSeat.North);
+            if (southSeat != null)
+                southSeat.SetDisabledPartner(_gm.IsSinglePlayActive && _gm.DisabledPartnerSeat == PlayerSeat.South);
             RefreshHumanCards();
             RefreshAICardCounts();
             if (southSeat != null) southSeat.SetSkipButtonActive(_gm.IsHumanSkipAvailable());
@@ -513,6 +569,8 @@ namespace Game29
                 trumpSelectionModal.transform.SetAsLastSibling();
             if (roundEndModal != null)
                 roundEndModal.transform.SetAsLastSibling();
+            if (decisionPanel != null)
+                decisionPanel.transform.SetAsLastSibling();
         }
 
         // ════════════════════════════════════════════════════════════════════════
@@ -684,6 +742,17 @@ namespace Game29
                 yourTeamPointCard.TeamIndex = 0;
                 yourTeamPointCard.TeamTitle = "Your Team";
                 yourTeamPointCard.EnsureComponents();
+            }
+
+            // Decision Panel (Single, Double, Re-Double)
+            if (decisionPanel == null)
+            {
+                Transform dpT = transform.Find("DecisionPanel");
+                GameObject dpObj = dpT != null ? dpT.gameObject : new GameObject("DecisionPanel");
+                if (dpT == null) dpObj.transform.SetParent(transform, false);
+                decisionPanel = dpObj.GetComponent<DecisionPanelUI>() ?? dpObj.AddComponent<DecisionPanelUI>();
+                decisionPanel.EnsureComponents();
+                decisionPanel.Hide();
             }
 
             ApplyLandscapeLayout();

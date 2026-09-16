@@ -100,7 +100,36 @@ namespace Game29
             _isGameOver = false;
             gameObject.SetActive(true);
 
-            headerText.text = "ROUND COMPLETE";
+            if (scoreMgr.LastRoundWasSingleHand)
+            {
+                string singleTeamName = GameRules.TeamName(scoreMgr.LastSingleHandTeam);
+                headerText.text = "[SINGLE HAND] ROUND COMPLETE";
+                if (scoreMgr.LastSingleHandSuccess)
+                {
+                    resultText.text = $"★ {singleTeamName.ToUpper()} COMPLETED SINGLE HAND! ★";
+                    resultText.color = new Color(0.25f, 0.85f, 0.45f);
+                    detailsText.text = $"Single Hand Succeeded!\n{singleTeamName} +3 Set Points   |   Opponents unchanged";
+                }
+                else
+                {
+                    resultText.text = $"✘ {singleTeamName.ToUpper()} FAILED SINGLE HAND ✘";
+                    resultText.color = new Color(0.95f, 0.30f, 0.30f);
+                    detailsText.text = $"Opponent won a trick!\n{singleTeamName} −3 Set Points   |   Opponents unchanged";
+                }
+
+                scoreBoardText.text = $"CURRENT SCORE:\nYou & Partner: {scoreMgr.GamePoints[0]}   |   Opponents: {scoreMgr.GamePoints[1]}";
+                actionButtonText.text = "NEXT ROUND ▶";
+                return;
+            }
+
+            // Build a Double/Re-Double badge prefix if applicable
+            string badge = "";
+            if (scoreMgr.LastDoubleStatus == DoubleStatus.ReDouble)
+                badge = "[RE-DOUBLE] ";
+            else if (scoreMgr.LastDoubleStatus == DoubleStatus.Double)
+                badge = "[DOUBLE] ";
+
+            headerText.text = $"{badge}ROUND COMPLETE";
             string teamName = GameRules.TeamName(scoreMgr.BiddingTeam);
             int bid = scoreMgr.CurrentBid;
 
@@ -115,8 +144,11 @@ namespace Game29
                 resultText.color = new Color(0.95f, 0.30f, 0.30f);
             }
 
-            string delta = biddingTeamWon ? "+1" : "−1";
-            detailsText.text = $"Bid Target: <b>{bid}</b> points\n{teamName} {delta}   |   Opponents unchanged";
+            // Show the actual set-point delta from LastRoundDelta
+            int delta = scoreMgr.LastRoundDelta;
+            string deltaStr = delta >= 0 ? $"+{delta}" : $"−{System.Math.Abs(delta)}";
+            string sweepNote = scoreMgr.WasAllPointsSweep ? " (All-Points Sweep!)" : "";
+            detailsText.text = $"Bid Target: <b>{bid}</b> points{sweepNote}\n{teamName} {deltaStr}   |   Opponents unchanged";
             scoreBoardText.text = $"CURRENT SCORE:\nYou & Partner: {scoreMgr.GamePoints[0]}   |   Opponents: {scoreMgr.GamePoints[1]}";
 
             actionButtonText.text = "NEXT ROUND ▶";

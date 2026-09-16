@@ -66,6 +66,13 @@ namespace Game29
         public PlayerSeat Dealer { get; private set; } = PlayerSeat.West;
         public PlayerSeat CurrentPlayer { get; private set; }
 
+        public bool IsSinglePlayActive { get; private set; }
+        public PlayerSeat? SinglePlayerSeat { get; private set; }
+        public PlayerSeat? DisabledPartnerSeat => IsSinglePlayActive && SinglePlayerSeat.HasValue ? GameRules.GetPartner(SinglePlayerSeat.Value) : (PlayerSeat?)null;
+        public DoubleStatus DoubleState => _scoreMgr.CurrentDoubleStatus;
+        public PlayerSeat? Doubler => _scoreMgr.Doubler;
+        public PlayerSeat? ReDoubler => _scoreMgr.ReDoubler;
+
         // ════════════════════════════════════════════════════════════════════════
         // PACING & COROUTINES
         // ════════════════════════════════════════════════════════════════════════
@@ -85,6 +92,8 @@ namespace Game29
 
         private Coroutine _aiBiddingRoutine;
         private Coroutine _aiPlayRoutine;
+        private bool _doubleDecisionCompleted;
+        private bool _waitingForSinglePlayDecision;
 
         // ════════════════════════════════════════════════════════════════════════
         // EVENTS  (UI subscribes to these)
@@ -119,6 +128,15 @@ namespace Game29
 
         /// <summary>Fired when the human player won the bid and must choose the trump suit.</summary>
         public event Action<Hand> OnHumanTrumpSelectionRequired;
+
+        /// <summary>Fired when human player meets Single Play dependency conditions.</summary>
+        public event Action OnSinglePlayEligible;
+
+        /// <summary>Fired when the opposing player gets the opportunity to Double.</summary>
+        public event Action OnDoubleDecisionRequired;
+
+        /// <summary>Fired when an opponent sets Double, giving the bidding team the opportunity to Re-Double.</summary>
+        public event Action<PlayerSeat> OnReDoubleDecisionRequired;
 
         /// <summary>General "something changed — refresh your display" event.</summary>
         public event Action OnStateChanged;
@@ -221,9 +239,12 @@ namespace Game29
         /// <summary>Human plays a card from their hand. Only valid during Playing phase on South's turn.</summary>
         public bool PlayHumanCard(Card card)
         {
+            if (_waitingForSinglePlayDecision) return false;
             if (CurrentPhase != GamePhase.Playing || CurrentPlayer != HumanSeat) return false;
+            if (IsSinglePlayActive && DisabledPartnerSeat.HasValue && HumanSeat == DisabledPartnerSeat.Value) return false;
 
-            bool wasCompletingCard = _trickMgr.CurrentTrick != null && _trickMgr.CurrentTrick.PlayCount == 3;
+            int completingCount = (_trickMgr != null && _trickMgr.IsSinglePlay) ? 2 : 3;
+            bool wasCompletingCard = _trickMgr.CurrentTrick != null && _trickMgr.CurrentTrick.PlayCount == completingCount;
             bool ok = _trickMgr.PlayCard(HumanSeat, card, _hands[(int)HumanSeat]);
             if (ok)
             {
@@ -271,7 +292,7 @@ namespace Game29
         /// <summary>True if this seat may reveal the face-down trump right now.</summary>
         public bool CanRevealTrump(PlayerSeat seat)
         {
-            if (CurrentPhase != GamePhase.Playing || CurrentPlayer != seat) return false;
+            if (_waitingForSinglePlayDecision || CurrentPhase != GamePhase.Playing || CurrentPlayer != seat) return false;
             return _trumpMgr.CanReveal(seat, _trickMgr?.CurrentTrick, _hands[(int)seat]);
         }
 
@@ -288,6 +309,7 @@ namespace Game29
         public bool CanDeclareMarriage(PlayerSeat player)
         {
             if (CurrentPhase != GamePhase.Playing) return false;
+            if (IsSinglePlayActive && DisabledPartnerSeat.HasValue && player == DisabledPartnerSeat.Value) return false;
             if (_trumpMgr == null || !_trumpMgr.TrumpRevealed || !_trumpMgr.TrumpSuit.HasValue) return false;
             if (_scoreMgr.MarriageDeclared) return false;
 
@@ -345,8 +367,7 @@ namespace Game29
         {
             if (CurrentPhase != GamePhase.Playing) return false;
             if (_trickMgr == null || _trickMgr.RoundComplete) return false;
-            if (GameRules.GetTeam(player) != _scoreMgr.BiddingTeam) return false;
-            if (CurrentPlayer != player) return false;
+            if (IsSinglePlayActive) return false;
 
             int biddingTeam = _scoreMgr.BiddingTeam;
             int opposingTeam = 1 - biddingTeam;
@@ -358,12 +379,15 @@ namespace Game29
             return alreadyWon || alreadyLost;
         }
 
-        public bool IsHumanSkipAvailable() => IsSkipAvailable(HumanSeat);
+        public bool IsHumanSkipAvailable() => !_waitingForSinglePlayDecision && IsSkipAvailable(HumanSeat);
 
         /// <summary>Ends the round immediately, forfeiting the remaining unplayed tricks.</summary>
         public bool SkipRemainingPlay()
         {
             if (!IsHumanSkipAvailable()) return false;
+            StopAllCoroutines();
+            _aiPlayRoutine = null;
+            _aiBiddingRoutine = null;
             return _trickMgr.SkipRemaining();
         }
 
@@ -388,7 +412,11 @@ namespace Game29
         /// <summary>Returns the legal cards South can play right now (empty if not their turn).</summary>
         public List<Card> GetHumanValidPlays()
         {
+            if (_waitingForSinglePlayDecision)
+                return new List<Card>();
             if (CurrentPhase != GamePhase.Playing || CurrentPlayer != HumanSeat)
+                return new List<Card>();
+            if (IsSinglePlayActive && DisabledPartnerSeat.HasValue && HumanSeat == DisabledPartnerSeat.Value)
                 return new List<Card>();
             return _hands[(int)HumanSeat].GetValidPlays(_trickMgr.CurrentTrick);
         }
@@ -403,10 +431,17 @@ namespace Game29
             _aiBiddingRoutine = null;
             _aiPlayRoutine = null;
 
+            // Reset Single Play and Double state for the new round
+            IsSinglePlayActive = false;
+            SinglePlayerSeat = null;
+            _doubleDecisionCompleted = false;
+            _waitingForSinglePlayDecision = false;
+
             // Clear hands and reset round/trick points.
             for (int i = 0; i < 4; i++) _hands[i].Clear();
             _trumpMgr.Reset();
             _trickMgr.ResetPoints();
+            _trickMgr.SetSinglePlay(false, null);
 
             // Advance dealer clockwise.
             Dealer = GameRules.NextPlayer(Dealer);
@@ -415,17 +450,58 @@ namespace Game29
             ChangePhase(GamePhase.Dealing);
             DealFirstBatch();
 
-            // Start bidding — player after dealer bids first.
+            StartBiddingPhase();
+        }
+
+        /// <summary>Starts normal bidding phase clockwise from the player after the dealer.</summary>
+        public void StartBiddingPhase()
+        {
             PlayerSeat firstBidder = GameRules.NextPlayer(Dealer);
             _biddingMgr.StartBidding(firstBidder);
             ChangePhase(GamePhase.Bidding);
             SetCurrentPlayer(firstBidder);
 
-            // Let AI act if it's not the human's turn.
             if (CurrentPlayer != HumanSeat)
                 RunAIBidding();
 
             NotifyStateChanged();
+        }
+
+        /// <summary>Called when human player accepts Single Play via Decision Panel after seeing 8 cards.</summary>
+        public void AcceptSinglePlay()
+        {
+            _waitingForSinglePlayDecision = false;
+            IsSinglePlayActive = true;
+            SinglePlayerSeat = HumanSeat;
+            PlayerSeat partner = GameRules.GetPartner(HumanSeat);
+            _trickMgr.SetSinglePlay(true, partner);
+
+            Debug.Log($"[29] ★ SINGLE PLAY ACTIVATED by {HumanSeat}! Partner {partner} is disabled for this round.");
+
+            PlayerSeat winner = _scoreMgr.BidWinner;
+            PlayerSeat firstLeader = (winner == partner) ? HumanSeat : winner;
+            _trickMgr.StartRound(firstLeader);
+            SetCurrentPlayer(firstLeader);
+
+            NotifyStateChanged();
+
+            if (CurrentPlayer != HumanSeat)
+                RunAIPlay();
+        }
+
+        /// <summary>Called when human player rejects Single Play via Negative button after seeing 8 cards.</summary>
+        public void RejectSinglePlay()
+        {
+            _waitingForSinglePlayDecision = false;
+            Debug.Log("[29] Single Play declined. Continuing normal 4-player round.");
+            IsSinglePlayActive = false;
+            SinglePlayerSeat = null;
+            _trickMgr.SetSinglePlay(false, null);
+
+            NotifyStateChanged();
+
+            if (CurrentPlayer != HumanSeat)
+                RunAIPlay();
         }
 
         private void DealFirstBatch()
@@ -593,7 +669,7 @@ namespace Game29
                     _trumpMgr.SelectTrump(winner, winnerHand);
 
                 Debug.Log($"[29] Bid won by {winner} at {bid}. Trump mode: {_trumpMgr.Mode} (hidden until revealed).");
-                CompleteTrumpSelectionAndStartPlay();
+                StartDoubleDecisionStep();
             }
         }
 
@@ -604,7 +680,7 @@ namespace Game29
 
             _trumpMgr.SetTrumpSuit(HumanSeat, suit);
             Debug.Log($"[29] Human South set Trump to {suit}.");
-            CompleteTrumpSelectionAndStartPlay();
+            StartDoubleDecisionStep();
         }
 
         /// <summary>Called when human player selects 7th Card (blind mystery trump).</summary>
@@ -614,7 +690,7 @@ namespace Game29
 
             _trumpMgr.SetSeventhCardTrump(HumanSeat);
             Debug.Log("[29] Human South set Trump to 7th Card (blind mystery trump).");
-            CompleteTrumpSelectionAndStartPlay();
+            StartDoubleDecisionStep();
         }
 
         /// <summary>Called when human player selects Joker (No-Trump mode).</summary>
@@ -624,6 +700,135 @@ namespace Game29
 
             _trumpMgr.SetJokerTrump(HumanSeat);
             Debug.Log("[29] Human South set Trump to Joker (Jacks are super-trumps).");
+            StartDoubleDecisionStep();
+        }
+
+        private void StartDoubleDecisionStep()
+        {
+            if (_doubleDecisionCompleted)
+            {
+                CompleteTrumpSelectionAndStartPlay();
+                return;
+            }
+
+            int biddingTeam = _scoreMgr.BiddingTeam;
+            int humanTeam = GameRules.GetTeam(HumanSeat);
+
+            if (humanTeam != biddingTeam)
+            {
+                // Human is on opposing team — give human the opportunity to Double
+                Debug.Log("[29] Opposing team (Human South) offered Double opportunity.");
+                NotifyStateChanged();
+                OnDoubleDecisionRequired?.Invoke();
+            }
+            else
+            {
+                // Human is on bidding team — check if opposing AI doubles
+                PlayerSeat? doublerAI = CheckOpposingAIDouble();
+                if (doublerAI.HasValue)
+                {
+                    _scoreMgr.SetDouble(doublerAI.Value);
+                    Debug.Log($"[29] Opponent {doublerAI.Value} set DOUBLE!");
+                    NotifyStateChanged();
+
+                    // Bidding team (Human South) gets opportunity to Re-Double
+                    OnReDoubleDecisionRequired?.Invoke(doublerAI.Value);
+                }
+                else
+                {
+                    Debug.Log("[29] Opponents did not set Double.");
+                    _doubleDecisionCompleted = true;
+                    CompleteTrumpSelectionAndStartPlay();
+                }
+            }
+        }
+
+        private PlayerSeat? CheckOpposingAIDouble()
+        {
+            int biddingTeam = _scoreMgr.BiddingTeam;
+            for (int s = 0; s < 4; s++)
+            {
+                PlayerSeat seat = (PlayerSeat)s;
+                if (seat == HumanSeat) continue;
+                if (IsSinglePlayActive && DisabledPartnerSeat.HasValue && seat == DisabledPartnerSeat.Value) continue;
+
+                if (GameRules.GetTeam(seat) != biddingTeam)
+                {
+                    AIPlayer ai = GetAI(seat);
+                    if (ai != null && ai.DecideDouble(_hands[(int)seat], _scoreMgr.CurrentBid))
+                        return seat;
+                }
+            }
+            return null;
+        }
+
+        private void CheckBiddingAIReDouble()
+        {
+            int biddingTeam = _scoreMgr.BiddingTeam;
+            for (int s = 0; s < 4; s++)
+            {
+                PlayerSeat seat = (PlayerSeat)s;
+                if (seat == HumanSeat) continue;
+                if (IsSinglePlayActive && DisabledPartnerSeat.HasValue && seat == DisabledPartnerSeat.Value) continue;
+
+                if (GameRules.GetTeam(seat) == biddingTeam)
+                {
+                    AIPlayer ai = GetAI(seat);
+                    if (ai != null && ai.DecideReDouble(_hands[(int)seat], _scoreMgr.CurrentBid))
+                    {
+                        _scoreMgr.SetReDouble(seat);
+                        Debug.Log($"[29] Bidding team AI ({seat}) responded with RE-DOUBLE!");
+                        NotifyStateChanged();
+                        break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>Called when human player clicks DOUBLE on the Decision Panel.</summary>
+        public void AcceptHumanDouble()
+        {
+            if (_doubleDecisionCompleted) return;
+            _doubleDecisionCompleted = true;
+
+            _scoreMgr.SetDouble(HumanSeat);
+            Debug.Log("[29] Human South set DOUBLE!");
+            NotifyStateChanged();
+
+            // Check if bidding AI wants to Re-Double
+            CheckBiddingAIReDouble();
+            CompleteTrumpSelectionAndStartPlay();
+        }
+
+        /// <summary>Called when human player clicks NO to reject Double.</summary>
+        public void RejectHumanDouble()
+        {
+            if (_doubleDecisionCompleted) return;
+            _doubleDecisionCompleted = true;
+
+            Debug.Log("[29] Human South declined Double.");
+            CompleteTrumpSelectionAndStartPlay();
+        }
+
+        /// <summary>Called when human player clicks RE-DOUBLE on the Decision Panel.</summary>
+        public void AcceptHumanReDouble()
+        {
+            if (_doubleDecisionCompleted) return;
+            _doubleDecisionCompleted = true;
+
+            _scoreMgr.SetReDouble(HumanSeat);
+            Debug.Log("[29] Human South set RE-DOUBLE!");
+            NotifyStateChanged();
+            CompleteTrumpSelectionAndStartPlay();
+        }
+
+        /// <summary>Called when human player clicks NO to reject Re-Double.</summary>
+        public void RejectHumanReDouble()
+        {
+            if (_doubleDecisionCompleted) return;
+            _doubleDecisionCompleted = true;
+
+            Debug.Log("[29] Human South declined Re-Double (Double remains active).");
             CompleteTrumpSelectionAndStartPlay();
         }
 
@@ -665,10 +870,11 @@ namespace Game29
             // Deal second batch of 4 cards to each player (total 8 cards)
             DealSecondBatch();
 
-            if (CurrentPlayer != HumanSeat)
-                RunAIPlay();
-
+            // After seeing all 8 cards, prompt Human player if they want to play single before trick play starts
+            _waitingForSinglePlayDecision = true;
+            Debug.Log("[29] 🃏 All 8 cards dealt. Prompting Human for Single Play decision.");
             NotifyStateChanged();
+            OnSinglePlayEligible?.Invoke();
         }
 
         // ════════════════════════════════════════════════════════════════════════
@@ -745,7 +951,8 @@ namespace Game29
                     partner,
                     _trumpMgr.Mode);
 
-                bool completesTrick = _trickMgr.CurrentTrick != null && _trickMgr.CurrentTrick.PlayCount == 3;
+                int completingCount = (_trickMgr != null && _trickMgr.IsSinglePlay) ? 2 : 3;
+                bool completesTrick = _trickMgr.CurrentTrick != null && _trickMgr.CurrentTrick.PlayCount == completingCount;
                 _trickMgr.PlayCard(CurrentPlayer, card, _hands[(int)CurrentPlayer]);
 
                 yield return new WaitForSeconds(cardTravelDuration);
@@ -787,20 +994,65 @@ namespace Game29
             Debug.Log($"[29] Trick won by {winner} ({points} pts). Trick total: {_trickMgr.TricksCompleted}/8");
             OnTrickWon?.Invoke(winner, points);
             NotifyStateChanged();
+
+            // Single Hand failure condition: if any opponent player wins a trick, Single Hand fails immediately!
+            if (IsSinglePlayActive && SinglePlayerSeat.HasValue && CurrentPhase == GamePhase.Playing)
+            {
+                int singleTeam = GameRules.GetTeam(SinglePlayerSeat.Value);
+                if (GameRules.GetTeam(winner) != singleTeam)
+                {
+                    Debug.Log($"[29] ✘ Opponent {winner} won a trick! Single Hand FAILED immediately (-3 set points).");
+                    StopAllCoroutines();
+                    _aiPlayRoutine = null;
+                    _aiBiddingRoutine = null;
+                    _trickMgr.TerminateRoundEarly();
+                    ChangePhase(GamePhase.RoundOver);
+                    _scoreMgr.ScoreSingleHand(singleTeam, success: false);
+                    return;
+                }
+            }
         }
 
         private void HandleRoundComplete()
         {
+            if (CurrentPhase == GamePhase.RoundOver || CurrentPhase == GamePhase.GameOver) return;
+
             ChangePhase(GamePhase.RoundOver);
             int[] teamPts = _trickMgr.GetTeamPoints();
             Debug.Log($"[29] Round complete. Team points — {GameRules.TeamName(0)}: {teamPts[0]}, {GameRules.TeamName(1)}: {teamPts[1]}");
-            _scoreMgr.ScoreRound(teamPts);
+
+            if (IsSinglePlayActive && SinglePlayerSeat.HasValue)
+            {
+                int singleTeam = GameRules.GetTeam(SinglePlayerSeat.Value);
+                int opposingTeam = 1 - singleTeam;
+                int opposingTricks = 0;
+                int[] tricksTaken = _trickMgr.GetTricksTaken();
+                for (int s = 0; s < 4; s++)
+                {
+                    if (GameRules.GetTeam((PlayerSeat)s) == opposingTeam)
+                        opposingTricks += tricksTaken[s];
+                }
+                bool success = opposingTricks == 0;
+                _scoreMgr.ScoreSingleHand(singleTeam, success);
+            }
+            else
+            {
+                _scoreMgr.ScoreRound(teamPts);
+            }
         }
 
         private void HandleRoundScored(int biddingTeam, int bid, bool biddingTeamWon)
         {
-            string result = biddingTeamWon ? "WON ✓" : "LOST ✗";
-            Debug.Log($"[29] {GameRules.TeamName(biddingTeam)} bid {bid} → {result}. {_scoreMgr.GetScoreString()}");
+            if (_scoreMgr.LastRoundWasSingleHand)
+            {
+                string res = _scoreMgr.LastSingleHandSuccess ? "SUCCESS (+3) ✓" : "FAILED (-3) ✗";
+                Debug.Log($"[29] Single Hand by {GameRules.TeamName(biddingTeam)} → {res}. {_scoreMgr.GetScoreString()}");
+            }
+            else
+            {
+                string result = biddingTeamWon ? "WON ✓" : "LOST ✗";
+                Debug.Log($"[29] {GameRules.TeamName(biddingTeam)} bid {bid} → {result}. {_scoreMgr.GetScoreString()}");
+            }
             OnRoundScored?.Invoke(biddingTeamWon);
             NotifyStateChanged();
         }

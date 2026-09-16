@@ -23,11 +23,16 @@ namespace Game29
         private int _tricksCompleted;
         private int[] _teamPoints = new int[2];
         private int[] _tricksTaken = new int[4]; // per seat
+        private bool _isSinglePlay;
+        private PlayerSeat? _disabledSeat;
 
         public Trick CurrentTrick => _currentTrick;
         public Trick LastCompletedTrick { get; private set; }
         public int TricksCompleted => _tricksCompleted;
         public bool RoundComplete => _tricksCompleted >= GameRules.TricksPerRound;
+        public bool IsSinglePlay => _isSinglePlay;
+        public PlayerSeat? DisabledSeat => _disabledSeat;
+        public int RequiredPlaysPerTrick => _isSinglePlay ? 3 : 4;
 
         // ── Events ──────────────────────────────────────────────────────────────
         /// <summary>Fired immediately after each card is played to the trick.</summary>
@@ -62,6 +67,13 @@ namespace Game29
         {
             ResetPoints();
             BeginTrick(firstLeader);
+        }
+
+        /// <summary>Configures Single Play mode and the disabled partner seat for this round.</summary>
+        public void SetSinglePlay(bool isSinglePlay, PlayerSeat? disabledSeat)
+        {
+            _isSinglePlay = isSinglePlay;
+            _disabledSeat = isSinglePlay ? disabledSeat : null;
         }
 
         /// <summary>
@@ -101,7 +113,11 @@ namespace Game29
             if (_currentTrick == null) return PlayerSeat.South;
             PlayerSeat seat = _currentTrick.Leader;
             for (int i = 0; i < _currentTrick.PlayCount; i++)
+            {
                 seat = GameRules.NextPlayer(seat);
+                if (_isSinglePlay && _disabledSeat.HasValue && seat == _disabledSeat.Value)
+                    seat = GameRules.NextPlayer(seat);
+            }
             return seat;
         }
 
@@ -124,6 +140,13 @@ namespace Game29
             return true;
         }
 
+        /// <summary>Immediately terminates round without firing OnRoundComplete (e.g. Single Hand early failure).</summary>
+        public void TerminateRoundEarly()
+        {
+            _tricksCompleted = GameRules.TricksPerRound;
+            _currentTrick = null;
+        }
+
         // ── Accessors ───────────────────────────────────────────────────────────
 
         /// <summary>Returns a copy of per-team card-point totals.</summary>
@@ -138,7 +161,7 @@ namespace Game29
 
         private void BeginTrick(PlayerSeat leader)
         {
-            _currentTrick = new Trick(leader);
+            _currentTrick = new Trick(leader, RequiredPlaysPerTrick);
         }
 
         private void ResolveTrick()

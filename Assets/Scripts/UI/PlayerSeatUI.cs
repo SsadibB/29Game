@@ -30,6 +30,10 @@ namespace Game29
         private Coroutine _actionBubbleCoroutine;
         private bool _skipButtonInitialized;
         private bool _skipButtonVisible;
+        private Tween _skipPulseTween;
+        private Vector3 _originalActionBubbleScale = Vector3.one;
+        private Vector3 _originalSkipButtonScale = Vector3.one;
+        private bool _skipScalesCached;
 
         public Transform CardContainer => cardContainer != null ? cardContainer : transform;
 
@@ -84,32 +88,82 @@ namespace Game29
         {
             if (turnGlowBorder != null) turnGlowBorder.transform.DOKill();
             if (actionBubbleBg != null) actionBubbleBg.transform.DOKill();
+            if (_skipPulseTween != null) _skipPulseTween.Kill();
         }
 
         public void EnsureComponents()
         {
             if (cardContainer == null)
             {
-                GameObject cc = new GameObject("CardContainer");
-                cc.transform.SetParent(transform, false);
-                RectTransform rt = cc.AddComponent<RectTransform>();
-                rt.anchorMin = new Vector2(0.5f, 0.5f);
-                rt.anchorMax = new Vector2(0.5f, 0.5f);
-                rt.pivot = new Vector2(0.5f, 0.5f);
-                rt.sizeDelta = new Vector2(900, 200);
+                Transform existingCC = transform.Find("CardContainer");
+                GameObject cc;
+                RectTransform rt;
+                if (existingCC != null)
+                {
+                    cc = existingCC.gameObject;
+                    rt = cc.GetComponent<RectTransform>();
+                    if (rt == null)
+                    {
+                        if (Application.isPlaying) Destroy(cc);
+                        else DestroyImmediate(cc);
+                        cc = new GameObject("CardContainer", typeof(RectTransform));
+                        cc.transform.SetParent(transform, false);
+                        rt = cc.GetComponent<RectTransform>();
+                    }
+                }
+                else
+                {
+                    cc = new GameObject("CardContainer", typeof(RectTransform));
+                    cc.transform.SetParent(transform, false);
+                    rt = cc.GetComponent<RectTransform>();
+                }
+
+                if (rt != null)
+                {
+                    rt.anchorMin = new Vector2(0.5f, 0.5f);
+                    rt.anchorMax = new Vector2(0.5f, 0.5f);
+                    rt.pivot = new Vector2(0.5f, 0.5f);
+                    rt.sizeDelta = new Vector2(900, 200);
+                }
                 cardContainer = cc.transform;
             }
 
             if (avatarBg == null)
             {
-                Transform existingAv = transform.Find("Avatar") ?? transform.Find("AvatarBg");
-                GameObject av = existingAv != null ? existingAv.gameObject : new GameObject("AvatarBg");
-                if (existingAv == null) av.transform.SetParent(transform, false);
-                RectTransform rt = av.GetComponent<RectTransform>() ?? av.AddComponent<RectTransform>();
-                rt.anchorMin = new Vector2(0.5f, 0.5f);
-                rt.anchorMax = new Vector2(0.5f, 0.5f);
-                rt.sizeDelta = new Vector2(62, 62);
-                avatarBg = av.GetComponent<Image>() ?? av.AddComponent<Image>();
+                Transform existingAv = transform.Find("Avatar");
+                if (existingAv == null) existingAv = transform.Find("AvatarBg");
+
+                GameObject av;
+                RectTransform rt;
+                if (existingAv != null)
+                {
+                    av = existingAv.gameObject;
+                    rt = av.GetComponent<RectTransform>();
+                    if (rt == null)
+                    {
+                        if (Application.isPlaying) Destroy(av);
+                        else DestroyImmediate(av);
+                        av = new GameObject("AvatarBg", typeof(RectTransform));
+                        av.transform.SetParent(transform, false);
+                        rt = av.GetComponent<RectTransform>();
+                    }
+                }
+                else
+                {
+                    av = new GameObject("AvatarBg", typeof(RectTransform));
+                    av.transform.SetParent(transform, false);
+                    rt = av.GetComponent<RectTransform>();
+                }
+
+                if (rt != null)
+                {
+                    rt.anchorMin = new Vector2(0.5f, 0.5f);
+                    rt.anchorMax = new Vector2(0.5f, 0.5f);
+                    rt.sizeDelta = new Vector2(62, 62);
+                }
+
+                avatarBg = av.GetComponent<Image>();
+                if (avatarBg == null) avatarBg = av.AddComponent<Image>();
                 avatarBg.sprite = CardVisualTheme.CircleAvatar;
                 avatarBg.color = new Color(0.10f, 0.16f, 0.24f, 0.95f);
                 avatarBg.raycastTarget = false;
@@ -124,7 +178,7 @@ namespace Game29
                 }
             }
 
-            if (avatarIcon == null)
+            if (avatarIcon == null && avatarBg != null)
             {
                 Transform existingIcon = avatarBg.transform.Find("AvatarIcon");
                 if (existingIcon != null && existingIcon.GetComponent<RectTransform>() == null)
@@ -137,29 +191,37 @@ namespace Game29
                 GameObject icon = existingIcon != null ? existingIcon.gameObject : new GameObject("AvatarIcon", typeof(RectTransform));
                 if (existingIcon == null) icon.transform.SetParent(avatarBg.transform, false);
                 RectTransform irt = icon.GetComponent<RectTransform>();
-                // Fixed 35x35 box, anchored/pivoted dead center of the avatar
-                // (instead of the old 12%-88% stretch-to-fit).
-                irt.anchorMin = new Vector2(0.5f, 0.5f);
-                irt.anchorMax = new Vector2(0.5f, 0.5f);
-                irt.pivot = new Vector2(0.5f, 0.5f);
-                irt.anchoredPosition = Vector2.zero;
-                irt.sizeDelta = new Vector2(35, 35);
-                avatarIcon = icon.GetComponent<Image>() ?? icon.AddComponent<Image>();
+                if (irt != null)
+                {
+                    irt.anchorMin = new Vector2(0.5f, 0.5f);
+                    irt.anchorMax = new Vector2(0.5f, 0.5f);
+                    irt.pivot = new Vector2(0.5f, 0.5f);
+                    irt.anchoredPosition = Vector2.zero;
+                    irt.sizeDelta = new Vector2(35, 35);
+                }
+
+                avatarIcon = icon.GetComponent<Image>();
+                if (avatarIcon == null) avatarIcon = icon.AddComponent<Image>();
                 avatarIcon.sprite = CardVisualTheme.VectorAvatar;
                 avatarIcon.color = Color.white;
                 avatarIcon.preserveAspect = true;
                 avatarIcon.raycastTarget = false;
             }
 
-            if (turnGlowBorder == null)
+            if (turnGlowBorder == null && avatarBg != null)
             {
-                GameObject glow = new GameObject("TurnGlow");
-                glow.transform.SetParent(avatarBg.transform, false);
-                RectTransform grt = glow.AddComponent<RectTransform>();
-                grt.anchorMin = Vector2.zero;
-                grt.anchorMax = Vector2.one;
-                grt.sizeDelta = new Vector2(18, 18);
-                turnGlowBorder = glow.AddComponent<Image>();
+                Transform existingGlow = avatarBg.transform.Find("TurnGlow");
+                GameObject glow = existingGlow != null ? existingGlow.gameObject : new GameObject("TurnGlow", typeof(RectTransform));
+                if (existingGlow == null) glow.transform.SetParent(avatarBg.transform, false);
+                RectTransform grt = glow.GetComponent<RectTransform>();
+                if (grt != null)
+                {
+                    grt.anchorMin = Vector2.zero;
+                    grt.anchorMax = Vector2.one;
+                    grt.sizeDelta = new Vector2(18, 18);
+                }
+                turnGlowBorder = glow.GetComponent<Image>();
+                if (turnGlowBorder == null) turnGlowBorder = glow.AddComponent<Image>();
                 turnGlowBorder.sprite = CardVisualTheme.CreateCircleSprite(80, Color.clear, CardVisualTheme.ColorGold, 6);
                 turnGlowBorder.color = CardVisualTheme.ColorGoldGlow;
                 turnGlowBorder.raycastTarget = false;
@@ -168,13 +230,18 @@ namespace Game29
 
             if (nameLabel == null)
             {
-                GameObject nl = new GameObject("NameLabel");
-                nl.transform.SetParent(transform, false);
-                RectTransform nrt = nl.AddComponent<RectTransform>();
-                nrt.anchorMin = new Vector2(0.5f, 0.5f);
-                nrt.anchorMax = new Vector2(0.5f, 0.5f);
-                nrt.sizeDelta = new Vector2(200, 28);
-                nameLabel = nl.AddComponent<Text>();
+                Transform existingNL = transform.Find("NameLabel");
+                GameObject nl = existingNL != null ? existingNL.gameObject : new GameObject("NameLabel", typeof(RectTransform));
+                if (existingNL == null) nl.transform.SetParent(transform, false);
+                RectTransform nrt = nl.GetComponent<RectTransform>();
+                if (nrt != null)
+                {
+                    nrt.anchorMin = new Vector2(0.5f, 0.5f);
+                    nrt.anchorMax = new Vector2(0.5f, 0.5f);
+                    nrt.sizeDelta = new Vector2(200, 28);
+                }
+                nameLabel = nl.GetComponent<Text>();
+                if (nameLabel == null) nameLabel = nl.AddComponent<Text>();
                 nameLabel.font = CardVisualTheme.GetFont();
                 nameLabel.fontSize = 17;
                 nameLabel.fontStyle = FontStyle.Bold;
@@ -185,25 +252,35 @@ namespace Game29
 
             if (actionBubbleBg == null)
             {
-                GameObject ab = new GameObject("ActionBubble");
-                ab.transform.SetParent(transform, false);
-                RectTransform abrt = ab.AddComponent<RectTransform>();
-                abrt.anchorMin = new Vector2(0.5f, 0.5f);
-                abrt.anchorMax = new Vector2(0.5f, 0.5f);
-                abrt.sizeDelta = new Vector2(130, 34);
-                actionBubbleBg = ab.AddComponent<Image>();
+                Transform existingAB = transform.Find("ActionBubble");
+                GameObject ab = existingAB != null ? existingAB.gameObject : new GameObject("ActionBubble", typeof(RectTransform));
+                if (existingAB == null) ab.transform.SetParent(transform, false);
+                RectTransform abrt = ab.GetComponent<RectTransform>();
+                if (abrt != null)
+                {
+                    abrt.anchorMin = new Vector2(0.5f, 0.5f);
+                    abrt.anchorMax = new Vector2(0.5f, 0.5f);
+                    abrt.sizeDelta = new Vector2(130, 34);
+                }
+                actionBubbleBg = ab.GetComponent<Image>();
+                if (actionBubbleBg == null) actionBubbleBg = ab.AddComponent<Image>();
                 actionBubbleBg.sprite = CardVisualTheme.PillBadge;
                 actionBubbleBg.type = Image.Type.Sliced;
                 actionBubbleBg.color = new Color(0.12f, 0.18f, 0.28f, 0.95f);
                 actionBubbleBg.raycastTarget = false;
 
-                GameObject abt = new GameObject("Text");
-                abt.transform.SetParent(ab.transform, false);
-                RectTransform abtrt = abt.AddComponent<RectTransform>();
-                abtrt.anchorMin = Vector2.zero;
-                abtrt.anchorMax = Vector2.one;
-                abtrt.sizeDelta = Vector2.zero;
-                actionBubbleText = abt.AddComponent<Text>();
+                Transform existingABT = ab.transform.Find("Text");
+                GameObject abt = existingABT != null ? existingABT.gameObject : new GameObject("Text", typeof(RectTransform));
+                if (existingABT == null) abt.transform.SetParent(ab.transform, false);
+                RectTransform abtrt = abt.GetComponent<RectTransform>();
+                if (abtrt != null)
+                {
+                    abtrt.anchorMin = Vector2.zero;
+                    abtrt.anchorMax = Vector2.one;
+                    abtrt.sizeDelta = Vector2.zero;
+                }
+                actionBubbleText = abt.GetComponent<Text>();
+                if (actionBubbleText == null) actionBubbleText = abt.AddComponent<Text>();
                 actionBubbleText.font = CardVisualTheme.GetFont();
                 actionBubbleText.fontSize = 16;
                 actionBubbleText.fontStyle = FontStyle.Bold;
@@ -268,6 +345,33 @@ namespace Game29
             EnsureComponents();
             if (avatarBg != null) ((RectTransform)avatarBg.transform).anchoredPosition = avatarPos;
             if (nameLabel != null) ((RectTransform)nameLabel.transform).anchoredPosition = namePos;
+        }
+
+        private bool _isDisabledPartner;
+        public bool IsDisabledPartner => _isDisabledPartner;
+
+        /// <summary>
+        /// Visually disables/enables this partner seat when Single Play is active.
+        /// </summary>
+        public void SetDisabledPartner(bool disabled)
+        {
+            _isDisabledPartner = disabled;
+            if (disabled)
+            {
+                if (turnGlowBorder != null) turnGlowBorder.gameObject.SetActive(false);
+                if (avatarBg != null) avatarBg.color = new Color(0.10f, 0.16f, 0.24f, 0.35f);
+                if (avatarIcon != null) avatarIcon.color = new Color(0.5f, 0.5f, 0.5f, 0.35f);
+                if (nameLabel != null) nameLabel.text = $"{Seat.ToString().ToUpper()} (INACTIVE)";
+                if (cardContainer != null) cardContainer.gameObject.SetActive(false);
+            }
+            else
+            {
+                if (cardContainer != null) cardContainer.gameObject.SetActive(true);
+                // Restore default avatar/name styling
+                if (avatarBg != null) avatarBg.color = new Color(0.10f, 0.16f, 0.24f, 0.95f);
+                if (avatarIcon != null) avatarIcon.color = Color.white;
+                if (nameLabel != null) nameLabel.text = Seat.ToString().ToUpper();
+            }
         }
 
         public void SetActiveTurn(bool isMyTurn)
@@ -353,24 +457,79 @@ namespace Game29
         /// Bid_Text (Skip takes over the bubble); turning Skip off lets
         /// Bid_Text resume showing its normal messages.
         /// </summary>
+        /// <summary>
+        /// Shows or hides the Skip button (Skip_Text). GameTableUI drives this
+        /// every refresh from GameManager.IsHumanSkipAvailable().
+        ///
+        /// When active, the Skip button remains enlarged and the ActionBubble
+        /// performs a smooth continuous pulse animation that persists across turn changes
+        /// until Skip is clicked or the round ends.
+        /// </summary>
         public void SetSkipButtonActive(bool active)
         {
-            _skipButtonVisible = active;
-            if (skipButton != null) skipButton.gameObject.SetActive(active);
+            if (!_skipScalesCached)
+            {
+                if (actionBubbleBg != null) _originalActionBubbleScale = actionBubbleBg.transform.localScale;
+                if (skipButton != null) _originalSkipButtonScale = skipButton.transform.localScale;
+                _skipScalesCached = true;
+            }
 
-            if (actionBubbleBg == null) return;
+            _skipButtonVisible = active;
 
             if (active)
             {
+                if (skipButton != null)
+                {
+                    skipButton.gameObject.SetActive(true);
+                    skipButton.interactable = true;
+                    skipButton.transform.localScale = _originalSkipButtonScale * 1.15f;
+                }
+
                 if (actionBubbleText != null) actionBubbleText.gameObject.SetActive(false);
-                actionBubbleBg.gameObject.SetActive(true);
+
+                if (actionBubbleBg != null)
+                {
+                    actionBubbleBg.gameObject.SetActive(true);
+
+                    // Keep smooth pulse animation playing without resetting/stopping on turn changes
+                    if (_skipPulseTween == null || !_skipPulseTween.IsActive())
+                    {
+                        actionBubbleBg.transform.DOKill();
+                        actionBubbleBg.transform.localScale = _originalActionBubbleScale * 1.10f;
+                        _skipPulseTween = actionBubbleBg.transform
+                            .DOScale(_originalActionBubbleScale * 1.25f, 0.65f)
+                            .SetEase(Ease.InOutSine)
+                            .SetLoops(-1, LoopType.Yoyo)
+                            .SetLink(actionBubbleBg.gameObject);
+                    }
+                }
             }
-            else if (_actionBubbleCoroutine == null
-                     && (actionBubbleText == null || !actionBubbleText.gameObject.activeSelf))
+            else
             {
-                // Nothing else (no in-flight message) still needs the shared
-                // root open, so it's safe to close it now.
-                actionBubbleBg.gameObject.SetActive(false);
+                // Stop pulse animation and restore scales when Skip is used or round ends
+                if (_skipPulseTween != null)
+                {
+                    _skipPulseTween.Kill();
+                    _skipPulseTween = null;
+                }
+
+                if (skipButton != null)
+                {
+                    skipButton.transform.localScale = _originalSkipButtonScale;
+                    skipButton.gameObject.SetActive(false);
+                }
+
+                if (actionBubbleBg != null)
+                {
+                    actionBubbleBg.transform.DOKill();
+                    actionBubbleBg.transform.localScale = _originalActionBubbleScale;
+
+                    if (_actionBubbleCoroutine == null
+                        && (actionBubbleText == null || !actionBubbleText.gameObject.activeSelf))
+                    {
+                        actionBubbleBg.gameObject.SetActive(false);
+                    }
+                }
             }
         }
 

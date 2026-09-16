@@ -58,6 +58,43 @@ namespace Game29
         }
 
         // ════════════════════════════════════════════════════════════════════════
+        // DOUBLE & RE-DOUBLE DECISIONS
+        // ════════════════════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Decides whether this AI opponent wants to set Double against the bidding team.
+        /// An AI will Double if it holds a strong hand (e.g. strength >= 7 and >= 4 card points,
+        /// or holds 2+ Jacks).
+        /// </summary>
+        public bool DecideDouble(Hand hand, int currentBid)
+        {
+            int strength = EstimateHandStrength(hand);
+            int jacks = hand.Cards.Count(c => c.Rank == Rank.Jack);
+
+            // Double if hand is strong or opponent bid high
+            if (jacks >= 2 || (strength >= 8 && hand.TotalPoints() >= 4) || (currentBid >= 21 && strength >= 6))
+                return true;
+
+            return false;
+        }
+
+        /// <summary>
+        /// Decides whether this AI (on the bidding team) wants to respond with Re-Double
+        /// after the opponent sets Double.
+        /// </summary>
+        public bool DecideReDouble(Hand hand, int currentBid)
+        {
+            int strength = EstimateHandStrength(hand);
+            int jacks = hand.Cards.Count(c => c.Rank == Rank.Jack);
+
+            // Re-Double if confident
+            if ((jacks >= 2 && strength >= 9) || strength >= 11)
+                return true;
+
+            return false;
+        }
+
+        // ════════════════════════════════════════════════════════════════════════
         // TRUMP SELECTION
         // ════════════════════════════════════════════════════════════════════════
 

@@ -19,8 +19,10 @@ namespace Game29
         /// <summary>The player who leads this trick.</summary>
         public PlayerSeat Leader { get; private set; }
 
+        public int RequiredPlays { get; set; } = 4;
+
         public bool IsEmpty  => _plays.Count == 0;
-        public bool IsComplete => _plays.Count == 4;
+        public bool IsComplete => _plays.Count >= RequiredPlays;
         public int  PlayCount  => _plays.Count;
 
         /// <summary>The suit of the first card played (establishes the led suit).</summary>
@@ -28,9 +30,10 @@ namespace Game29
 
         public IReadOnlyList<(PlayerSeat Player, Card Card)> Plays => _plays.AsReadOnly();
 
-        public Trick(PlayerSeat leader)
+        public Trick(PlayerSeat leader, int requiredPlays = 4)
         {
             Leader = leader;
+            RequiredPlays = requiredPlays;
         }
 
         /// <summary>Adds a card play to this trick.</summary>

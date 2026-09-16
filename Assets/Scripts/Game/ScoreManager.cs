@@ -42,6 +42,17 @@ namespace Game29
         /// <summary>True if the most recent round was won by sweeping all 28 card points.</summary>
         public bool WasAllPointsSweep { get; private set; }
 
+        /// <summary>Current round's Double/Re-Double status.</summary>
+        public DoubleStatus CurrentDoubleStatus { get; private set; } = DoubleStatus.None;
+        public PlayerSeat? Doubler { get; private set; }
+        public PlayerSeat? ReDoubler { get; private set; }
+        public DoubleStatus LastDoubleStatus { get; private set; } = DoubleStatus.None;
+
+        public const int SingleHandDelta = 3;
+        public bool LastRoundWasSingleHand { get; private set; }
+        public bool LastSingleHandSuccess { get; private set; }
+        public int LastSingleHandTeam { get; private set; }
+
         // ── Events ──────────────────────────────────────────────────────────────
         /// <summary>Fired after each round is scored. Params: biddingTeam, bid, didBiddingTeamWin.</summary>
         public event Action<int, int, bool> OnRoundScored;
@@ -62,6 +73,23 @@ namespace Game29
             BiddingTeam = GameRules.GetTeam(winner);
             EffectiveTarget = bid;
             MarriageDeclared = false;
+            CurrentDoubleStatus = DoubleStatus.None;
+            Doubler = null;
+            ReDoubler = null;
+        }
+
+        /// <summary>Applies Double by <paramref name="doubler"/> for the current round.</summary>
+        public void SetDouble(PlayerSeat doubler)
+        {
+            CurrentDoubleStatus = DoubleStatus.Double;
+            Doubler = doubler;
+        }
+
+        /// <summary>Applies Re-Double by <paramref name="reDoubler"/> for the current round.</summary>
+        public void SetReDouble(PlayerSeat reDoubler)
+        {
+            CurrentDoubleStatus = DoubleStatus.ReDouble;
+            ReDoubler = reDoubler;
         }
 
         /// <summary>
@@ -99,20 +127,59 @@ namespace Game29
             bool allPointsSweep = teamPoints[BiddingTeam] == GameRules.TotalCardPoints;
 
             int delta;
-            if (biddingTeamWon)
-                delta = allPointsSweep ? GameRules.AllPointsBonus : GameRules.RoundWinBonus;
+            if (CurrentDoubleStatus == DoubleStatus.ReDouble)
+            {
+                delta = biddingTeamWon ? GameRules.ReDoubleWinBonus : GameRules.ReDoubleLossPenalty;
+            }
+            else if (CurrentDoubleStatus == DoubleStatus.Double)
+            {
+                delta = biddingTeamWon ? GameRules.DoubleWinBonus : GameRules.DoubleLossPenalty;
+            }
             else
-                delta = GameRules.RoundLossPenalty;
+            {
+                if (biddingTeamWon)
+                    delta = allPointsSweep ? GameRules.AllPointsBonus : GameRules.RoundWinBonus;
+                else
+                    delta = GameRules.RoundLossPenalty;
+            }
 
             GamePoints[BiddingTeam] += delta;
             GamePoints[BiddingTeam] = Math.Max(-GameRules.GamePointsToWin, Math.Min(GameRules.GamePointsToWin, GamePoints[BiddingTeam]));
 
             LastRoundDelta = delta;
+            LastDoubleStatus = CurrentDoubleStatus;
             WasAllPointsSweep = biddingTeamWon && allPointsSweep;
+            LastRoundWasSingleHand = false;
 
             OnRoundScored?.Invoke(BiddingTeam, CurrentBid, biddingTeamWon);
 
             // Check for game-over (+6 wins, -6 loses to opposing team).
+            int winningTeam = GetWinningTeam();
+            if (winningTeam >= 0)
+            {
+                OnGameOver?.Invoke(winningTeam);
+            }
+        }
+
+        /// <summary>
+        /// Scores a Single Hand round with a fixed +3 / -3 Set Point delta,
+        /// independent of Double/Re-Double or normal bid targets. Clamped to [-6, +6].
+        /// </summary>
+        public void ScoreSingleHand(int singleTeam, bool success)
+        {
+            int delta = success ? SingleHandDelta : -SingleHandDelta;
+            GamePoints[singleTeam] += delta;
+            GamePoints[singleTeam] = Math.Max(-GameRules.GamePointsToWin, Math.Min(GameRules.GamePointsToWin, GamePoints[singleTeam]));
+
+            LastRoundDelta = delta;
+            LastDoubleStatus = DoubleStatus.None;
+            WasAllPointsSweep = false;
+            LastRoundWasSingleHand = true;
+            LastSingleHandSuccess = success;
+            LastSingleHandTeam = singleTeam;
+
+            OnRoundScored?.Invoke(singleTeam, CurrentBid, success);
+
             int winningTeam = GetWinningTeam();
             if (winningTeam >= 0)
             {

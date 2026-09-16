@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace Game29
 {
     /// <summary>
@@ -35,6 +37,12 @@ namespace Game29
         /// team sweeps all <see cref="TotalCardPoints"/> card points in the board.
         /// </summary>
         public const int AllPointsBonus = 2;
+
+        /// <summary>Set Point awards/penalties for Double and Re-Double.</summary>
+        public const int DoubleWinBonus = 2;
+        public const int DoubleLossPenalty = -2;
+        public const int ReDoubleWinBonus = 4;
+        public const int ReDoubleLossPenalty = -4;
 
         /// <summary>How much a declared Marriage shifts the calling team's target, up or down.</summary>
         public const int MarriageTargetShift = 4;
@@ -160,5 +168,59 @@ namespace Game29
 
         public static string TeamName(int team)
             => team == 0 ? "South & North" : "East & West";
+
+        // ── Single Play Dependency Condition ────────────────────────────────────
+
+        /// <summary>
+        /// Evaluates whether the given hand satisfies the Single Play dependency condition.
+        /// A dependency means the player has a valuable card whose strength is related to a superior
+        /// card of the same suit per the 29 hierarchy: J (rank 8) > 9 (rank 7) > A (rank 6) > 10 (rank 5).
+        /// For each valuable card held, its superior card(s) of the same suit must also be present in the hand.
+        /// E.g. 9 of Hearts has a dependency on Jack of Hearts; holding 9 without Jack violates dependency.
+        /// </summary>
+        public static bool MeetsSinglePlayDependencyCondition(Hand hand)
+        {
+            if (hand == null || hand.Count == 0) return false;
+
+            foreach (Card card in hand.Cards)
+            {
+                if (card.Rank == Rank.Nine)
+                {
+                    // 9 depends on Jack of the same suit
+                    if (!hand.Cards.Any(c => c.Suit == card.Suit && c.Rank == Rank.Jack))
+                        return false;
+                }
+                else if (card.Rank == Rank.Ace)
+                {
+                    // Ace depends on Jack (and 9) of the same suit
+                    if (!hand.Cards.Any(c => c.Suit == card.Suit && c.Rank == Rank.Jack))
+                        return false;
+                }
+                else if (card.Rank == Rank.Ten)
+                {
+                    // Ten depends on superior cards (Jack) of the same suit
+                    if (!hand.Cards.Any(c => c.Suit == card.Suit && c.Rank == Rank.Jack))
+                        return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// A player is eligible for Single Play if they have a sufficiently strong hand
+        /// (contains at least one Jack and at least 4 total card points) AND meets the required dependency condition.
+        /// </summary>
+        public static bool IsEligibleForSinglePlay(Hand hand)
+        {
+            if (hand == null || hand.Count < 4) return false;
+
+            bool hasJack = hand.Cards.Any(c => c.Rank == Rank.Jack);
+            if (!hasJack) return false;
+
+            if (hand.TotalPoints() < 4) return false;
+
+            return MeetsSinglePlayDependencyCondition(hand);
+        }
     }
 }
