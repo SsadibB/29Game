@@ -126,18 +126,18 @@ namespace Game29
                 panelRT.anchorMin = new Vector2(0.5f, 0.5f);
                 panelRT.anchorMax = new Vector2(0.5f, 0.5f);
                 panelRT.pivot = new Vector2(0.5f, 0.5f);
-                panelRT.anchoredPosition = Vector2.zero;
 
                 panelBg = panelGO.AddComponent<Image>();
-                panelBg.sprite = CardVisualTheme.RoundedPanel;
-                panelBg.type = Image.Type.Sliced;
-                panelBg.color = new Color(0.06f, 0.09f, 0.16f, 0.97f);
+                panelBg.sprite = CardVisualTheme.TrumpBG;
+                panelBg.type = Image.Type.Simple;
+                panelBg.color = Color.white;
             }
 
-            // Standardize panel geometry: 940x390 holds all 6 cards horizontally with generous margins
-            panelRT.sizeDelta = new Vector2(940, 390);
+            // Standardize panel geometry: 1100x420 holds all 6 cards horizontally with generous margins
+            panelRT.sizeDelta = new Vector2(1100, 420);
+            panelRT.anchoredPosition = new Vector2(0, 65);
 
-            // Gold border
+            // Gold border — disabled for now
             Transform borderT = panelRT.Find("Border");
             if (borderT == null)
             {
@@ -149,9 +149,14 @@ namespace Game29
                 brt.offsetMin = Vector2.zero;
                 brt.offsetMax = Vector2.zero;
                 Image borderImg = borderGO.AddComponent<Image>();
-                borderImg.sprite = CardVisualTheme.CreateRoundedRectSprite(940, 390, 24, Color.clear, CardVisualTheme.ColorGold, 2);
+                borderImg.sprite = CardVisualTheme.CreateRoundedRectSprite(1100, 420, 24, Color.clear, CardVisualTheme.ColorGold, 2);
                 borderImg.type = Image.Type.Sliced;
                 borderImg.raycastTarget = false;
+                borderGO.SetActive(false);
+            }
+            else
+            {
+                borderT.gameObject.SetActive(false);
             }
 
             // Detect and clear any legacy layout (e.g. old layout with bottom badges or old wide buttons)
@@ -193,8 +198,9 @@ namespace Game29
             if (titleText == null)
             {
                 titleText = CreateText(panelRT, "Title",
-                    new Vector2(0, 142), new Vector2(880, 42),
-                    24, FontStyle.Bold, CardVisualTheme.ColorGold);
+                    new Vector2(0, -60), new Vector2(880, 42),
+                    38, FontStyle.Bold, CardVisualTheme.ColorGold, TextAnchor.UpperCenter,
+                    anchorPreset: new Vector2(0.5f, 1f)); // anchor preset: top-center
                 titleText.text = "★  YOU WON THE BID!  ★";
             }
 
@@ -207,8 +213,9 @@ namespace Game29
             if (subtitleText == null)
             {
                 subtitleText = CreateText(panelRT, "Subtitle",
-                    new Vector2(0, 108), new Vector2(880, 26),
-                    14, FontStyle.Normal, new Color(0.75f, 0.82f, 0.92f));
+                    new Vector2(0, 50), new Vector2(880, 26),
+                    20, FontStyle.Normal, new Color(0.75f, 0.82f, 0.92f), TextAnchor.LowerCenter,
+                    anchorPreset: new Vector2(0.5f, 0f)); // anchor preset: bottom-center
                 subtitleText.text = "Select Trump: 4 Fixed Suits, JOKER, or dynamic 7th Card";
             }
 
@@ -296,9 +303,9 @@ namespace Game29
 
         private void HookButtonListeners()
         {
-            HookSuit(spadesBtn,   Suit.Spades);
-            HookSuit(heartsBtn,   Suit.Hearts);
-            HookSuit(clubsBtn,    Suit.Clubs);
+            HookSuit(spadesBtn, Suit.Spades);
+            HookSuit(heartsBtn, Suit.Hearts);
+            HookSuit(clubsBtn, Suit.Clubs);
             HookSuit(diamondsBtn, Suit.Diamonds);
 
             if (jokerBtn != null)
@@ -358,11 +365,11 @@ namespace Game29
             }
 
             // Staggered card entrance animations across the 6 cards
-            AnimateButtonEntrance(spadesBtn,      0.05f);
-            AnimateButtonEntrance(heartsBtn,      0.10f);
-            AnimateButtonEntrance(clubsBtn,       0.15f);
-            AnimateButtonEntrance(diamondsBtn,    0.20f);
-            AnimateButtonEntrance(jokerBtn,       0.25f);
+            AnimateButtonEntrance(spadesBtn, 0.05f);
+            AnimateButtonEntrance(heartsBtn, 0.10f);
+            AnimateButtonEntrance(clubsBtn, 0.15f);
+            AnimateButtonEntrance(diamondsBtn, 0.20f);
+            AnimateButtonEntrance(jokerBtn, 0.25f);
             AnimateButtonEntrance(seventhCardBtn, 0.30f);
         }
 
@@ -778,14 +785,16 @@ namespace Game29
         }
 
         private Text CreateText(RectTransform parent, string name, Vector2 pos, Vector2 size,
-            int fontSize, FontStyle style, Color color)
+            int fontSize, FontStyle style, Color color, TextAnchor alignment = TextAnchor.MiddleCenter,
+            Vector2? anchorPreset = null)
         {
             GameObject obj = new GameObject(name);
             obj.transform.SetParent(parent, false);
             RectTransform rt = obj.AddComponent<RectTransform>();
-            rt.anchorMin = new Vector2(0.5f, 0.5f);
-            rt.anchorMax = new Vector2(0.5f, 0.5f);
-            rt.pivot = new Vector2(0.5f, 0.5f);
+            Vector2 anchor = anchorPreset ?? new Vector2(0.5f, 0.5f);
+            rt.anchorMin = anchor;
+            rt.anchorMax = anchor;
+            rt.pivot = anchor;
             rt.anchoredPosition = pos;
             rt.sizeDelta = size;
 
@@ -793,7 +802,7 @@ namespace Game29
             txt.font = CardVisualTheme.GetFont();
             txt.fontSize = fontSize;
             txt.fontStyle = style;
-            txt.alignment = TextAnchor.MiddleCenter;
+            txt.alignment = alignment;
             txt.color = color;
             txt.raycastTarget = false;
             return txt;

@@ -53,9 +53,9 @@ namespace Game29
             return Seat switch
             {
                 PlayerSeat.North => 180f,
-                PlayerSeat.East  =>  90f,
-                PlayerSeat.West  => -90f,
-                _                =>   0f,   // South
+                PlayerSeat.East => 90f,
+                PlayerSeat.West => -90f,
+                _ => 0f,   // South
             };
         }
 
@@ -334,30 +334,27 @@ namespace Game29
         public void SetupIdentity()
         {
             if (avatarBg != null) avatarBg.color = Color.white;
+            if (avatarIcon != null) avatarIcon.color = Color.white; // avatar icon never gets team-tinted
             if (nameLabel == null || avatarIcon == null) return;
             switch (Seat)
             {
                 case PlayerSeat.South:
                     nameLabel.text = "SOUTH";
                     nameLabel.color = CardVisualTheme.ColorCyan;
-                    avatarIcon.color = CardVisualTheme.ColorCyan;
                     break;
                 case PlayerSeat.North:
                     nameLabel.text = "NORTH";
                     nameLabel.color = CardVisualTheme.ColorCyan;
-                    avatarIcon.color = CardVisualTheme.ColorCyan;
                     break;
                 case PlayerSeat.East:
                     nameLabel.text = "EAST";
                     var orangeE = new Color(0.95f, 0.55f, 0.35f);
                     nameLabel.color = orangeE;
-                    avatarIcon.color = orangeE;
                     break;
                 case PlayerSeat.West:
                     nameLabel.text = "WEST";
                     var orangeW = new Color(0.95f, 0.55f, 0.35f);
                     nameLabel.color = orangeW;
-                    avatarIcon.color = orangeW;
                     break;
             }
         }

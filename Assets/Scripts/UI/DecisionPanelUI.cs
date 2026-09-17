@@ -35,6 +35,13 @@ namespace Game29
                 Transform t = transform.Find("Title");
                 if (t != null) titleText = t.GetComponent<Text>();
             }
+            if (titleText != null)
+            {
+                titleText.fontSize = 35;
+                RectTransform titleRT = titleText.rectTransform;
+                titleRT.sizeDelta = new Vector2(400, 100);
+                titleRT.anchoredPosition = new Vector2(titleRT.anchoredPosition.x, 35);
+            }
 
             if (decisionBtn == null)
             {
@@ -49,6 +56,7 @@ namespace Game29
             {
                 decisionBtnText = decisionBtn.GetComponentInChildren<Text>();
             }
+            if (decisionBtnText != null) decisionBtnText.fontSize = 26;
 
             if (negativeBtn == null)
             {
@@ -63,6 +71,7 @@ namespace Game29
             {
                 negativeBtnText = negativeBtn.GetComponentInChildren<Text>();
             }
+            if (negativeBtnText != null) negativeBtnText.fontSize = 26;
 
             if (decisionBtn != null)
             {

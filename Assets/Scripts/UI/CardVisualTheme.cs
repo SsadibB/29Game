@@ -40,6 +40,7 @@ namespace Game29
         private static Sprite _pillBadgeSprite;
         private static Sprite _circleAvatarSprite;
         private static Sprite _vectorAvatarSprite;
+        private static Sprite _trumpBgSprite;
         private static Font _defaultFont;
 
         public static Sprite TableFelt => _tableFeltSprite ??= LoadOrGenerateFelt();
@@ -54,6 +55,9 @@ namespace Game29
 
         /// <summary>Loads Vector.png from Resources as the player avatar. Falls back to CircleAvatar if not found.</summary>
         public static Sprite VectorAvatar => _vectorAvatarSprite ??= LoadVectorAvatar();
+
+        /// <summary>Loads TrumpBG from Resources as the Trump Selection modal's backdrop image.</summary>
+        public static Sprite TrumpBG => _trumpBgSprite ??= Resources.Load<Sprite>("TrumpBG");
 
         public static Font GetFont()
         {
