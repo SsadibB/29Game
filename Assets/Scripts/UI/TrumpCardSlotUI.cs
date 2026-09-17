@@ -277,6 +277,17 @@ namespace Game29
             }
         }
 
+        /// <summary>
+        /// Removes the glow highlight entirely (e.g. when a new round starts and the
+        /// previous trump card selection should no longer be highlighted).
+        /// </summary>
+        public void ResetHighlight()
+        {
+            StopPulse();
+            if (glowOutline != null)
+                glowOutline.gameObject.SetActive(false);
+        }
+
         private GameObject CreateText(string name, Vector2 pos, int fontSize, FontStyle style, Color color)
         {
             GameObject obj = new GameObject(name);

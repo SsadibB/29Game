@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
@@ -36,9 +37,12 @@ namespace Game29
         private Vector3 _originalSkipButtonScale = Vector3.one;
         private bool _skipScalesCached;
 
+        [SerializeField] private Sprite avatarSprite;
+
         public Transform CardContainer => cardContainer != null ? cardContainer : transform;
         public Image AvatarBg => avatarBg;
         public Image AvatarIcon => avatarIcon;
+        public Sprite AvatarSprite { get => avatarSprite; set { avatarSprite = value; ApplyAvatar(); } }
 
         // ── Container rotation per seat ───────────────────────────────────────────────
         // The card arc is computed in the South (upward arc) frame of reference.
@@ -333,9 +337,8 @@ namespace Game29
 
         public void SetupIdentity()
         {
-            if (avatarBg != null) avatarBg.color = Color.white;
-            if (avatarIcon != null) avatarIcon.color = Color.white; // avatar icon never gets team-tinted
-            if (nameLabel == null || avatarIcon == null) return;
+            ApplyAvatar();
+            if (nameLabel == null) return;
             switch (Seat)
             {
                 case PlayerSeat.South:
@@ -356,6 +359,21 @@ namespace Game29
                     var orangeW = new Color(0.95f, 0.55f, 0.35f);
                     nameLabel.color = orangeW;
                     break;
+            }
+        }
+
+        public void ApplyAvatar()
+        {
+            Sprite sprite = avatarSprite != null ? avatarSprite : CardVisualTheme.GetAvatarForSeat(Seat);
+            // Avatar1-4 belong on each player's avatarIcon (the child portrait),
+            // not on avatarBg (the shared circular background) — avatarBg keeps
+            // its plain CircleAvatar background for every seat.
+            if (avatarIcon != null)
+            {
+                if (sprite != null) avatarIcon.sprite = sprite;
+                avatarIcon.color = Color.white;
+                avatarIcon.preserveAspect = true;
+                avatarIcon.gameObject.SetActive(true);
             }
         }
 
@@ -651,6 +669,28 @@ namespace Game29
             return CardContainer != null ? CardContainer.position : transform.position;
         }
 
+        /// <summary>World rotation of the played card in this seat's hand, so it begins flying at its exact current angle.</summary>
+        public Quaternion GetPlayOriginRotation(Card card)
+        {
+            if (card != null)
+            {
+                for (int i = 0; i < _spawnedCards.Count; i++)
+                {
+                    CardUI ui = _spawnedCards[i];
+                    if (ui != null && ui.CurrentCard != null && ui.CurrentCard.Equals(card))
+                        return ui.transform.rotation;
+                }
+            }
+
+            if (_spawnedCards.Count > 0)
+            {
+                CardUI last = _spawnedCards[_spawnedCards.Count - 1];
+                if (last != null) return last.transform.rotation;
+            }
+
+            return CardContainer != null ? CardContainer.rotation : transform.rotation;
+        }
+
         /// <summary>Plays a horizontal shake animation on the card matching <paramref name="card"/>.</summary>
         public void ShakeCard(Card card)
         {
@@ -777,6 +817,50 @@ namespace Game29
                 return;
             }
 
+            // Case 2b: Card played / removed — remove only the played card, slide remaining cards smoothly
+            if (existingCount > 0 && count < existingCount)
+            {
+                // Find and remove the card(s) no longer in hand
+                for (int i = _spawnedCards.Count - 1; i >= 0; i--)
+                {
+                    CardUI ui = _spawnedCards[i];
+                    if (ui == null || ui.CurrentCard == null || !hand.Cards.Any(c => c.Equals(ui.CurrentCard)))
+                    {
+                        if (ui != null && ui.gameObject != null)
+                        {
+                            ui.transform.DOKill();
+                            Destroy(ui.gameObject);
+                        }
+                        _spawnedCards.RemoveAt(i);
+                    }
+                }
+
+                // Smoothly slide remaining cards to their new fan positions and update playability
+                for (int i = 0; i < _spawnedCards.Count; i++)
+                {
+                    CardUI ui = _spawnedCards[i];
+                    if (ui == null) continue;
+
+                    Card card = ui.CurrentCard;
+                    bool isPlayable = validPlays != null && card != null && validPlays.Contains(card);
+                    ui.BindClick(onCardClick);
+                    ui.SetPlayable(isPlayable);
+
+                    var (yOff, rotZ) = GetFanOffset(i, count);
+                    Vector2 targetPos = new Vector2(startX + i * spacing, yOff);
+                    ui.SetBasePosition(targetPos);
+
+                    RectTransform rt = ui.GetComponent<RectTransform>();
+                    if (rt != null)
+                    {
+                        rt.DOKill();
+                        rt.DOAnchorPos(targetPos, 0.28f).SetEase(Ease.OutQuad);
+                        rt.DORotate(new Vector3(0, 0, rotZ), 0.28f).SetEase(Ease.OutQuad);
+                    }
+                }
+                return;
+            }
+
             // Case 3: Fresh deal or full hand reset
             ClearCards();
 
@@ -813,25 +897,54 @@ namespace Game29
         /// </summary>
         public void RenderAICardCount(int cardCount, bool horizontal = true, bool animate = false)
         {
-            // Skip the destroy+rebuild when this seat's card count hasn't actually
-            // changed. RefreshAllDisplay() runs on every OnStateChanged tick — which
-            // fires for ANY seat's play, not just this one — and this method used to
-            // unconditionally ClearCards() + respawn every face-down back every time
-            // it was called. That meant every AI seat's still-in-hand cards were
-            // destroyed and instantly recreated whenever ANY player played a card,
-            // which is what read as a little "shake"/flicker in the other players'
-            // hands. Face-down backs carry no per-card state, so if the count is
-            // unchanged there's nothing to update.
             if (!animate && cardCount == _spawnedCards.Count)
                 return;
 
-            ClearCards();
-            if (cardCount <= 0) return;
-
+            // Common layout constants — computed once, used by both the smooth-remove
+            // branch and the full-rebuild branch below.
             float cardW = AICardW;
             float cardH = AICardH;
             float spacing = horizontal ? 20f : 22f;
             float start = -(cardCount - 1) * spacing * 0.5f;
+
+            // Smoothly remove played card and refan remaining cards without destroying/respawning
+            if (!animate && _spawnedCards.Count > 0 && cardCount < _spawnedCards.Count)
+            {
+                int toRemove = _spawnedCards.Count - cardCount;
+                for (int r = 0; r < toRemove; r++)
+                {
+                    int lastIdx = _spawnedCards.Count - 1;
+                    CardUI ui = _spawnedCards[lastIdx];
+                    if (ui != null && ui.gameObject != null)
+                    {
+                        ui.transform.DOKill();
+                        Destroy(ui.gameObject);
+                    }
+                    _spawnedCards.RemoveAt(lastIdx);
+                }
+
+                if (cardCount <= 0) return;
+
+                for (int i = 0; i < cardCount; i++)
+                {
+                    var (arcOffset, rotZ) = GetAIFanOffset(i, cardCount);
+                    Vector2 pos = horizontal
+                        ? new Vector2(start + i * spacing, arcOffset)
+                        : new Vector2(arcOffset, start + i * spacing);
+
+                    RectTransform rt = _spawnedCards[i].GetComponent<RectTransform>();
+                    if (rt != null)
+                    {
+                        rt.DOKill();
+                        rt.DOAnchorPos(pos, 0.28f).SetEase(Ease.OutQuad);
+                        rt.DORotate(new Vector3(0, 0, rotZ), 0.28f).SetEase(Ease.OutQuad);
+                    }
+                }
+                return;
+            }
+
+            ClearCards();
+            if (cardCount <= 0) return;
 
             Vector2 origin = GetCenterOffsetInContainer();
 

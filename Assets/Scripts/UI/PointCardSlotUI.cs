@@ -573,9 +573,7 @@ namespace Game29
         //          (top-left, mid-left, bottom-left) (confirmed)
         //   4 pts: rotate 90°, Y = -65 to additionally reveal both middle
         //          pips (confirmed)
-        //   5 pts: union of the 3-pt and 4-pt poses (right + further -Y,
-        //          still rotated 90°), since 5 pts = those two pip sets
-        //          combined (estimate)
+        //   5 pts: confirmed Editor values — X = 40, Y = -72, rotate 145°
         //   6 pts: pushed even further along the same diagonal to also clear
         //          the last (bottom-right) pip (estimate)
 
@@ -591,8 +589,8 @@ namespace Game29
         private static readonly Vector2 FourSuitPos = new Vector2(0, -65);
         private const float FourSuitRot = 90f;
 
-        private static readonly Vector2 FiveSuitPos = new Vector2(50, -85);
-        private const float FiveSuitRot = 90f;
+        private static readonly Vector2 FiveSuitPos = new Vector2(40, -72);
+        private const float FiveSuitRot = 145f;
 
         private static readonly Vector2 SixSuitPos = new Vector2(70, -115);
         private const float SixSuitRot = 90f;

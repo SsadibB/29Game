@@ -429,14 +429,20 @@ namespace Game29
         }
 
         /// <summary>Animates card flying to a target trick slot or winning seat.</summary>
-        public void AnimatePlayTo(Vector2 targetPos, float duration = 0.25f, Action onComplete = null)
+        /// <param name="targetPos">Local anchored position of the destination slot.</param>
+        /// <param name="duration">Total flight time in seconds.</param>
+        /// <param name="targetRotationZ">Optional Z rotation (degrees) to tween to. When null, rotation is not tweened.</param>
+        /// <param name="onComplete">Callback fired after the animation completes.</param>
+        public void AnimatePlayTo(Vector2 targetPos, float duration = 0.25f, float? targetRotationZ = null, Action onComplete = null)
         {
             if (rectTransform == null) return;
             rectTransform.DOKill();
             Sequence seq = DOTween.Sequence();
             seq.SetLink(gameObject);
-            seq.Append(rectTransform.DOAnchorPos(targetPos, duration).SetEase(Ease.InOutCubic));
-            seq.Join(rectTransform.DOScale(1f, duration));
+            seq.Append(rectTransform.DOAnchorPos(targetPos, duration).SetEase(Ease.OutCubic));
+            seq.Join(rectTransform.DOScale(1f, duration).SetEase(Ease.OutCubic));
+            if (targetRotationZ.HasValue)
+                seq.Join(rectTransform.DOLocalRotate(new Vector3(0, 0, targetRotationZ.Value), duration).SetEase(Ease.OutCubic));
             if (onComplete != null)
                 seq.OnComplete(() =>
                 {

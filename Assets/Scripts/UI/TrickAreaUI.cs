@@ -173,7 +173,7 @@ namespace Game29
             return card;
         }
 
-        public void DisplayTrick(Trick trick, PlayerSeat? flyFromSeat = null, Vector3 flyFromWorld = default)
+        public void DisplayTrick(Trick trick, PlayerSeat? flyFromSeat = null, Vector3 flyFromWorld = default, Quaternion flyFromWorldRot = default)
         {
             EnsureComponents();
 
@@ -222,7 +222,7 @@ namespace Game29
                 }
 
                 if (isNew && flyFromSeat.HasValue && flyFromSeat.Value == play.Player)
-                    AnimateCardFromWorld(slot, play.Player, flyFromWorld);
+                    AnimateCardFromWorld(slot, play.Player, flyFromWorld, flyFromWorldRot);
                 else if (isNew)
                 {
                     slot.transform.DOKill();
@@ -240,7 +240,7 @@ namespace Game29
 
         public const float CardTravelDuration = 0.9f;
 
-        private void AnimateCardFromWorld(CardUI slot, PlayerSeat seat, Vector3 worldStart)
+        private void AnimateCardFromWorld(CardUI slot, PlayerSeat seat, Vector3 worldStart, Quaternion worldStartRot = default)
         {
             RectTransform areaRT = transform as RectTransform;
             RectTransform slotRT = slot.GetComponent<RectTransform>();
@@ -254,10 +254,24 @@ namespace Game29
             if (GameManager.Instance != null)
                 duration = GameManager.Instance.CardTravelDuration;
 
+            // Compute the slot's final local Z rotation (the angle the slot was
+            // assigned when the trick area layout was built).
+            float targetRotZ = slotRT.localEulerAngles.z;
+
             slotRT.DOKill();
             slotRT.anchoredPosition = localStart;
             slotRT.localScale = Vector3.one * 1.08f;
-            slot.AnimatePlayTo(target, duration);
+
+            // Initialise the card's rotation to match its hand rotation so there
+            // is no snap at the start of the flight.  We convert the world-space
+            // quaternion into the slot's parent local space.
+            if (worldStartRot != default)
+            {
+                Quaternion localRot = Quaternion.Inverse(areaRT.rotation) * worldStartRot;
+                slotRT.localRotation = localRot;
+            }
+
+            slot.AnimatePlayTo(target, duration, targetRotZ);
         }
 
         public void ShowTrickWinner(PlayerSeat winner, int points)

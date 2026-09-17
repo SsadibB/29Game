@@ -80,8 +80,8 @@ namespace Game29
         [Header("Pacing & Delays")]
         [SerializeField] private bool enablePacing = true;
         [SerializeField] private float aiBidDelay = 0.5f;
-        [SerializeField] private float aiPlayDelay = 0.45f;
-        [SerializeField] private float cardTravelDuration = 0.9f;
+        [SerializeField] private float aiPlayDelay = 1.0f;
+        [SerializeField] private float cardTravelDuration = 0.45f;
         [SerializeField] private float trickClearDelay = 1.2f;
 
         public bool EnablePacing { get => enablePacing; set => enablePacing = value; }

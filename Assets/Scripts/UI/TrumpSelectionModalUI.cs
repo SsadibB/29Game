@@ -338,6 +338,10 @@ namespace Game29
             transform.SetAsLastSibling();
             gameObject.SetActive(true);
 
+            // Clear any leftover glow from the previous Show() or a hover that
+            // never got its OnPointerExit fired due to a fast click-dismiss.
+            ResetAllHighlights();
+
             if (titleText != null)
                 titleText.text = $"★  YOU WON THE BID  ( {winningBid} )  ★";
             if (subtitleText != null)
@@ -375,6 +379,10 @@ namespace Game29
 
         public void Hide()
         {
+            // Ensure all hover glows are off when the modal closes so no
+            // button stays lit for the next time the modal is shown.
+            ResetAllHighlights();
+
             transform.DOKill();
             if (panelRT != null) panelRT.DOKill();
 
@@ -382,6 +390,30 @@ namespace Game29
                 backdropImage.raycastTarget = false;
 
             gameObject.SetActive(false);
+        }
+
+        /// <summary>
+        /// Deactivates the GlowOutline child on every selectable card button.
+        /// Call this when the modal opens or closes to clear any stale hover state.
+        /// </summary>
+        private void ResetAllHighlights()
+        {
+            ResetButtonGlow(spadesBtn);
+            ResetButtonGlow(heartsBtn);
+            ResetButtonGlow(clubsBtn);
+            ResetButtonGlow(diamondsBtn);
+            ResetButtonGlow(jokerBtn);
+            ResetButtonGlow(seventhCardBtn);
+        }
+
+        private static void ResetButtonGlow(Button btn)
+        {
+            if (btn == null) return;
+            Transform glow = btn.transform.Find("GlowOutline");
+            if (glow != null) glow.gameObject.SetActive(false);
+            // Also reset the scale in case a DOTween hover scale is in flight.
+            btn.transform.DOKill();
+            btn.transform.localScale = Vector3.one;
         }
 
         // ════════════════════════════════════════════════════════════════════

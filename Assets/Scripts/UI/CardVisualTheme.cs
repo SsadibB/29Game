@@ -207,6 +207,51 @@ namespace Game29
             return CreateRoundedRectSprite(180, 260, 20, new Color(0.10f, 0.15f, 0.28f), ColorBorderGold, 4);
         }
 
+        private static readonly System.Collections.Generic.Dictionary<PlayerSeat, Sprite> _seatAvatars = new();
+
+        /// <summary>
+        /// Returns the custom 3D portrait avatar Sprite for the given player seat.
+        /// South: Avatar1, North: Avatar2, East: Avatar3, West: Avatar4.
+        /// </summary>
+        public static Sprite GetAvatarForSeat(PlayerSeat seat)
+        {
+            if (_seatAvatars.TryGetValue(seat, out Sprite cached) && cached != null)
+                return cached;
+
+            string resName = seat switch
+            {
+                PlayerSeat.South => "Avatar1",
+                PlayerSeat.North => "Avatar2",
+                PlayerSeat.East  => "Avatar3",
+                PlayerSeat.West  => "Avatar4",
+                _                => "Avatar1"
+            };
+
+            Sprite loaded = LoadAvatarSprite(resName);
+            _seatAvatars[seat] = loaded;
+            return loaded;
+        }
+
+        public static Sprite LoadAvatarSprite(string name)
+        {
+            // 1. Try loading as single Sprite
+            Sprite s = Resources.Load<Sprite>(name);
+            if (s != null) return s;
+
+            // 2. Try loading as multiple Sprite sub-assets (e.g. Avatar1_0)
+            Sprite[] subSprites = Resources.LoadAll<Sprite>(name);
+            if (subSprites != null && subSprites.Length > 0 && subSprites[0] != null)
+                return subSprites[0];
+
+            // 3. Fallback: load as Texture2D and wrap into a Sprite
+            Texture2D tex = Resources.Load<Texture2D>(name);
+            if (tex != null)
+                return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+
+            // 4. Last resort
+            return VectorAvatar;
+        }
+
         private static Sprite LoadVectorAvatar()
         {
             // Try loading as Sprite first (if import type is Sprite)

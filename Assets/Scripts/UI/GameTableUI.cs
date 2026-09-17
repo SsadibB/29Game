@@ -269,9 +269,10 @@ namespace Game29
         {
             PlayerSeatUI seatUI = GetSeatUI(seat);
             Vector3 origin = seatUI != null ? seatUI.GetPlayOriginWorld(card) : transform.position;
+            Quaternion originRot = seatUI != null ? seatUI.GetPlayOriginRotation(card) : Quaternion.identity;
 
             if (trickArea != null && _gm.GetCurrentTrick() != null)
-                trickArea.DisplayTrick(_gm.GetCurrentTrick(), seat, origin);
+                trickArea.DisplayTrick(_gm.GetCurrentTrick(), seat, origin, originRot);
 
             if (seat == GameManager.HumanSeat)
                 RefreshHumanCards();
