@@ -18,6 +18,7 @@ namespace Game29
         [SerializeField] private Image bgImage;
         [SerializeField] private Image cardBorder;
         [SerializeField] private Image glowOutline;
+        [SerializeField] private RectTransform faceContent;   // masked container for face-up art
         [SerializeField] private Text rankTopLeft;
         [SerializeField] private Text suitTopLeft;
         [SerializeField] private Text centerSuitText;
@@ -108,6 +109,8 @@ namespace Game29
             button.colors = colors;
 
             // Create child elements if not yet built
+
+            // ── CardBorder (outside mask — always fully visible) ────────────────
             if (cardBorder == null)
             {
                 // Thin, always-on outline hugging the card's edge — gives every
@@ -129,27 +132,67 @@ namespace Game29
             if (glowOutline == null)
                 glowOutline = CreateChildImage("GlowOutline", new Vector2(0, 0), new Vector2(1, 1), 0f, 0f);
 
+            // ── FaceContent: masked container that clips all face-up art ─────────
+            // All rank/suit labels and suit icons live inside this child so that
+            // artwork is always clipped to the card's rounded-rect shape, even
+            // when the card is rotated (e.g. in a fanned hand). The Mask uses a
+            // RoundedRect sprite matching the card border so the clip shape is
+            // identical to the visible border.  cardBorder and glowOutline sit
+            // *outside* FaceContent so they always render at full opacity on top.
+            if (faceContent == null)
+            {
+                Transform existingFC = transform.Find("FaceContent");
+                if (existingFC != null)
+                {
+                    faceContent = existingFC.GetComponent<RectTransform>();
+                }
+                else
+                {
+                    GameObject fcObj = new GameObject("FaceContent");
+                    fcObj.transform.SetParent(transform, false);
+                    faceContent = fcObj.AddComponent<RectTransform>();
+                    faceContent.anchorMin = Vector2.zero;
+                    faceContent.anchorMax = Vector2.one;
+                    faceContent.offsetMin = Vector2.zero;
+                    faceContent.offsetMax = Vector2.zero;
+
+                    // Mask image — same rounded-rect shape as the border, but
+                    // showMaskGraphic=false so it is invisible itself.
+                    Image maskImg = fcObj.AddComponent<Image>();
+                    maskImg.sprite = CardVisualTheme.CreateRoundedRectSprite(180, 260, 12, Color.white, Color.clear, 0);
+                    maskImg.type = Image.Type.Sliced;
+                    maskImg.raycastTarget = false;
+
+                    Mask mask = fcObj.AddComponent<Mask>();
+                    mask.showMaskGraphic = false;
+                }
+            }
+
+            // ── Face-up labels & icons (children of FaceContent) ─────────────────
             if (rankTopLeft == null)
-                rankTopLeft = CreateChildText("RankTopLeft", new Vector2(0, 1), new Vector2(0, 1), new Vector2(12, -8), new Vector2(36, 32), TextAnchor.UpperLeft, 22, FontStyle.Bold);
+                rankTopLeft = CreateChildText("RankTopLeft", new Vector2(0, 1), new Vector2(0, 1), new Vector2(12, -8), new Vector2(36, 32), TextAnchor.UpperLeft, 22, FontStyle.Bold, faceContent);
 
             if (suitTopLeft == null)
-                suitTopLeft = CreateChildText("SuitTopLeft", new Vector2(0, 1), new Vector2(0, 1), new Vector2(12, -32), new Vector2(36, 26), TextAnchor.UpperLeft, 20, FontStyle.Normal);
+                suitTopLeft = CreateChildText("SuitTopLeft", new Vector2(0, 1), new Vector2(0, 1), new Vector2(12, -32), new Vector2(36, 26), TextAnchor.UpperLeft, 20, FontStyle.Normal, faceContent);
 
             if (centerSuitText == null)
-                centerSuitText = CreateChildText("CenterSuit", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(80, 80), TextAnchor.MiddleCenter, 54, FontStyle.Normal);
+                centerSuitText = CreateChildText("CenterSuit", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(80, 80), TextAnchor.MiddleCenter, 54, FontStyle.Normal, faceContent);
 
             if (centerSuitImage == null)
             {
-                centerSuitImage = CreateChildImage("CenterSuitIcon", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), -40f, 40f);
+                centerSuitImage = CreateChildImageInParent("CenterSuitIcon", faceContent, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), -40f, 40f);
                 centerSuitImage.preserveAspect = true;
                 centerSuitImage.gameObject.SetActive(false);
             }
 
             if (rankBottomRight == null)
-                rankBottomRight = CreateChildText("RankBottomRight", new Vector2(1, 0), new Vector2(1, 0), new Vector2(-12, 8), new Vector2(36, 32), TextAnchor.LowerRight, 22, FontStyle.Bold);
+                rankBottomRight = CreateChildText("RankBottomRight", new Vector2(1, 0), new Vector2(1, 0), new Vector2(-12, 8), new Vector2(36, 32), TextAnchor.LowerRight, 22, FontStyle.Bold, faceContent);
 
             if (suitBottomRight == null)
-                suitBottomRight = CreateChildText("SuitBottomRight", new Vector2(1, 0), new Vector2(1, 0), new Vector2(-12, 32), new Vector2(36, 26), TextAnchor.LowerRight, 20, FontStyle.Normal);
+                suitBottomRight = CreateChildText("SuitBottomRight", new Vector2(1, 0), new Vector2(1, 0), new Vector2(-12, 32), new Vector2(36, 26), TextAnchor.LowerRight, 20, FontStyle.Normal, faceContent);
+
+            // Ensure FaceContent sits behind the border/glow (which are on top)
+            if (faceContent != null) faceContent.SetSiblingIndex(0);
 
             Transform leftoverBadge = transform.Find("PointsBadge");
             if (leftoverBadge != null)
@@ -469,8 +512,13 @@ namespace Game29
 
         private Image CreateChildImage(string name, Vector2 anchorMin, Vector2 anchorMax, float offsetMin, float offsetMax)
         {
+            return CreateChildImageInParent(name, (RectTransform)transform, anchorMin, anchorMax, offsetMin, offsetMax);
+        }
+
+        private Image CreateChildImageInParent(string name, RectTransform parent, Vector2 anchorMin, Vector2 anchorMax, float offsetMin, float offsetMax)
+        {
             GameObject go = new GameObject(name);
-            go.transform.SetParent(transform, false);
+            go.transform.SetParent(parent != null ? (Transform)parent : transform, false);
             RectTransform rt = go.AddComponent<RectTransform>();
             rt.anchorMin = anchorMin;
             rt.anchorMax = anchorMax;

@@ -30,12 +30,34 @@ namespace Game29
         private Coroutine _actionBubbleCoroutine;
         private bool _skipButtonInitialized;
         private bool _skipButtonVisible;
+        private bool _thinkingVisible;
         private Tween _skipPulseTween;
         private Vector3 _originalActionBubbleScale = Vector3.one;
         private Vector3 _originalSkipButtonScale = Vector3.one;
         private bool _skipScalesCached;
 
         public Transform CardContainer => cardContainer != null ? cardContainer : transform;
+        public Image AvatarBg => avatarBg;
+        public Image AvatarIcon => avatarIcon;
+
+        // ── Container rotation per seat ───────────────────────────────────────────────
+        // The card arc is computed in the South (upward arc) frame of reference.
+        // Each other seat's CardContainer is simply rotated so the same arc faces
+        // the correct direction without any per-card position recalculation:
+        //   South  0°  → upward arc (reference)
+        //   North  180° → downward arc
+        //   East   90°  → left-facing arc (rotated CW)
+        //   West  -90°  → right-facing arc (rotated CCW)
+        private float GetContainerRotationZ()
+        {
+            return Seat switch
+            {
+                PlayerSeat.North => 180f,
+                PlayerSeat.East  =>  90f,
+                PlayerSeat.West  => -90f,
+                _                =>   0f,   // South
+            };
+        }
 
         // Fan-out look for the hand: each card gets a small rotation and a
         // slight downward arc toward the edges, so the hand reads as a fan
@@ -128,6 +150,11 @@ namespace Game29
                 cardContainer = cc.transform;
             }
 
+            // Apply the seat-specific container rotation so the South arc is
+            // reused for all seats — only the container orientation changes.
+            if (cardContainer != null)
+                cardContainer.localEulerAngles = new Vector3(0f, 0f, GetContainerRotationZ());
+
             if (avatarBg == null)
             {
                 Transform existingAv = transform.Find("Avatar");
@@ -165,7 +192,7 @@ namespace Game29
                 avatarBg = av.GetComponent<Image>();
                 if (avatarBg == null) avatarBg = av.AddComponent<Image>();
                 avatarBg.sprite = CardVisualTheme.CircleAvatar;
-                avatarBg.color = new Color(0.10f, 0.16f, 0.24f, 0.95f);
+                avatarBg.color = Color.white;
                 avatarBg.raycastTarget = false;
 
                 // Delete any legacy single-letter "Initial" text inside Avatar —
@@ -306,6 +333,7 @@ namespace Game29
 
         public void SetupIdentity()
         {
+            if (avatarBg != null) avatarBg.color = Color.white;
             if (nameLabel == null || avatarIcon == null) return;
             switch (Seat)
             {
@@ -355,11 +383,12 @@ namespace Game29
         /// </summary>
         public void SetDisabledPartner(bool disabled)
         {
+            if (_isDisabledPartner == disabled) return;
             _isDisabledPartner = disabled;
             if (disabled)
             {
                 if (turnGlowBorder != null) turnGlowBorder.gameObject.SetActive(false);
-                if (avatarBg != null) avatarBg.color = new Color(0.10f, 0.16f, 0.24f, 0.35f);
+                if (avatarBg != null) avatarBg.color = new Color(1f, 1f, 1f, 0.35f);
                 if (avatarIcon != null) avatarIcon.color = new Color(0.5f, 0.5f, 0.5f, 0.35f);
                 if (nameLabel != null) nameLabel.text = $"{Seat.ToString().ToUpper()} (INACTIVE)";
                 if (cardContainer != null) cardContainer.gameObject.SetActive(false);
@@ -367,10 +396,10 @@ namespace Game29
             else
             {
                 if (cardContainer != null) cardContainer.gameObject.SetActive(true);
-                // Restore default avatar/name styling
-                if (avatarBg != null) avatarBg.color = new Color(0.10f, 0.16f, 0.24f, 0.95f);
-                if (avatarIcon != null) avatarIcon.color = Color.white;
-                if (nameLabel != null) nameLabel.text = Seat.ToString().ToUpper();
+                // Restore the avatar background to pure white (255, 255, 255, 255)
+                // and restore seat-specific icon and text colors via SetupIdentity().
+                if (avatarBg != null) avatarBg.color = Color.white;
+                SetupIdentity();
             }
         }
 
@@ -401,6 +430,9 @@ namespace Game29
             // until Skip goes unavailable again.
             if (_skipButtonVisible) return;
 
+            // Hide any active Thinking state before showing a result bubble.
+            HideThinking();
+
             actionBubbleText.text = text;
             actionBubbleText.gameObject.SetActive(true);
 
@@ -420,6 +452,61 @@ namespace Game29
 
             if (_actionBubbleCoroutine != null) StopCoroutine(_actionBubbleCoroutine);
             _actionBubbleCoroutine = StartCoroutine(HideActionBubbleRoutine(duration));
+        }
+
+        /// <summary>
+        /// Shows a persistent "Thinking…" bubble while the AI is deciding its bid.
+        /// Stays visible until HideThinking() or ShowActionBubble() clears it.
+        /// </summary>
+        public void ShowThinking()
+        {
+            if (actionBubbleBg == null || actionBubbleText == null) return;
+            if (_skipButtonVisible) return;
+
+            _thinkingVisible = true;
+
+            // Cancel any auto-hide coroutine so the thinking bubble persists.
+            if (_actionBubbleCoroutine != null)
+            {
+                StopCoroutine(_actionBubbleCoroutine);
+                _actionBubbleCoroutine = null;
+            }
+
+            actionBubbleText.text = "Thinking\u2026";
+            actionBubbleText.gameObject.SetActive(true);
+
+            bool rootWasActive = actionBubbleBg.gameObject.activeSelf;
+            actionBubbleBg.gameObject.SetActive(true);
+            if (!rootWasActive)
+            {
+                actionBubbleBg.transform.DOKill();
+                actionBubbleBg.transform.localScale = Vector3.one * 0.6f;
+                actionBubbleBg.transform.DOScale(1f, 0.18f).SetEase(Ease.OutBack).SetLink(actionBubbleBg.gameObject);
+            }
+        }
+
+        /// <summary>
+        /// Hides the "Thinking…" bubble if it is currently visible.
+        /// Called automatically by ShowActionBubble and HideActionBubbleRoutine.
+        /// </summary>
+        public void HideThinking()
+        {
+            if (!_thinkingVisible) return;
+            _thinkingVisible = false;
+
+            if (actionBubbleText != null) actionBubbleText.gameObject.SetActive(false);
+
+            if (!_skipButtonVisible && actionBubbleBg != null)
+            {
+                actionBubbleBg.transform.DOKill();
+                actionBubbleBg.transform.DOScale(0.5f, 0.12f).SetEase(Ease.InQuad)
+                    .SetLink(actionBubbleBg.gameObject)
+                    .OnComplete(() =>
+                    {
+                        if (actionBubbleBg != null && !_skipButtonVisible && !_thinkingVisible)
+                            actionBubbleBg.gameObject.SetActive(false);
+                    });
+            }
         }
 
         private System.Collections.IEnumerator HideActionBubbleRoutine(float duration)

@@ -95,6 +95,7 @@ namespace Game29
             _gm.OnHumanHandDealt += HandleHumanHandDealt;
             _gm.OnCurrentPlayerChanged += HandleCurrentPlayerChanged;
             _gm.OnBiddingAction += HandleBiddingAction;
+            _gm.OnAIBiddingThinking += HandleAIBiddingThinking;
             _gm.OnCardPlayed += HandleCardPlayed;
             _gm.OnTrickWon += HandleTrickWon;
             _gm.OnTrumpRevealed += HandleTrumpRevealed;
@@ -119,6 +120,7 @@ namespace Game29
             _gm.OnHumanHandDealt -= HandleHumanHandDealt;
             _gm.OnCurrentPlayerChanged -= HandleCurrentPlayerChanged;
             _gm.OnBiddingAction -= HandleBiddingAction;
+            _gm.OnAIBiddingThinking -= HandleAIBiddingThinking;
             _gm.OnCardPlayed -= HandleCardPlayed;
             _gm.OnTrickWon -= HandleTrickWon;
             _gm.OnTrumpRevealed -= HandleTrumpRevealed;
@@ -196,6 +198,17 @@ namespace Game29
 
             if (_gm.CurrentPhase == GamePhase.Bidding)
             {
+                // When a player is bidding, change only that player's Avatar Image color to 255, 255, 255, 255.
+                // Their partner's Avatar Image must also remain 255, 255, 255, 255.
+                PlayerSeatUI activeSeatUI = GetSeatUI(seat);
+                if (activeSeatUI != null && activeSeatUI.AvatarBg != null)
+                    activeSeatUI.AvatarBg.color = Color.white;
+
+                PlayerSeat partnerSeat = GameRules.GetPartner(seat);
+                PlayerSeatUI partnerSeatUI = GetSeatUI(partnerSeat);
+                if (partnerSeatUI != null && partnerSeatUI.AvatarBg != null)
+                    partnerSeatUI.AvatarBg.color = Color.white;
+
                 if (seat == GameManager.HumanSeat)
                 {
                     scoreHUD.SetStatusMessage("YOUR TURN TO BID!");
@@ -233,9 +246,23 @@ namespace Game29
         private void HandleBiddingAction(PlayerSeat seat, int? bid)
         {
             PlayerSeatUI seatUI = GetSeatUI(seat);
+            // Hide the "Thinking…" bubble that was shown when the AI began deciding.
+            if (seatUI != null) seatUI.HideThinking();
+
             string text = bid.HasValue ? $"Bid {bid.Value}!" : "Pass";
             if (seatUI != null) seatUI.ShowActionBubble(text);
             scoreHUD.UpdateHUD(_gm);
+        }
+
+        /// <summary>
+        /// Fired by GameManager right before an AI player's bidding delay starts.
+        /// Shows a "Thinking…" persistent bubble on that seat so the player can
+        /// see the AI is deliberating before the decision lands 0.5 s later.
+        /// </summary>
+        private void HandleAIBiddingThinking(PlayerSeat seat)
+        {
+            PlayerSeatUI seatUI = GetSeatUI(seat);
+            if (seatUI != null) seatUI.ShowThinking();
         }
 
         private void HandleCardPlayed(PlayerSeat seat, Card card)
@@ -357,10 +384,20 @@ namespace Game29
 
             scoreHUD.UpdateHUD(_gm);
             UpdateTurnHighlights(_gm.CurrentPlayer);
-            if (northSeat != null)
-                northSeat.SetDisabledPartner(_gm.IsSinglePlayActive && _gm.DisabledPartnerSeat == PlayerSeat.North);
-            if (southSeat != null)
-                southSeat.SetDisabledPartner(_gm.IsSinglePlayActive && _gm.DisabledPartnerSeat == PlayerSeat.South);
+            if (_gm.IsSinglePlayActive)
+            {
+                if (northSeat != null) northSeat.SetDisabledPartner(_gm.DisabledPartnerSeat == PlayerSeat.North);
+                if (southSeat != null) southSeat.SetDisabledPartner(_gm.DisabledPartnerSeat == PlayerSeat.South);
+                if (eastSeat != null) eastSeat.SetDisabledPartner(_gm.DisabledPartnerSeat == PlayerSeat.East);
+                if (westSeat != null) westSeat.SetDisabledPartner(_gm.DisabledPartnerSeat == PlayerSeat.West);
+            }
+            else
+            {
+                if (northSeat != null && northSeat.IsDisabledPartner) northSeat.SetDisabledPartner(false);
+                if (southSeat != null && southSeat.IsDisabledPartner) southSeat.SetDisabledPartner(false);
+                if (eastSeat != null && eastSeat.IsDisabledPartner) eastSeat.SetDisabledPartner(false);
+                if (westSeat != null && westSeat.IsDisabledPartner) westSeat.SetDisabledPartner(false);
+            }
             RefreshHumanCards();
             RefreshAICardCounts();
             if (southSeat != null) southSeat.SetSkipButtonActive(_gm.IsHumanSkipAvailable());
@@ -396,6 +433,8 @@ namespace Game29
         private void RefreshAICardCounts(bool animate = false)
         {
             if (_gm == null) return;
+            // All seats use horizontal: true — the CardContainer rotation on each
+            // seat handles the screen-space orientation (vertical for East/West).
             if (northSeat != null) northSeat.RenderAICardCount(_gm.GetHand(PlayerSeat.North).Count, horizontal: true, animate: animate);
             if (westSeat != null) westSeat.RenderAICardCount(_gm.GetHand(PlayerSeat.West).Count, horizontal: true, animate: animate);
             if (eastSeat != null) eastSeat.RenderAICardCount(_gm.GetHand(PlayerSeat.East).Count, horizontal: true, animate: animate);

@@ -79,7 +79,7 @@ namespace Game29
 
         [Header("Pacing & Delays")]
         [SerializeField] private bool enablePacing = true;
-        [SerializeField] private float aiBidDelay = 0.6f;
+        [SerializeField] private float aiBidDelay = 0.5f;
         [SerializeField] private float aiPlayDelay = 0.45f;
         [SerializeField] private float cardTravelDuration = 0.9f;
         [SerializeField] private float trickClearDelay = 1.2f;
@@ -140,6 +140,13 @@ namespace Game29
 
         /// <summary>General "something changed — refresh your display" event.</summary>
         public event Action OnStateChanged;
+
+        /// <summary>
+        /// Fired when an AI player starts "thinking" about their bid.
+        /// UI can show a "Thinking…" bubble on the corresponding seat.
+        /// Complement: OnBiddingAction fires when the decision is made.
+        /// </summary>
+        public event Action<PlayerSeat> OnAIBiddingThinking;
 
         // ════════════════════════════════════════════════════════════════════════
         // UNITY LIFECYCLE
@@ -615,6 +622,10 @@ namespace Game29
         {
             while (!_biddingMgr.BiddingComplete && CurrentPlayer != HumanSeat)
             {
+                // Show "Thinking" bubble on the current AI seat immediately,
+                // before the delay so the player sees the AI considering.
+                OnAIBiddingThinking?.Invoke(CurrentPlayer);
+
                 yield return new WaitForSeconds(aiBidDelay);
 
                 if (_biddingMgr.BiddingComplete || CurrentPlayer == HumanSeat)
