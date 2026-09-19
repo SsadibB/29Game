@@ -83,18 +83,25 @@ namespace Game29
                 GameObject lObj = CreateText("StatusLabel", new Vector2(0, 96), 13, FontStyle.Bold, CardVisualTheme.ColorGold);
                 statusLabelText = lObj.GetComponent<Text>();
                 statusLabelText.text = "TRUMP CARD";
+                // Always active — content changes, never SetActive(false)
             }
 
             if (suitSymbolText == null)
             {
                 GameObject sObj = CreateText("SuitSymbol", new Vector2(0, 14), 54, FontStyle.Bold, CardVisualTheme.ColorGold);
                 suitSymbolText = sObj.GetComponent<Text>();
+                // Start transparent (hidden) to avoid APK Canvas batching bug:
+                // procedurally-created objects hidden with SetActive(false) at birth
+                // may fail to re-appear with SetActive(true) in Android builds.
+                suitSymbolText.color = Color.clear;
             }
 
             if (suitNameText == null)
             {
                 GameObject nObj = CreateText("SuitName", new Vector2(0, -36), 13, FontStyle.Bold, Color.white);
                 suitNameText = nObj.GetComponent<Text>();
+                // Start transparent — same APK safety as suitSymbolText above.
+                suitNameText.color = Color.clear;
             }
 
             if (tapToRevealText == null)
@@ -130,18 +137,17 @@ namespace Game29
                 StopPulse();
                 cardBg.sprite = CardVisualTheme.RoundedCardSlot;
                 cardBg.color  = new Color(0.12f, 0.20f, 0.35f, 0.95f);
-                suitSymbolText.gameObject.SetActive(true);
-                suitSymbolText.text = "🃏";
-                suitSymbolText.color = new Color(0.5f, 0.85f, 1f);
-                suitNameText.gameObject.SetActive(true);
-                suitNameText.text = "NO TRUMP";
-                suitNameText.color = Color.white;
+                // Use color-based visibility (not SetActive) to avoid APK Canvas batching bug
+                if (suitSymbolText != null) { suitSymbolText.text = "🃏"; suitSymbolText.color = new Color(0.5f, 0.85f, 1f); }
+                if (suitNameText   != null) { suitNameText.text = "NO TRUMP";  suitNameText.color = Color.white; }
                 statusLabelText.text = "★ JOKER ★";
                 statusLabelText.color = new Color(0.5f, 0.85f, 1f);
                 glowOutline.gameObject.SetActive(true);
                 if (tapToRevealText != null) tapToRevealText.gameObject.SetActive(false);
+                Canvas.ForceUpdateCanvases();
                 return;
             }
+
 
             bool isRevealed = gm.IsTrumpRevealed();
             Suit? actualTrump = tm.TrumpSuit;
@@ -178,8 +184,9 @@ namespace Game29
             statusLabelText.text = isSeventhCard ? "TRUMP (7th Card)" : "TRUMP CARD";
             statusLabelText.color = CardVisualTheme.ColorGold;
 
-            suitSymbolText.gameObject.SetActive(false);
-            suitNameText.gameObject.SetActive(false);
+            // Hide suit text via transparency (not SetActive) to avoid APK Canvas batching bug
+            if (suitSymbolText != null) suitSymbolText.color = Color.clear;
+            if (suitNameText   != null) suitNameText.color   = Color.clear;
 
             if (tapToRevealText != null)
             {
@@ -202,24 +209,26 @@ namespace Game29
             cardBg.color = Color.white;
 
             Color col = CardVisualTheme.GetSuitColor(trump);
-            suitSymbolText.gameObject.SetActive(true);
-            suitNameText.gameObject.SetActive(true);
+
+            // Show suit text via full color (not SetActive) to avoid APK Canvas batching bug
+            if (suitSymbolText != null) suitSymbolText.color = col;
+            if (suitNameText   != null) suitNameText.color   = col;
 
             if (faceCard != null)
             {
-                suitSymbolText.text = $"{CardVisualTheme.GetRankString(faceCard.Rank)}\n{CardVisualTheme.GetSuitSymbol(trump)}";
-                suitSymbolText.color = col;
-                suitNameText.text = $"{CardVisualTheme.GetRankString(faceCard.Rank)} OF {CardVisualTheme.GetSuitName(trump).ToUpper()}";
-                suitNameText.color = col;
-                statusLabelText.text = "★ 7TH CARD TRUMP ★";
+                if (suitSymbolText != null)
+                    suitSymbolText.text = $"{CardVisualTheme.GetRankString(faceCard.Rank)}\n{CardVisualTheme.GetSuitSymbol(trump)}";
+                if (suitNameText != null)
+                    suitNameText.text = $"{CardVisualTheme.GetRankString(faceCard.Rank)} OF {CardVisualTheme.GetSuitName(trump).ToUpper()}";
+                statusLabelText.text = "\u2605 7TH CARD TRUMP \u2605";
             }
             else
             {
-                suitSymbolText.text = CardVisualTheme.GetSuitSymbol(trump);
-                suitSymbolText.color = col;
-                suitNameText.text = CardVisualTheme.GetSuitName(trump).ToUpper();
-                suitNameText.color = col;
-                statusLabelText.text = "★ TRUMP ★";
+                if (suitSymbolText != null)
+                    suitSymbolText.text = CardVisualTheme.GetSuitSymbol(trump);
+                if (suitNameText != null)
+                    suitNameText.text = CardVisualTheme.GetSuitName(trump).ToUpper();
+                statusLabelText.text = "\u2605 TRUMP \u2605";
             }
 
             statusLabelText.color = CardVisualTheme.ColorGold;
@@ -227,6 +236,9 @@ namespace Game29
 
             if (tapToRevealText != null)
                 tapToRevealText.gameObject.SetActive(false);
+
+            // Force a Canvas rebuild to guarantee the text appears on Android APK builds.
+            Canvas.ForceUpdateCanvases();
         }
 
         private void AnimateFlipToRevealed(Suit trump, Card faceCard)

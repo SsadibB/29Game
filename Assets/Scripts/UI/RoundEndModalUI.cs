@@ -45,9 +45,24 @@ namespace Game29
             {
                 modalBg = gameObject.GetComponent<Image>();
                 if (modalBg == null) modalBg = gameObject.AddComponent<Image>();
+            }
+
+            // Always (re-)apply the PopupBG sprite so it survives scene reloads or
+            // a missing Inspector reference. Fall back to the procedural panel if the
+            // asset hasn't been imported yet.
+            Sprite popupSprite = CardVisualTheme.PopupBG;
+            if (popupSprite != null)
+            {
+                modalBg.sprite = popupSprite;
+                modalBg.type   = Image.Type.Simple;
+                modalBg.color  = Color.white;
+                modalBg.preserveAspect = false;
+            }
+            else
+            {
                 modalBg.sprite = CardVisualTheme.RoundedPanel;
-                modalBg.type = Image.Type.Sliced;
-                modalBg.color = new Color(0.05f, 0.08f, 0.14f, 0.98f);
+                modalBg.type   = Image.Type.Sliced;
+                modalBg.color  = new Color(0.05f, 0.08f, 0.14f, 0.98f);
             }
 
             if (headerText == null)

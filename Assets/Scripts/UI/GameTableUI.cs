@@ -148,6 +148,8 @@ namespace Game29
                     scoreHUD.SetStatusMessage("Dealing cards from the deck...");
                     trickArea.ClearAll();
                     biddingPanel.Hide();
+                    // Clear pass state from the previous round so avatars are restored.
+                    ResetAllPassStates();
                     break;
 
                 case GamePhase.Bidding:
@@ -249,8 +251,16 @@ namespace Game29
             // Hide the "Thinking…" bubble that was shown when the AI began deciding.
             if (seatUI != null) seatUI.HideThinking();
 
-            string text = bid.HasValue ? $"Bid {bid.Value}!" : "Pass";
-            if (seatUI != null) seatUI.ShowActionBubble(text);
+            if (bid.HasValue)
+            {
+                // Show a normal (auto-hiding) bid bubble
+                if (seatUI != null) seatUI.ShowActionBubble($"Bid {bid.Value}!");
+            }
+            else
+            {
+                // Show a persistent Pass bubble and dim the avatar
+                if (seatUI != null) seatUI.ShowPersistentPass();
+            }
             scoreHUD.UpdateHUD(_gm);
         }
 
@@ -385,6 +395,7 @@ namespace Game29
 
             scoreHUD.UpdateHUD(_gm);
             UpdateTurnHighlights(_gm.CurrentPlayer);
+            UpdateDealerCoin();
             if (_gm.IsSinglePlayActive)
             {
                 if (northSeat != null) northSeat.SetDisabledPartner(_gm.DisabledPartnerSeat == PlayerSeat.North);
@@ -445,8 +456,34 @@ namespace Game29
         {
             if (southSeat != null) southSeat.SetActiveTurn(current == PlayerSeat.South);
             if (northSeat != null) northSeat.SetActiveTurn(current == PlayerSeat.North);
-            if (westSeat != null) westSeat.SetActiveTurn(current == PlayerSeat.West);
-            if (eastSeat != null) eastSeat.SetActiveTurn(current == PlayerSeat.East);
+            if (westSeat  != null) westSeat.SetActiveTurn(current  == PlayerSeat.West);
+            if (eastSeat  != null) eastSeat.SetActiveTurn(current  == PlayerSeat.East);
+        }
+
+        /// <summary>
+        /// Shows the Dealer Coin on the current dealer's seat and hides it on all others.
+        /// Called from RefreshAllDisplay() so it stays in sync whenever state changes.
+        /// </summary>
+        private void UpdateDealerCoin()
+        {
+            if (_gm == null) return;
+            PlayerSeat dealer = _gm.Dealer;
+            if (southSeat != null) southSeat.SetDealerCoin(dealer == PlayerSeat.South);
+            if (northSeat != null) northSeat.SetDealerCoin(dealer == PlayerSeat.North);
+            if (westSeat  != null) westSeat.SetDealerCoin(dealer  == PlayerSeat.West);
+            if (eastSeat  != null) eastSeat.SetDealerCoin(dealer  == PlayerSeat.East);
+        }
+
+        /// <summary>
+        /// Resets the persistent Pass state on every seat (restores avatars and bubbles).
+        /// Called when a new Dealing phase begins (i.e. a new round starts).
+        /// </summary>
+        private void ResetAllPassStates()
+        {
+            if (southSeat != null) southSeat.ResetPassState();
+            if (northSeat != null) northSeat.ResetPassState();
+            if (westSeat  != null) westSeat.ResetPassState();
+            if (eastSeat  != null) eastSeat.ResetPassState();
         }
 
         private void OnHumanCardSelected(Card card)

@@ -41,6 +41,8 @@ namespace Game29
         private static Sprite _circleAvatarSprite;
         private static Sprite _vectorAvatarSprite;
         private static Sprite _trumpBgSprite;
+        private static Sprite _popupBgSprite;
+        private static Sprite _dealerCoinSprite;
         private static Font _defaultFont;
 
         public static Sprite TableFelt => _tableFeltSprite ??= LoadOrGenerateFelt();
@@ -58,6 +60,12 @@ namespace Game29
 
         /// <summary>Loads TrumpBG from Resources as the Trump Selection modal's backdrop image.</summary>
         public static Sprite TrumpBG => _trumpBgSprite ??= Resources.Load<Sprite>("TrumpBG");
+
+        /// <summary>Loads PopupBG from Resources for use as the Game Over / Round End panel background.</summary>
+        public static Sprite PopupBG => _popupBgSprite ??= LoadPopupBgSprite();
+
+        /// <summary>Loads DealerCoin from Resources for use as the dealer indicator badge on a player seat.</summary>
+        public static Sprite DealerCoin => _dealerCoinSprite ??= LoadDealerCoinSprite();
 
         public static Font GetFont()
         {
@@ -275,6 +283,38 @@ namespace Game29
             if (tex != null)
                 return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
             return TableFelt;
+        }
+
+        private static Sprite LoadPopupBgSprite()
+        {
+            Sprite s = Resources.Load<Sprite>("PopupBG");
+            if (s != null) return s;
+
+            Sprite[] subs = Resources.LoadAll<Sprite>("PopupBG");
+            if (subs != null && subs.Length > 0 && subs[0] != null)
+                return subs[0];
+
+            Texture2D tex = Resources.Load<Texture2D>("PopupBG");
+            if (tex != null)
+                return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+
+            return RoundedPanel;
+        }
+
+        private static Sprite LoadDealerCoinSprite()
+        {
+            Sprite s = Resources.Load<Sprite>("DealerCoin");
+            if (s != null) return s;
+
+            Sprite[] subs = Resources.LoadAll<Sprite>("DealerCoin");
+            if (subs != null && subs.Length > 0 && subs[0] != null)
+                return subs[0];
+
+            Texture2D tex = Resources.Load<Texture2D>("DealerCoin");
+            if (tex != null)
+                return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+
+            return CreateCircleSprite(64, ColorGold, new Color(0.6f, 0.45f, 0.05f), 3);
         }
 
         private static void EnsureSuitSprites()

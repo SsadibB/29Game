@@ -200,7 +200,9 @@ namespace Game29
         public void StartNewGame()
         {
             _scoreMgr.ResetGame();
-            Dealer = PlayerSeat.West; // first dealer; StartNewRound advances it
+            // Seed with North so the first NextPlayer() advance in StartNewRound()
+            // yields East as the Round 1 dealer (East→South→West→North→East…).
+            Dealer = PlayerSeat.North;
             StartNewRound();
         }
 

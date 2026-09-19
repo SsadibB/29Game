@@ -26,12 +26,14 @@ namespace Game29
         [SerializeField] private Text actionBubbleText;
         [SerializeField] private Button skipButton;
         [SerializeField] private Transform cardContainer;
+        [SerializeField] private Image dealerCoinImage;
 
         private readonly List<CardUI> _spawnedCards = new List<CardUI>();
         private Coroutine _actionBubbleCoroutine;
         private bool _skipButtonInitialized;
         private bool _skipButtonVisible;
         private bool _thinkingVisible;
+        private bool _isPassed;
         private Tween _skipPulseTween;
         private Vector3 _originalActionBubbleScale = Vector3.one;
         private Vector3 _originalSkipButtonScale = Vector3.one;
@@ -60,6 +62,23 @@ namespace Game29
                 PlayerSeat.East => 90f,
                 PlayerSeat.West => -90f,
                 _ => 0f,   // South
+            };
+        }
+
+        /// <summary>
+        /// Returns the anchored-position offset for the dealer coin relative to this seat's center.
+        /// The coin is placed adjacent to the avatar circle so it's clearly associated with that player
+        /// but doesn't obscure the face image.
+        /// South → top-right of avatar | North → bottom-right | East → top-left | West → top-right
+        /// </summary>
+        private Vector2 GetDealerCoinOffset()
+        {
+            return Seat switch
+            {
+                PlayerSeat.North => new Vector2(40f, -40f),
+                PlayerSeat.East  => new Vector2(-50f, 40f),
+                PlayerSeat.West  => new Vector2(50f, 40f),
+                _                => new Vector2(40f, 40f),   // South
             };
         }
 
@@ -332,6 +351,42 @@ namespace Game29
                 _skipButtonInitialized = true;
             }
 
+            // Dealer Coin — auto-create from the DealerCoin Resources sprite.
+            if (dealerCoinImage == null)
+            {
+                Transform existing = transform.Find("DealerCoin");
+                GameObject coinObj = existing != null ? existing.gameObject : new GameObject("DealerCoin", typeof(RectTransform));
+                if (existing == null) coinObj.transform.SetParent(transform, false);
+                RectTransform coinRT = coinObj.GetComponent<RectTransform>();
+                if (coinRT != null)
+                {
+                    coinRT.anchorMin = new Vector2(0.5f, 0.5f);
+                    coinRT.anchorMax = new Vector2(0.5f, 0.5f);
+                    coinRT.pivot     = new Vector2(0.5f, 0.5f);
+                    // Offset relative to avatar so coin sits visibly next to it.
+                    coinRT.anchoredPosition = GetDealerCoinOffset();
+                    coinRT.sizeDelta = new Vector2(40, 40);
+                }
+                dealerCoinImage = coinObj.GetComponent<Image>();
+                if (dealerCoinImage == null) dealerCoinImage = coinObj.AddComponent<Image>();
+                Sprite coinSprite = CardVisualTheme.DealerCoin;
+                if (coinSprite != null)
+                {
+                    dealerCoinImage.sprite = coinSprite;
+                    dealerCoinImage.color  = Color.white;
+                    dealerCoinImage.type   = Image.Type.Simple;
+                    dealerCoinImage.preserveAspect = true;
+                }
+                else
+                {
+                    // Fallback: gold circle if asset not found
+                    dealerCoinImage.sprite = CardVisualTheme.CreateCircleSprite(40, CardVisualTheme.ColorGold, Color.white, 2);
+                    dealerCoinImage.color  = Color.white;
+                }
+                dealerCoinImage.raycastTarget = false;
+                coinObj.SetActive(false);
+            }
+
             SetupIdentity();
         }
 
@@ -436,9 +491,85 @@ namespace Game29
             }
         }
 
+        /// <summary>
+        /// Shows or hides the Dealer Coin badge on this seat.
+        /// Only the current dealer's seat should have it active.
+        /// </summary>
+        public void SetDealerCoin(bool isDealer)
+        {
+            if (dealerCoinImage == null) EnsureComponents();
+            if (dealerCoinImage != null)
+                dealerCoinImage.gameObject.SetActive(isDealer);
+        }
+
+        /// <summary>
+        /// Shows a permanent "Pass" bubble and dims the avatar to indicate
+        /// this player has passed during bidding. Unlike ShowActionBubble(),
+        /// this does NOT auto-hide — it persists until ResetPassState() is called.
+        /// </summary>
+        public void ShowPersistentPass()
+        {
+            if (_isPassed) return;
+            _isPassed = true;
+
+            // Dim the avatar to signal this player is out of bidding
+            if (avatarBg   != null) avatarBg.color   = new Color(1f, 1f, 1f, 0.35f);
+            if (avatarIcon != null) avatarIcon.color  = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+
+            if (actionBubbleBg == null || actionBubbleText == null) return;
+
+            // Cancel any running auto-hide coroutine
+            if (_actionBubbleCoroutine != null)
+            {
+                StopCoroutine(_actionBubbleCoroutine);
+                _actionBubbleCoroutine = null;
+            }
+            HideThinking();
+
+            actionBubbleText.text = "Pass";
+            actionBubbleText.color = new Color(0.75f, 0.78f, 0.85f, 1f); // muted pale colour
+            actionBubbleText.gameObject.SetActive(true);
+
+            bool rootWasActive = actionBubbleBg.gameObject.activeSelf;
+            actionBubbleBg.gameObject.SetActive(true);
+            if (!rootWasActive)
+            {
+                actionBubbleBg.transform.DOKill();
+                actionBubbleBg.transform.localScale = Vector3.one * 0.6f;
+                actionBubbleBg.transform.DOScale(1f, 0.22f).SetEase(Ease.OutBack).SetLink(actionBubbleBg.gameObject);
+            }
+        }
+
+        /// <summary>
+        /// Resets the pass state set by ShowPersistentPass() — restores avatar
+        /// colors and hides the action bubble. Call at the start of a new round.
+        /// </summary>
+        public void ResetPassState()
+        {
+            if (!_isPassed) return;
+            _isPassed = false;
+
+            // Restore avatar (SetupIdentity handles name label color as well)
+            if (avatarBg   != null) avatarBg.color  = Color.white;
+            if (avatarIcon != null) avatarIcon.color = Color.white;
+            SetupIdentity();
+
+            // Restore action bubble text color and hide the bubble
+            if (actionBubbleText != null)
+            {
+                actionBubbleText.color = CardVisualTheme.ColorGold;
+                actionBubbleText.gameObject.SetActive(false);
+            }
+            if (!_skipButtonVisible && actionBubbleBg != null)
+                actionBubbleBg.gameObject.SetActive(false);
+        }
+
         public void ShowActionBubble(string text, float duration = 2.5f)
         {
             if (actionBubbleBg == null || actionBubbleText == null) return;
+
+            // Don't overwrite a persistent Pass bubble
+            if (_isPassed) return;
 
             // Skip_Text (once available) owns the shared bubble — Bid_Text
             // ("Text") doesn't get to interrupt it with a trick-win message
