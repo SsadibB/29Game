@@ -129,8 +129,9 @@ namespace Game29
 
             // Use the PopupBG resource sprite as the panel background.
             Image bg = GetComponent<Image>() ?? gameObject.AddComponent<Image>();
+            // PopupBG never returns null (it falls back to RoundedPanel), so compare against that.
             Sprite popupBg = CardVisualTheme.PopupBG;
-            if (popupBg != null)
+            if (popupBg != null && popupBg != CardVisualTheme.RoundedPanel)
             {
                 bg.sprite = popupBg;
                 bg.type = Image.Type.Simple;

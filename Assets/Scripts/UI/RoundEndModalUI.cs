@@ -11,13 +11,13 @@ namespace Game29
     public class RoundEndModalUI : MonoBehaviour
     {
         [Header("UI Elements")]
-        [SerializeField] private Image  modalBg;
-        [SerializeField] private Text   headerText;
-        [SerializeField] private Text   resultText;
-        [SerializeField] private Text   detailsText;
-        [SerializeField] private Text   scoreBoardText;
+        [SerializeField] private Image modalBg;
+        [SerializeField] private Text headerText;
+        [SerializeField] private Text resultText;
+        [SerializeField] private Text detailsText;
+        [SerializeField] private Text scoreBoardText;
         [SerializeField] private Button actionButton;
-        [SerializeField] private Text   actionButtonText;
+        [SerializeField] private Text actionButtonText;
 
         private bool _isGameOver;
 
@@ -39,7 +39,7 @@ namespace Game29
         {
             RectTransform rt = GetComponent<RectTransform>();
             if (rt == null) rt = gameObject.AddComponent<RectTransform>();
-            rt.sizeDelta = new Vector2(480, 360);
+            rt.sizeDelta = new Vector2(580, 400);
 
             if (modalBg == null)
             {
@@ -50,19 +50,21 @@ namespace Game29
             // Always (re-)apply the PopupBG sprite so it survives scene reloads or
             // a missing Inspector reference. Fall back to the procedural panel if the
             // asset hasn't been imported yet.
+            // NOTE: CardVisualTheme.PopupBG never returns null — when the asset is missing it
+            // hands back RoundedPanel — so compare against that to detect a real PopupBG.
             Sprite popupSprite = CardVisualTheme.PopupBG;
-            if (popupSprite != null)
+            if (popupSprite != null && popupSprite != CardVisualTheme.RoundedPanel)
             {
                 modalBg.sprite = popupSprite;
-                modalBg.type   = Image.Type.Simple;
-                modalBg.color  = Color.white;
+                modalBg.type = Image.Type.Simple;
+                modalBg.color = Color.white;
                 modalBg.preserveAspect = false;
             }
             else
             {
                 modalBg.sprite = CardVisualTheme.RoundedPanel;
-                modalBg.type   = Image.Type.Sliced;
-                modalBg.color  = new Color(0.05f, 0.08f, 0.14f, 0.98f);
+                modalBg.type = Image.Type.Sliced;
+                modalBg.color = new Color(0.05f, 0.08f, 0.14f, 0.98f);
             }
 
             if (headerText == null)
