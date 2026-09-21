@@ -376,6 +376,7 @@ IL2CPP_EXTERN_C String_t* _stringLiteral031300A06FD9EE8B3DB60076EE5B32169E50F5DA
 IL2CPP_EXTERN_C String_t* _stringLiteral0374ABD73C70516474EB7E2B9AAEEEE0C49AB68E;
 IL2CPP_EXTERN_C String_t* _stringLiteral046B24F1B120085479F1F7CE8F10A13A502724A5;
 IL2CPP_EXTERN_C String_t* _stringLiteral0470DC858B852D001AA0F543D9912724A3F35E84;
+IL2CPP_EXTERN_C String_t* _stringLiteral05986F1D29B2765F37041E7C352817E9193D88ED;
 IL2CPP_EXTERN_C String_t* _stringLiteral0674A15E41173DA555BCDB08543DBEF070C8D441;
 IL2CPP_EXTERN_C String_t* _stringLiteral0794B05F8860DD134150BE81E069EED237D6F4B4;
 IL2CPP_EXTERN_C String_t* _stringLiteral079C693966A7287F999CCE5396124B395DB5DB8C;
@@ -413,6 +414,7 @@ IL2CPP_EXTERN_C String_t* _stringLiteral40E83ACCE0D042A519B971EC5FA530E519DEAD8E
 IL2CPP_EXTERN_C String_t* _stringLiteral41DA18DE8067A07030607E9A78E51E947D3B891B;
 IL2CPP_EXTERN_C String_t* _stringLiteral45416F57F5110833C031A77C3E30B3F3C1A35BAD;
 IL2CPP_EXTERN_C String_t* _stringLiteral463DF0D1B4A10955AED259E5B64FCE911CFD2144;
+IL2CPP_EXTERN_C String_t* _stringLiteral46634A25C4960FADA85C105EC91E16BB81477B20;
 IL2CPP_EXTERN_C String_t* _stringLiteral46AE08FF2B269F6F9A23E5813D72CBD52D762730;
 IL2CPP_EXTERN_C String_t* _stringLiteral49A7EA21ECB328D154FA2262BB41626D795F4D90;
 IL2CPP_EXTERN_C String_t* _stringLiteral4D5334900878A2D2EBD2CF321E057D74DDBD7C43;
@@ -2070,6 +2072,8 @@ struct CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* ____circleAvatarSprite;
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* ____vectorAvatarSprite;
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* ____trumpBgSprite;
+	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* ____popupBgSprite;
+	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* ____dealerCoinSprite;
 	Font_tC95270EA3198038970422D78B74A7F2E218A96B6* ____defaultFont;
 	Dictionary_2_t8CC1ED895E243EB5091FCFFAAFE454B872D07591* ____seatAvatars;
 };
@@ -3483,6 +3487,8 @@ inline Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* Resources_Load_TisSprit
 }
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* CardVisualTheme_CreateCircleSprite_m6ACC6A554DE3DA83BCA5DBFA73E4A347AD0518A9 (int32_t ___0_size, Color_tD001788D726C3A7F1379BEED0260B9591F440C1F ___1_fill, Color_tD001788D726C3A7F1379BEED0260B9591F440C1F ___2_border, int32_t ___3_borderWidth, const RuntimeMethod* method) ;
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* CardVisualTheme_LoadVectorAvatar_mFE233B0C637074AC6CFC9229A8F9BF3E3781731D (const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* CardVisualTheme_LoadPopupBgSprite_m8FDD0615B70567DE204A62C1EE703DE02A9E86A9 (const RuntimeMethod* method) ;
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* CardVisualTheme_LoadDealerCoinSprite_m83B017413855E56FF2D8B188842DA67BABC2D9F5 (const RuntimeMethod* method) ;
 inline Font_tC95270EA3198038970422D78B74A7F2E218A96B6* Resources_GetBuiltinResource_TisFont_tC95270EA3198038970422D78B74A7F2E218A96B6_m3B4545F25A016D36D9AE93723A3449804A127D73 (String_t* ___0_path, const RuntimeMethod* method)
 {
 	return ((  Font_tC95270EA3198038970422D78B74A7F2E218A96B6* (*) (String_t*, const RuntimeMethod*))Resources_GetBuiltinResource_TisRuntimeObject_mD1671043430ED893B11348B4C95B5969274DB9B6_gshared)(___0_path, method);
@@ -12986,11 +12992,11 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_StartNewGame_m66C7922E01E5EF
 		ScoreManager_t511FD5586EAD87B3F77A055A24C43EB7FF48AE1A* L_0 = __this->____scoreMgr;
 		NullCheck(L_0);
 		ScoreManager_ResetGame_mE88CA223926BA5BD8F78BABA5F43AB9F0E9C3252(L_0, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:203>
-		GameManager_set_Dealer_mB5A57EED686CC1188BF9EB79FFE2CF9334370D9A_inline(__this, 1, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:204>
-		GameManager_StartNewRound_m2566126E103FB0FDC96CE178E0ACF688EB71C3E3(__this, NULL);
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:205>
+		GameManager_set_Dealer_mB5A57EED686CC1188BF9EB79FFE2CF9334370D9A_inline(__this, 2, NULL);
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:206>
+		GameManager_StartNewRound_m2566126E103FB0FDC96CE178E0ACF688EB71C3E3(__this, NULL);
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:207>
 		return;
 	}
 }
@@ -12998,7 +13004,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_StartNewGame_m66C7922E01E5EF
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_StartNextRound_m666678331A4B30D37E1AA41FF574245BD24A8696 (GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:210>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:212>
 		int32_t L_0;
 		L_0 = GameManager_get_CurrentPhase_m16E98CF942F42D8C5667D017B06AAD113E75B385_inline(__this, NULL);
 		if ((!(((uint32_t)L_0) == ((uint32_t)5))))
@@ -13017,13 +13023,13 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_StartNextRound_m666678331A4B
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:211>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:213>
 		GameManager_StartNewRound_m2566126E103FB0FDC96CE178E0ACF688EB71C3E3(__this, NULL);
 	}
 
 IL_001c:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:212>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:214>
 		return;
 	}
 }
@@ -13044,7 +13050,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool GameManager_PlaceHumanBid_m5FF47970381D1
 	bool G_B5_1 = false;
 	bool G_B7_0 = false;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:219>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:221>
 		int32_t L_0;
 		L_0 = GameManager_get_CurrentPhase_m16E98CF942F42D8C5667D017B06AAD113E75B385_inline(__this, NULL);
 		if ((!(((uint32_t)L_0) == ((uint32_t)2))))
@@ -13063,19 +13069,19 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool GameManager_PlaceHumanBid_m5FF47970381D1
 
 IL_0011:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:219>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:221>
 		return (bool)0;
 	}
 
 IL_0013:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:221>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:223>
 		BiddingManager_tB5C5269891ED90E4AEB9766BC7999C93873CF7F2* L_2 = __this->____biddingMgr;
 		int32_t L_3 = ___0_bid;
 		NullCheck(L_2);
 		bool L_4;
 		L_4 = BiddingManager_PlaceBid_mFCAB86CE69155FBC1B2A6D0F74D0BF49A152316F(L_2, 0, L_3, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:222>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:224>
 		bool L_5 = L_4;
 		if (!L_5)
 		{
@@ -13085,7 +13091,7 @@ IL_0013:
 		G_B4_0 = L_5;
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:224>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:226>
 		Action_2_tA5402ADB5477AFC401991A96C9B162E5CBEEFEC0* L_6 = __this->___OnBiddingAction;
 		Action_2_tA5402ADB5477AFC401991A96C9B162E5CBEEFEC0* L_7 = L_6;
 		if (L_7)
@@ -13115,14 +13121,14 @@ IL_002f:
 
 IL_003b:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:225>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:227>
 		GameManager_AfterHumanBiddingAction_m3B43E802076F86E660D40D6F3415FC2E4E162FDE(__this, NULL);
 		G_B8_0 = G_B7_0;
 	}
 
 IL_0041:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:227>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:229>
 		return G_B8_0;
 	}
 }
@@ -13139,7 +13145,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool GameManager_HumanPass_mFC77548BD0745F89C
 	bool G_B5_1 = false;
 	bool G_B7_0 = false;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:233>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:235>
 		int32_t L_0;
 		L_0 = GameManager_get_CurrentPhase_m16E98CF942F42D8C5667D017B06AAD113E75B385_inline(__this, NULL);
 		if ((!(((uint32_t)L_0) == ((uint32_t)2))))
@@ -13158,18 +13164,18 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool GameManager_HumanPass_mFC77548BD0745F89C
 
 IL_0011:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:233>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:235>
 		return (bool)0;
 	}
 
 IL_0013:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:235>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:237>
 		BiddingManager_tB5C5269891ED90E4AEB9766BC7999C93873CF7F2* L_2 = __this->____biddingMgr;
 		NullCheck(L_2);
 		bool L_3;
 		L_3 = BiddingManager_Pass_mD66E9D34D71D729C7FCB64BFB660237F1E957A03(L_2, 0, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:236>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:238>
 		bool L_4 = L_3;
 		if (!L_4)
 		{
@@ -13179,7 +13185,7 @@ IL_0013:
 		G_B4_0 = L_4;
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:238>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:240>
 		Action_2_tA5402ADB5477AFC401991A96C9B162E5CBEEFEC0* L_5 = __this->___OnBiddingAction;
 		Action_2_tA5402ADB5477AFC401991A96C9B162E5CBEEFEC0* L_6 = L_5;
 		if (L_6)
@@ -13207,14 +13213,14 @@ IL_002e:
 
 IL_003d:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:239>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:241>
 		GameManager_AfterHumanBiddingAction_m3B43E802076F86E660D40D6F3415FC2E4E162FDE(__this, NULL);
 		G_B8_0 = G_B7_0;
 	}
 
 IL_0043:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:241>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:243>
 		return G_B8_0;
 	}
 }
@@ -13244,7 +13250,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool GameManager_PlayHumanCard_m32424CF923909
 	bool G_B23_0 = false;
 	bool G_B22_0 = false;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:249>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:251>
 		bool L_0 = __this->____waitingForSinglePlayDecision;
 		if (!L_0)
 		{
@@ -13252,13 +13258,13 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool GameManager_PlayHumanCard_m32424CF923909
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:249>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:251>
 		return (bool)0;
 	}
 
 IL_000a:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:250>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:252>
 		int32_t L_1;
 		L_1 = GameManager_get_CurrentPhase_m16E98CF942F42D8C5667D017B06AAD113E75B385_inline(__this, NULL);
 		if ((!(((uint32_t)L_1) == ((uint32_t)4))))
@@ -13277,13 +13283,13 @@ IL_000a:
 
 IL_001b:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:250>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:252>
 		return (bool)0;
 	}
 
 IL_001d:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:251>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:253>
 		bool L_3;
 		L_3 = GameManager_get_IsSinglePlayActive_m7E51ADE9EC708BC108EB3CEE4608B79989C18D22_inline(__this, NULL);
 		if (!L_3)
@@ -13314,13 +13320,13 @@ IL_001d:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:251>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:253>
 		return (bool)0;
 	}
 
 IL_0047:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:253>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:255>
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_8 = __this->____trickMgr;
 		if (!L_8)
 		{
@@ -13352,7 +13358,7 @@ IL_005f:
 IL_0060:
 	{
 		V_0 = G_B13_0;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:254>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:256>
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_11 = __this->____trickMgr;
 		NullCheck(L_11);
 		Trick_tE296911DB0C5F435F442EAFD746067F7DF61D330* L_12;
@@ -13383,7 +13389,7 @@ IL_0083:
 IL_0084:
 	{
 		V_1 = (bool)G_B16_0;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:255>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:257>
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_17 = __this->____trickMgr;
 		Card_t0A9DF635E00AE171E2A4DFD4402933CE663B89C8* L_18 = ___0_card;
 		HandU5BU5D_tD5E45E974E721F92B6075F9AE604D837B6F2164A* L_19 = __this->____hands;
@@ -13393,7 +13399,7 @@ IL_0084:
 		NullCheck(L_17);
 		bool L_22;
 		L_22 = TrickManager_PlayCard_m4F2153E23DB7F5EE0406753C9CAC06EA39A71919(L_17, 0, L_18, L_21, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:256>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:258>
 		bool L_23 = L_22;
 		if (!L_23)
 		{
@@ -13403,9 +13409,9 @@ IL_0084:
 		G_B17_0 = L_23;
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:258>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:260>
 		GameManager_NotifyStateChanged_m23F76F0D47C5A063A4FF9828BC3A46D12B429524(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:259>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:261>
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_24 = __this->____trickMgr;
 		NullCheck(L_24);
 		bool L_25;
@@ -13418,10 +13424,10 @@ IL_0084:
 		G_B18_0 = G_B17_0;
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:261>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:263>
 		float L_26 = __this->___cardTravelDuration;
 		V_3 = L_26;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:262>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:264>
 		bool L_27 = V_1;
 		if (!L_27)
 		{
@@ -13440,7 +13446,7 @@ IL_0084:
 		G_B20_0 = G_B19_0;
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:263>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:265>
 		float L_29 = V_3;
 		float L_30 = __this->___trickClearDelay;
 		V_3 = ((float)il2cpp_codegen_add(L_29, L_30));
@@ -13449,7 +13455,7 @@ IL_0084:
 
 IL_00cb:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:264>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:266>
 		bool L_31 = __this->___enablePacing;
 		if (!L_31)
 		{
@@ -13459,7 +13465,7 @@ IL_00cb:
 		G_B22_0 = G_B21_0;
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:265>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:267>
 		float L_32 = V_3;
 		RuntimeObject* L_33;
 		L_33 = GameManager_DelayedAdvancePlayTurn_m3F7A7D16565C7A2F33CD16BA67FD607301C176C9(__this, L_32, NULL);
@@ -13470,14 +13476,14 @@ IL_00cb:
 
 IL_00e2:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:267>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:269>
 		GameManager_AdvancePlayTurn_m3E4E37D4DAA63EF84413383252A1D2FF057B618D(__this, NULL);
 		G_B24_0 = G_B23_0;
 	}
 
 IL_00e8:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:270>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:272>
 		return G_B24_0;
 	}
 }
@@ -13509,7 +13515,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool GameManager_RevealTrump_mA76B57650092BA9
 {
 	Card_t0A9DF635E00AE171E2A4DFD4402933CE663B89C8* V_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:286>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:288>
 		int32_t L_0;
 		L_0 = GameManager_get_CurrentPlayer_m022B7B5079A6C106DB6309569533003B6CC47B42_inline(__this, NULL);
 		bool L_1;
@@ -13520,13 +13526,13 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool GameManager_RevealTrump_mA76B57650092BA9
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:286>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:288>
 		return (bool)0;
 	}
 
 IL_0010:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:288>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:290>
 		TrumpManager_t92E234FC1D9CBE267ED9783B7061AB79CAC6A4CF* L_2 = __this->____trumpMgr;
 		NullCheck(L_2);
 		bool L_3;
@@ -13537,13 +13543,13 @@ IL_0010:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:288>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:290>
 		return (bool)0;
 	}
 
 IL_001f:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:290>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:292>
 		TrumpManager_t92E234FC1D9CBE267ED9783B7061AB79CAC6A4CF* L_4 = __this->____trumpMgr;
 		NullCheck(L_4);
 		bool L_5;
@@ -13554,7 +13560,7 @@ IL_001f:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:292>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:294>
 		HandU5BU5D_tD5E45E974E721F92B6075F9AE604D837B6F2164A* L_6 = __this->____hands;
 		TrumpManager_t92E234FC1D9CBE267ED9783B7061AB79CAC6A4CF* L_7 = __this->____trumpMgr;
 		NullCheck(L_7);
@@ -13570,9 +13576,9 @@ IL_001f:
 
 IL_0046:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:295>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:297>
 		GameManager_NotifyStateChanged_m23F76F0D47C5A063A4FF9828BC3A46D12B429524(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:296>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:298>
 		return (bool)1;
 	}
 }
@@ -13589,7 +13595,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool GameManager_CanRevealTrump_mBEC2D5974A12
 	int32_t G_B7_1 = 0;
 	TrumpManager_t92E234FC1D9CBE267ED9783B7061AB79CAC6A4CF* G_B7_2 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:302>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:304>
 		bool L_0 = __this->____waitingForSinglePlayDecision;
 		if (L_0)
 		{
@@ -13616,13 +13622,13 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool GameManager_CanRevealTrump_mBEC2D5974A12
 
 IL_001a:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:302>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:304>
 		return (bool)0;
 	}
 
 IL_001c:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:303>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:305>
 		TrumpManager_t92E234FC1D9CBE267ED9783B7061AB79CAC6A4CF* L_4 = __this->____trumpMgr;
 		int32_t L_5 = ___0_seat;
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_6 = __this->____trickMgr;
@@ -13672,7 +13678,7 @@ IL_0035:
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool GameManager_CanHumanRevealTrump_m94AE6532A69A0AC6A92FFADA504E8B247E7CC3CE (GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:306>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:308>
 		bool L_0;
 		L_0 = GameManager_CanRevealTrump_mBEC2D5974A1220F3658622CE15277BD0109BB86C(__this, 0, NULL);
 		return L_0;
@@ -13719,7 +13725,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool GameManager_CanDeclareMarriage_m886076DB
 	List_1_tB9B04014FEF25D16919E2A880AA27EA53A52761F* G_B15_1 = NULL;
 	Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C* G_B22_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:318>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:320>
 		int32_t L_0;
 		L_0 = GameManager_get_CurrentPhase_m16E98CF942F42D8C5667D017B06AAD113E75B385_inline(__this, NULL);
 		if ((((int32_t)L_0) == ((int32_t)4)))
@@ -13728,13 +13734,13 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool GameManager_CanDeclareMarriage_m886076DB
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:318>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:320>
 		return (bool)0;
 	}
 
 IL_000b:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:319>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:321>
 		bool L_1;
 		L_1 = GameManager_get_IsSinglePlayActive_m7E51ADE9EC708BC108EB3CEE4608B79989C18D22_inline(__this, NULL);
 		if (!L_1)
@@ -13766,13 +13772,13 @@ IL_000b:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:319>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:321>
 		return (bool)0;
 	}
 
 IL_0038:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:320>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:322>
 		TrumpManager_t92E234FC1D9CBE267ED9783B7061AB79CAC6A4CF* L_7 = __this->____trumpMgr;
 		if (!L_7)
 		{
@@ -13805,13 +13811,13 @@ IL_0038:
 
 IL_0063:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:320>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:322>
 		return (bool)0;
 	}
 
 IL_0065:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:321>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:323>
 		ScoreManager_t511FD5586EAD87B3F77A055A24C43EB7FF48AE1A* L_13 = __this->____scoreMgr;
 		NullCheck(L_13);
 		bool L_14;
@@ -13822,13 +13828,13 @@ IL_0065:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:321>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:323>
 		return (bool)0;
 	}
 
 IL_0074:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:323>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:325>
 		TrumpManager_t92E234FC1D9CBE267ED9783B7061AB79CAC6A4CF* L_15 = __this->____trumpMgr;
 		NullCheck(L_15);
 		Nullable_1_tB03AEE708613D24091BEC5B640EB7F3E57371BBB L_16;
@@ -13837,7 +13843,7 @@ IL_0074:
 		int32_t L_17;
 		L_17 = Nullable_1_get_Value_m9FE71B1DFE73EAC1F6CB02AE692F16B36FE10F63((&V_7), Nullable_1_get_Value_m9FE71B1DFE73EAC1F6CB02AE692F16B36FE10F63_RuntimeMethod_var);
 		V_0 = L_17;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:324>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:326>
 		HandU5BU5D_tD5E45E974E721F92B6075F9AE604D837B6F2164A* L_18 = __this->____hands;
 		int32_t L_19 = ___0_player;
 		NullCheck(L_18);
@@ -13847,7 +13853,7 @@ IL_0074:
 		NullCheck(L_21);
 		List_1_tB9B04014FEF25D16919E2A880AA27EA53A52761F* L_23;
 		L_23 = Hand_GetCardsBySuit_m2E541572E4289CA17EE8FECD9804795837CC14DB(L_21, L_22, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:325>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:327>
 		List_1_tB9B04014FEF25D16919E2A880AA27EA53A52761F* L_24 = L_23;
 		il2cpp_codegen_runtime_class_init_inline(U3CU3Ec_t81AAACD7C6A2BE3E473E8BFF082506DC1F95FD6E_il2cpp_TypeInfo_var);
 		Func_2_t9540AB2972E06FE10011184E12D02449150C9721* L_25 = ((U3CU3Ec_t81AAACD7C6A2BE3E473E8BFF082506DC1F95FD6E_StaticFields*)il2cpp_codegen_static_fields_for(U3CU3Ec_t81AAACD7C6A2BE3E473E8BFF082506DC1F95FD6E_il2cpp_TypeInfo_var))->___U3CU3E9__126_0;
@@ -13881,7 +13887,7 @@ IL_00b7:
 		bool L_30;
 		L_30 = Enumerable_Any_TisCard_t0A9DF635E00AE171E2A4DFD4402933CE663B89C8_m6F5EE62A18AD5CE5D7D69BF61FDD73A47CC4EAF7(G_B14_1, G_B14_0, Enumerable_Any_TisCard_t0A9DF635E00AE171E2A4DFD4402933CE663B89C8_m6F5EE62A18AD5CE5D7D69BF61FDD73A47CC4EAF7_RuntimeMethod_var);
 		V_1 = L_30;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:326>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:328>
 		il2cpp_codegen_runtime_class_init_inline(U3CU3Ec_t81AAACD7C6A2BE3E473E8BFF082506DC1F95FD6E_il2cpp_TypeInfo_var);
 		Func_2_t9540AB2972E06FE10011184E12D02449150C9721* L_31 = ((U3CU3Ec_t81AAACD7C6A2BE3E473E8BFF082506DC1F95FD6E_StaticFields*)il2cpp_codegen_static_fields_for(U3CU3Ec_t81AAACD7C6A2BE3E473E8BFF082506DC1F95FD6E_il2cpp_TypeInfo_var))->___U3CU3E9__126_1;
 		Func_2_t9540AB2972E06FE10011184E12D02449150C9721* L_32 = L_31;
@@ -13911,7 +13917,7 @@ IL_00dc:
 		bool L_36;
 		L_36 = Enumerable_Any_TisCard_t0A9DF635E00AE171E2A4DFD4402933CE663B89C8_m6F5EE62A18AD5CE5D7D69BF61FDD73A47CC4EAF7(G_B16_1, G_B16_0, Enumerable_Any_TisCard_t0A9DF635E00AE171E2A4DFD4402933CE663B89C8_m6F5EE62A18AD5CE5D7D69BF61FDD73A47CC4EAF7_RuntimeMethod_var);
 		V_2 = L_36;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:327>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:329>
 		bool L_37 = V_1;
 		if (!L_37)
 		{
@@ -13928,18 +13934,18 @@ IL_00dc:
 
 IL_00e8:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:327>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:329>
 		return (bool)0;
 	}
 
 IL_00ea:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:329>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:331>
 		int32_t L_39 = ___0_player;
 		int32_t L_40;
 		L_40 = GameRules_GetTeam_m382E4465E92117D573C5FA0766E6AD603BCD37FD(L_39, NULL);
 		V_3 = L_40;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:330>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:332>
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_41 = __this->____trickMgr;
 		if (L_41)
 		{
@@ -13964,16 +13970,16 @@ IL_0101:
 IL_010c:
 	{
 		V_4 = G_B22_0;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:331>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:333>
 		V_5 = 0;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:332>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:334>
 		V_8 = 0;
 		goto IL_0130;
 	}
 
 IL_0116:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:333>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:335>
 		int32_t L_45 = V_8;
 		int32_t L_46;
 		L_46 = GameRules_GetTeam_m382E4465E92117D573C5FA0766E6AD603BCD37FD(L_45, NULL);
@@ -13984,7 +13990,7 @@ IL_0116:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:333>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:335>
 		int32_t L_48 = V_5;
 		Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C* L_49 = V_4;
 		int32_t L_50 = V_8;
@@ -13996,14 +14002,14 @@ IL_0116:
 
 IL_012a:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:332>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:334>
 		int32_t L_53 = V_8;
 		V_8 = ((int32_t)il2cpp_codegen_add(L_53, 1));
 	}
 
 IL_0130:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:332>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:334>
 		int32_t L_54 = V_8;
 		if ((((int32_t)L_54) < ((int32_t)4)))
 		{
@@ -14011,7 +14017,7 @@ IL_0130:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:335>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:337>
 		int32_t L_55 = V_5;
 		return (bool)((((int32_t)((((int32_t)L_55) < ((int32_t)1))? 1 : 0)) == ((int32_t)0))? 1 : 0);
 	}
@@ -14020,7 +14026,7 @@ IL_0130:
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool GameManager_CanHumanDeclareMarriage_m939A2CE79AD8F616A2023C57B0D246E6E0AF62B5 (GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:338>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:340>
 		bool L_0;
 		L_0 = GameManager_CanDeclareMarriage_m886076DB3CD59BF7A8E93BE40CBC4F69AA15D132(__this, 0, NULL);
 		return L_0;
@@ -14032,7 +14038,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool GameManager_DeclareMarriage_m2926E518102
 	bool G_B4_0 = false;
 	bool G_B3_0 = false;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:347>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:349>
 		int32_t L_0 = ___0_player;
 		bool L_1;
 		L_1 = GameManager_CanDeclareMarriage_m886076DB3CD59BF7A8E93BE40CBC4F69AA15D132(__this, L_0, NULL);
@@ -14042,13 +14048,13 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool GameManager_DeclareMarriage_m2926E518102
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:347>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:349>
 		return (bool)0;
 	}
 
 IL_000b:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:349>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:351>
 		ScoreManager_t511FD5586EAD87B3F77A055A24C43EB7FF48AE1A* L_2 = __this->____scoreMgr;
 		int32_t L_3 = ___0_player;
 		int32_t L_4;
@@ -14056,7 +14062,7 @@ IL_000b:
 		NullCheck(L_2);
 		bool L_5;
 		L_5 = ScoreManager_DeclareMarriage_mDAE47D5EDD812BA0310FE540A3C8D7B4DEDCB16A(L_2, L_4, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:350>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:352>
 		bool L_6 = L_5;
 		if (!L_6)
 		{
@@ -14066,14 +14072,14 @@ IL_000b:
 		G_B3_0 = L_6;
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:350>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:352>
 		GameManager_NotifyStateChanged_m23F76F0D47C5A063A4FF9828BC3A46D12B429524(__this, NULL);
 		G_B4_0 = G_B3_0;
 	}
 
 IL_0025:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:351>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:353>
 		return G_B4_0;
 	}
 }
@@ -14081,7 +14087,7 @@ IL_0025:
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool GameManager_DeclareHumanMarriage_m0FD730A5E98E3171FFAFB287C9945E41504566F2 (GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:354>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:356>
 		bool L_0;
 		L_0 = GameManager_DeclareMarriage_m2926E518102DB9FE4D4A4208327F4FA8533B789C(__this, 0, NULL);
 		return L_0;
@@ -14095,7 +14101,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool GameManager_IsSkipAvailable_m90B9C69831D
 	int32_t V_2 = 0;
 	bool V_3 = false;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:375>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:377>
 		int32_t L_0;
 		L_0 = GameManager_get_CurrentPhase_m16E98CF942F42D8C5667D017B06AAD113E75B385_inline(__this, NULL);
 		if ((((int32_t)L_0) == ((int32_t)4)))
@@ -14104,13 +14110,13 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool GameManager_IsSkipAvailable_m90B9C69831D
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:375>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:377>
 		return (bool)0;
 	}
 
 IL_000b:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:376>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:378>
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_1 = __this->____trickMgr;
 		if (!L_1)
 		{
@@ -14130,13 +14136,13 @@ IL_000b:
 
 IL_0020:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:376>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:378>
 		return (bool)0;
 	}
 
 IL_0022:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:377>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:379>
 		bool L_4;
 		L_4 = GameManager_get_IsSinglePlayActive_m7E51ADE9EC708BC108EB3CEE4608B79989C18D22_inline(__this, NULL);
 		if (!L_4)
@@ -14145,35 +14151,35 @@ IL_0022:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:377>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:379>
 		return (bool)0;
 	}
 
 IL_002c:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:379>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:381>
 		ScoreManager_t511FD5586EAD87B3F77A055A24C43EB7FF48AE1A* L_5 = __this->____scoreMgr;
 		NullCheck(L_5);
 		int32_t L_6;
 		L_6 = ScoreManager_get_BiddingTeam_m35D59C76B6FC13F2DCBEB0D052E2D2C4277E75AB_inline(L_5, NULL);
 		V_0 = L_6;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:380>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:382>
 		int32_t L_7 = V_0;
 		V_1 = ((int32_t)il2cpp_codegen_subtract(1, L_7));
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:381>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:383>
 		ScoreManager_t511FD5586EAD87B3F77A055A24C43EB7FF48AE1A* L_8 = __this->____scoreMgr;
 		NullCheck(L_8);
 		int32_t L_9;
 		L_9 = ScoreManager_get_EffectiveTarget_mB3D93648E5366BAC19F8BA8CEBC01F49B2BFE753_inline(L_8, NULL);
 		V_2 = L_9;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:383>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:385>
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_10 = __this->____trickMgr;
 		int32_t L_11 = V_0;
 		NullCheck(L_10);
 		int32_t L_12;
 		L_12 = TrickManager_GetTeamPoints_mBD0355865B2F592C622F6E1D9840FFDE530E320C(L_10, L_11, NULL);
 		int32_t L_13 = V_2;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:384>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:386>
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_14 = __this->____trickMgr;
 		int32_t L_15 = V_1;
 		NullCheck(L_14);
@@ -14181,7 +14187,7 @@ IL_002c:
 		L_16 = TrickManager_GetTeamPoints_mBD0355865B2F592C622F6E1D9840FFDE530E320C(L_14, L_15, NULL);
 		int32_t L_17 = V_2;
 		V_3 = (bool)((((int32_t)((((int32_t)L_16) < ((int32_t)((int32_t)il2cpp_codegen_subtract(((int32_t)28), L_17))))? 1 : 0)) == ((int32_t)0))? 1 : 0);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:386>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:388>
 		bool L_18 = V_3;
 		return (bool)((int32_t)(((((int32_t)((((int32_t)L_12) < ((int32_t)L_13))? 1 : 0)) == ((int32_t)0))? 1 : 0)|(int32_t)L_18));
 	}
@@ -14190,7 +14196,7 @@ IL_002c:
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool GameManager_IsHumanSkipAvailable_m182028F4EA7D2F70AEE981772D14FA09D0C7534D (GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:389>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:391>
 		bool L_0 = __this->____waitingForSinglePlayDecision;
 		if (L_0)
 		{
@@ -14212,7 +14218,7 @@ IL_0010:
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool GameManager_SkipRemainingPlay_m0B133944ABE88B05CFB4295517830D40E20504CA (GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:394>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:396>
 		bool L_0;
 		L_0 = GameManager_IsHumanSkipAvailable_m182028F4EA7D2F70AEE981772D14FA09D0C7534D(__this, NULL);
 		if (L_0)
@@ -14221,21 +14227,21 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool GameManager_SkipRemainingPlay_m0B133944A
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:394>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:396>
 		return (bool)0;
 	}
 
 IL_000a:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:395>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:397>
 		MonoBehaviour_StopAllCoroutines_m872033451D42013A99867D09337490017E9ED318(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:396>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:398>
 		__this->____aiPlayRoutine = (Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B*)NULL;
 		Il2CppCodeGenWriteBarrier((void**)(&__this->____aiPlayRoutine), (void*)(Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B*)NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:397>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:399>
 		__this->____aiBiddingRoutine = (Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B*)NULL;
 		Il2CppCodeGenWriteBarrier((void**)(&__this->____aiBiddingRoutine), (void*)(Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B*)NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:398>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:400>
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_1 = __this->____trickMgr;
 		NullCheck(L_1);
 		bool L_2;
@@ -14247,7 +14253,7 @@ IL_000a:
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Hand_t7A84E047DF7147D62D842E3563A7A187DA1A0082* GameManager_GetHand_m638F6617CC7204CA0538943F900546D20B3FC103 (GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* __this, int32_t ___0_seat, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:405>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:407>
 		HandU5BU5D_tD5E45E974E721F92B6075F9AE604D837B6F2164A* L_0 = __this->____hands;
 		int32_t L_1 = ___0_seat;
 		NullCheck(L_0);
@@ -14260,7 +14266,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Hand_t7A84E047DF7147D62D842E3563A7A187DA1A008
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C* GameManager_GetGamePoints_m18013435E1FF32906ECFEE9809D3D08CCD973A7F (GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:406>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:408>
 		ScoreManager_t511FD5586EAD87B3F77A055A24C43EB7FF48AE1A* L_0 = __this->____scoreMgr;
 		NullCheck(L_0);
 		Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C* L_1;
@@ -14283,7 +14289,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Int32U5BU5D_t19C97395396A72ECAF310612F0760F16
 	Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C* G_B5_0 = NULL;
 	Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C* G_B4_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:407>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:409>
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_0 = __this->____trickMgr;
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_1 = L_0;
 		if (L_1)
@@ -14332,7 +14338,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Trick_tE296911DB0C5F435F442EAFD746067F7DF61D3
 	TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* G_B2_0 = NULL;
 	TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* G_B1_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:408>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:410>
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_0 = __this->____trickMgr;
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_1 = L_0;
 		if (L_1)
@@ -14360,7 +14366,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Trick_tE296911DB0C5F435F442EAFD746067F7DF61D3
 	TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* G_B2_0 = NULL;
 	TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* G_B1_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:409>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:411>
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_0 = __this->____trickMgr;
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_1 = L_0;
 		if (L_1)
@@ -14386,7 +14392,7 @@ IL_000c:
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t GameManager_GetCurrentBid_m8E72C10B30391924DF243FC4EED4772C881C5936 (GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:410>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:412>
 		BiddingManager_tB5C5269891ED90E4AEB9766BC7999C93873CF7F2* L_0 = __this->____biddingMgr;
 		NullCheck(L_0);
 		int32_t L_1;
@@ -14398,7 +14404,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t GameManager_GetCurrentBid_m8E72C10B30
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t GameManager_GetCurrentHighBidder_m7BC42F73027E67BB98E3AEB43D4617A546ABAEC2 (GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:411>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:413>
 		BiddingManager_tB5C5269891ED90E4AEB9766BC7999C93873CF7F2* L_0 = __this->____biddingMgr;
 		NullCheck(L_0);
 		int32_t L_1;
@@ -14410,7 +14416,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t GameManager_GetCurrentHighBidder_m7BC
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t GameManager_GetFinalBid_mBB1200AF27BEBE909190CF07A986ADE3A0209F7C (GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:412>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:414>
 		ScoreManager_t511FD5586EAD87B3F77A055A24C43EB7FF48AE1A* L_0 = __this->____scoreMgr;
 		NullCheck(L_0);
 		int32_t L_1;
@@ -14422,7 +14428,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t GameManager_GetFinalBid_mBB1200AF27BE
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t GameManager_GetEffectiveTarget_m1BF08D651CEBBA44DA32F634DAEAFC021A00FB9B (GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:413>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:415>
 		ScoreManager_t511FD5586EAD87B3F77A055A24C43EB7FF48AE1A* L_0 = __this->____scoreMgr;
 		NullCheck(L_0);
 		int32_t L_1;
@@ -14434,7 +14440,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t GameManager_GetEffectiveTarget_m1BF08
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t GameManager_GetBidWinner_m3E84C191A9A19F869F70FE8FCE79C503CC5E42E3 (GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:414>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:416>
 		ScoreManager_t511FD5586EAD87B3F77A055A24C43EB7FF48AE1A* L_0 = __this->____scoreMgr;
 		NullCheck(L_0);
 		int32_t L_1;
@@ -14446,7 +14452,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t GameManager_GetBidWinner_m3E84C191A9A
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Nullable_1_tB03AEE708613D24091BEC5B640EB7F3E57371BBB GameManager_GetTrumpForHuman_mCC909FC5BADAD49343C47430047C03DEC4C134E9 (GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:415>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:417>
 		TrumpManager_t92E234FC1D9CBE267ED9783B7061AB79CAC6A4CF* L_0 = __this->____trumpMgr;
 		NullCheck(L_0);
 		Nullable_1_tB03AEE708613D24091BEC5B640EB7F3E57371BBB L_1;
@@ -14458,7 +14464,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Nullable_1_tB03AEE708613D24091BEC5B640EB7F3E5
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool GameManager_IsTrumpRevealed_m82049FBA3F1D035E210A80C121718041C70BE0B2 (GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:416>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:418>
 		TrumpManager_t92E234FC1D9CBE267ED9783B7061AB79CAC6A4CF* L_0 = __this->____trumpMgr;
 		NullCheck(L_0);
 		bool L_1;
@@ -14470,7 +14476,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool GameManager_IsTrumpRevealed_m82049FBA3F1
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t GameManager_GetMinimumBid_m356063A0E028A81453AEF4C7FA21EF535F56655E (GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:417>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:419>
 		BiddingManager_tB5C5269891ED90E4AEB9766BC7999C93873CF7F2* L_0 = __this->____biddingMgr;
 		NullCheck(L_0);
 		int32_t L_1;
@@ -14493,7 +14499,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR List_1_tB9B04014FEF25D16919E2A880AA27EA53A527
 	Nullable_1_t4B7406E6E74D445439E6FC254270E7F0220B66FF V_0;
 	memset((&V_0), 0, sizeof(V_0));
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:422>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:424>
 		bool L_0 = __this->____waitingForSinglePlayDecision;
 		if (!L_0)
 		{
@@ -14501,7 +14507,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR List_1_tB9B04014FEF25D16919E2A880AA27EA53A527
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:423>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:425>
 		List_1_tB9B04014FEF25D16919E2A880AA27EA53A52761F* L_1 = (List_1_tB9B04014FEF25D16919E2A880AA27EA53A52761F*)il2cpp_codegen_object_new(List_1_tB9B04014FEF25D16919E2A880AA27EA53A52761F_il2cpp_TypeInfo_var);
 		List_1__ctor_mA99CEB0BF350ADD86AA0947E89CADBFAAEF8EA92(L_1, List_1__ctor_mA99CEB0BF350ADD86AA0947E89CADBFAAEF8EA92_RuntimeMethod_var);
 		return L_1;
@@ -14509,7 +14515,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR List_1_tB9B04014FEF25D16919E2A880AA27EA53A527
 
 IL_000e:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:424>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:426>
 		int32_t L_2;
 		L_2 = GameManager_get_CurrentPhase_m16E98CF942F42D8C5667D017B06AAD113E75B385_inline(__this, NULL);
 		if ((!(((uint32_t)L_2) == ((uint32_t)4))))
@@ -14528,7 +14534,7 @@ IL_000e:
 
 IL_001f:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:425>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:427>
 		List_1_tB9B04014FEF25D16919E2A880AA27EA53A52761F* L_4 = (List_1_tB9B04014FEF25D16919E2A880AA27EA53A52761F*)il2cpp_codegen_object_new(List_1_tB9B04014FEF25D16919E2A880AA27EA53A52761F_il2cpp_TypeInfo_var);
 		List_1__ctor_mA99CEB0BF350ADD86AA0947E89CADBFAAEF8EA92(L_4, List_1__ctor_mA99CEB0BF350ADD86AA0947E89CADBFAAEF8EA92_RuntimeMethod_var);
 		return L_4;
@@ -14536,7 +14542,7 @@ IL_001f:
 
 IL_0025:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:426>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:428>
 		bool L_5;
 		L_5 = GameManager_get_IsSinglePlayActive_m7E51ADE9EC708BC108EB3CEE4608B79989C18D22_inline(__this, NULL);
 		if (!L_5)
@@ -14567,7 +14573,7 @@ IL_0025:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:427>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:429>
 		List_1_tB9B04014FEF25D16919E2A880AA27EA53A52761F* L_10 = (List_1_tB9B04014FEF25D16919E2A880AA27EA53A52761F*)il2cpp_codegen_object_new(List_1_tB9B04014FEF25D16919E2A880AA27EA53A52761F_il2cpp_TypeInfo_var);
 		List_1__ctor_mA99CEB0BF350ADD86AA0947E89CADBFAAEF8EA92(L_10, List_1__ctor_mA99CEB0BF350ADD86AA0947E89CADBFAAEF8EA92_RuntimeMethod_var);
 		return L_10;
@@ -14575,7 +14581,7 @@ IL_0025:
 
 IL_0053:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:428>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:430>
 		HandU5BU5D_tD5E45E974E721F92B6075F9AE604D837B6F2164A* L_11 = __this->____hands;
 		NullCheck(L_11);
 		int32_t L_12 = 0;
@@ -14597,32 +14603,32 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_StartNewRound_m2566126E103FB
 	memset((&V_0), 0, sizeof(V_0));
 	int32_t V_1 = 0;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:437>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:439>
 		MonoBehaviour_StopAllCoroutines_m872033451D42013A99867D09337490017E9ED318(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:438>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:440>
 		__this->____aiBiddingRoutine = (Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B*)NULL;
 		Il2CppCodeGenWriteBarrier((void**)(&__this->____aiBiddingRoutine), (void*)(Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B*)NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:439>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:441>
 		__this->____aiPlayRoutine = (Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B*)NULL;
 		Il2CppCodeGenWriteBarrier((void**)(&__this->____aiPlayRoutine), (void*)(Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B*)NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:442>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:444>
 		GameManager_set_IsSinglePlayActive_mEC6227BAA38F9BBB832CEE5E836A11E9341725A9_inline(__this, (bool)0, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:443>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:445>
 		il2cpp_codegen_initobj((&V_0), sizeof(Nullable_1_t4B7406E6E74D445439E6FC254270E7F0220B66FF));
 		Nullable_1_t4B7406E6E74D445439E6FC254270E7F0220B66FF L_0 = V_0;
 		GameManager_set_SinglePlayerSeat_m051675F917C466AA7B20E9542AC2F58E792AC105_inline(__this, L_0, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:444>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:446>
 		__this->____doubleDecisionCompleted = (bool)0;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:445>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:447>
 		__this->____waitingForSinglePlayDecision = (bool)0;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:448>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:450>
 		V_1 = 0;
 		goto IL_004d;
 	}
 
 IL_003c:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:448>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:450>
 		HandU5BU5D_tD5E45E974E721F92B6075F9AE604D837B6F2164A* L_1 = __this->____hands;
 		int32_t L_2 = V_1;
 		NullCheck(L_1);
@@ -14630,14 +14636,14 @@ IL_003c:
 		Hand_t7A84E047DF7147D62D842E3563A7A187DA1A0082* L_4 = (L_1)->GetAt(static_cast<il2cpp_array_size_t>(L_3));
 		NullCheck(L_4);
 		Hand_Clear_mD143A3A4C2E85946A36DCFB53B939422EF535952(L_4, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:448>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:450>
 		int32_t L_5 = V_1;
 		V_1 = ((int32_t)il2cpp_codegen_add(L_5, 1));
 	}
 
 IL_004d:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:448>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:450>
 		int32_t L_6 = V_1;
 		if ((((int32_t)L_6) < ((int32_t)4)))
 		{
@@ -14645,33 +14651,33 @@ IL_004d:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:449>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:451>
 		TrumpManager_t92E234FC1D9CBE267ED9783B7061AB79CAC6A4CF* L_7 = __this->____trumpMgr;
 		NullCheck(L_7);
 		TrumpManager_Reset_mBA1E39925855088C747F5998D6CC54BDB759EF05(L_7, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:450>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:452>
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_8 = __this->____trickMgr;
 		NullCheck(L_8);
 		TrickManager_ResetPoints_mEEFBDD12F4B40062C790D5055A033EABA9005699(L_8, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:451>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:453>
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_9 = __this->____trickMgr;
 		il2cpp_codegen_initobj((&V_0), sizeof(Nullable_1_t4B7406E6E74D445439E6FC254270E7F0220B66FF));
 		Nullable_1_t4B7406E6E74D445439E6FC254270E7F0220B66FF L_10 = V_0;
 		NullCheck(L_9);
 		TrickManager_SetSinglePlay_mF0EC2EF690A04A91C3CF9A720BB7819ABA49DFF8(L_9, (bool)0, L_10, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:454>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:456>
 		int32_t L_11;
 		L_11 = GameManager_get_Dealer_m5FF06C914AEC5A2B6159562414CEDA02AED79C8A_inline(__this, NULL);
 		int32_t L_12;
 		L_12 = GameRules_NextPlayer_mABFAEAECB3FE010072170ED657F33B557EC5E831(L_11, NULL);
 		GameManager_set_Dealer_mB5A57EED686CC1188BF9EB79FFE2CF9334370D9A_inline(__this, L_12, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:457>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:459>
 		GameManager_ChangePhase_m298FAF7BE966D09A09D707C001DB4F8AFC2CE8AB(__this, 1, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:458>
-		GameManager_DealFirstBatch_mDE085114222056FFD2388F7A5D07A04254B38CB2(__this, NULL);
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:460>
+		GameManager_DealFirstBatch_mDE085114222056FFD2388F7A5D07A04254B38CB2(__this, NULL);
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:462>
 		GameManager_StartBiddingPhase_mE598B1D43E49F864A933982F1A6B2929A82E30D6(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:461>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:463>
 		return;
 	}
 }
@@ -14680,23 +14686,23 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_StartBiddingPhase_mE598B1D43
 {
 	int32_t V_0 = 0;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:466>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:468>
 		int32_t L_0;
 		L_0 = GameManager_get_Dealer_m5FF06C914AEC5A2B6159562414CEDA02AED79C8A_inline(__this, NULL);
 		int32_t L_1;
 		L_1 = GameRules_NextPlayer_mABFAEAECB3FE010072170ED657F33B557EC5E831(L_0, NULL);
 		V_0 = L_1;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:467>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:469>
 		BiddingManager_tB5C5269891ED90E4AEB9766BC7999C93873CF7F2* L_2 = __this->____biddingMgr;
 		int32_t L_3 = V_0;
 		NullCheck(L_2);
 		BiddingManager_StartBidding_mC185DD8852A66168CFBFABA123C7EFB07EEFC8CA(L_2, L_3, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:468>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:470>
 		GameManager_ChangePhase_m298FAF7BE966D09A09D707C001DB4F8AFC2CE8AB(__this, 2, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:469>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:471>
 		int32_t L_4 = V_0;
 		GameManager_SetCurrentPlayer_m0196894DC57C79BB86F9DE2E914BF2F4F67DCFD0(__this, L_4, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:471>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:473>
 		int32_t L_5;
 		L_5 = GameManager_get_CurrentPlayer_m022B7B5079A6C106DB6309569533003B6CC47B42_inline(__this, NULL);
 		if (!L_5)
@@ -14705,15 +14711,15 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_StartBiddingPhase_mE598B1D43
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:472>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:474>
 		GameManager_RunAIBidding_m63488DAFB0F10C727490EECA5B4FB80976D7ADEF(__this, NULL);
 	}
 
 IL_0034:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:474>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:476>
 		GameManager_NotifyStateChanged_m23F76F0D47C5A063A4FF9828BC3A46D12B429524(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:475>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:477>
 		return;
 	}
 }
@@ -14734,20 +14740,20 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_AcceptSinglePlay_mE99ED55269
 	int32_t V_2 = 0;
 	int32_t G_B3_0 = 0;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:480>
-		__this->____waitingForSinglePlayDecision = (bool)0;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:481>
-		GameManager_set_IsSinglePlayActive_mEC6227BAA38F9BBB832CEE5E836A11E9341725A9_inline(__this, (bool)1, NULL);
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:482>
+		__this->____waitingForSinglePlayDecision = (bool)0;
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:483>
+		GameManager_set_IsSinglePlayActive_mEC6227BAA38F9BBB832CEE5E836A11E9341725A9_inline(__this, (bool)1, NULL);
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:484>
 		Nullable_1_t4B7406E6E74D445439E6FC254270E7F0220B66FF L_0;
 		memset((&L_0), 0, sizeof(L_0));
 		Nullable_1__ctor_mC1D759BBA1B41E02BED89243D05B00A8978F9733((&L_0), 0, Nullable_1__ctor_mC1D759BBA1B41E02BED89243D05B00A8978F9733_RuntimeMethod_var);
 		GameManager_set_SinglePlayerSeat_m051675F917C466AA7B20E9542AC2F58E792AC105_inline(__this, L_0, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:483>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:485>
 		int32_t L_1;
 		L_1 = GameRules_GetPartner_mC25A1844D033DEA58808CDB5C465820FA43B0152(0, NULL);
 		V_0 = L_1;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:484>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:486>
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_2 = __this->____trickMgr;
 		int32_t L_3 = V_0;
 		Nullable_1_t4B7406E6E74D445439E6FC254270E7F0220B66FF L_4;
@@ -14755,7 +14761,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_AcceptSinglePlay_mE99ED55269
 		Nullable_1__ctor_mC1D759BBA1B41E02BED89243D05B00A8978F9733((&L_4), L_3, Nullable_1__ctor_mC1D759BBA1B41E02BED89243D05B00A8978F9733_RuntimeMethod_var);
 		NullCheck(L_2);
 		TrickManager_SetSinglePlay_mF0EC2EF690A04A91C3CF9A720BB7819ABA49DFF8(L_2, (bool)1, L_4, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:486>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:488>
 		int32_t L_5 = 0;
 		RuntimeObject* L_6 = Box(PlayerSeat_tFA9BA8806B167010C9C8CCD036A9377D0A2EAE9D_il2cpp_TypeInfo_var, &L_5);
 		int32_t L_7 = V_0;
@@ -14765,13 +14771,13 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_AcceptSinglePlay_mE99ED55269
 		L_10 = String_Format_mFB7DA489BD99F4670881FF50EC017BFB0A5C0987(_stringLiteral94EAECC4E92E9C5270AB70D2F0CD0A448FAD6548, L_6, L_9, NULL);
 		il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
 		Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(L_10, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:488>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:490>
 		ScoreManager_t511FD5586EAD87B3F77A055A24C43EB7FF48AE1A* L_11 = __this->____scoreMgr;
 		NullCheck(L_11);
 		int32_t L_12;
 		L_12 = ScoreManager_get_BidWinner_mB1117A05FCF0819156DED8B369C09952EBD02512_inline(L_11, NULL);
 		V_1 = L_12;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:489>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:491>
 		int32_t L_13 = V_1;
 		int32_t L_14 = V_0;
 		if ((((int32_t)L_13) == ((int32_t)L_14)))
@@ -14793,17 +14799,17 @@ IL_0061:
 IL_0062:
 	{
 		V_2 = G_B3_0;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:490>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:492>
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_16 = __this->____trickMgr;
 		int32_t L_17 = V_2;
 		NullCheck(L_16);
 		TrickManager_StartRound_m61ECB091FBA93F12AB8B24083EBCAAFE966C07A6(L_16, L_17, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:491>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:493>
 		int32_t L_18 = V_2;
 		GameManager_SetCurrentPlayer_m0196894DC57C79BB86F9DE2E914BF2F4F67DCFD0(__this, L_18, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:493>
-		GameManager_NotifyStateChanged_m23F76F0D47C5A063A4FF9828BC3A46D12B429524(__this, NULL);
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:495>
+		GameManager_NotifyStateChanged_m23F76F0D47C5A063A4FF9828BC3A46D12B429524(__this, NULL);
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:497>
 		int32_t L_19;
 		L_19 = GameManager_get_CurrentPlayer_m022B7B5079A6C106DB6309569533003B6CC47B42_inline(__this, NULL);
 		if (!L_19)
@@ -14812,13 +14818,13 @@ IL_0062:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:496>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:498>
 		GameManager_RunAIPlay_m6323605AA41E5983327F6831562BBC630F924237(__this, NULL);
 	}
 
 IL_008a:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:497>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:499>
 		return;
 	}
 }
@@ -14835,26 +14841,26 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_RejectSinglePlay_m307C975D3A
 	Nullable_1_t4B7406E6E74D445439E6FC254270E7F0220B66FF V_0;
 	memset((&V_0), 0, sizeof(V_0));
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:502>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:504>
 		__this->____waitingForSinglePlayDecision = (bool)0;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:503>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:505>
 		il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
 		Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(_stringLiteral41DA18DE8067A07030607E9A78E51E947D3B891B, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:504>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:506>
 		GameManager_set_IsSinglePlayActive_mEC6227BAA38F9BBB832CEE5E836A11E9341725A9_inline(__this, (bool)0, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:505>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:507>
 		il2cpp_codegen_initobj((&V_0), sizeof(Nullable_1_t4B7406E6E74D445439E6FC254270E7F0220B66FF));
 		Nullable_1_t4B7406E6E74D445439E6FC254270E7F0220B66FF L_0 = V_0;
 		GameManager_set_SinglePlayerSeat_m051675F917C466AA7B20E9542AC2F58E792AC105_inline(__this, L_0, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:506>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:508>
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_1 = __this->____trickMgr;
 		il2cpp_codegen_initobj((&V_0), sizeof(Nullable_1_t4B7406E6E74D445439E6FC254270E7F0220B66FF));
 		Nullable_1_t4B7406E6E74D445439E6FC254270E7F0220B66FF L_2 = V_0;
 		NullCheck(L_1);
 		TrickManager_SetSinglePlay_mF0EC2EF690A04A91C3CF9A720BB7819ABA49DFF8(L_1, (bool)0, L_2, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:508>
-		GameManager_NotifyStateChanged_m23F76F0D47C5A063A4FF9828BC3A46D12B429524(__this, NULL);
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:510>
+		GameManager_NotifyStateChanged_m23F76F0D47C5A063A4FF9828BC3A46D12B429524(__this, NULL);
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:512>
 		int32_t L_3;
 		L_3 = GameManager_get_CurrentPlayer_m022B7B5079A6C106DB6309569533003B6CC47B42_inline(__this, NULL);
 		if (!L_3)
@@ -14863,13 +14869,13 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_RejectSinglePlay_m307C975D3A
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:511>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:513>
 		GameManager_RunAIPlay_m6323605AA41E5983327F6831562BBC630F924237(__this, NULL);
 	}
 
 IL_0050:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:512>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:514>
 		return;
 	}
 }
@@ -14891,30 +14897,30 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_DealFirstBatch_mDE0851142220
 	Action_1_tAE282EEEEB631D96484A102992232336B527F6C7* G_B5_0 = NULL;
 	Action_1_tAE282EEEEB631D96484A102992232336B527F6C7* G_B4_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:516>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:518>
 		Deck_t1A86445BF36E9BAE173E68A3EFE68EE14A3C52E7* L_0 = __this->____deck;
 		NullCheck(L_0);
 		Deck_InitializeAndShuffle_m718424046A29D7DE716F1DDC2CF8E5F2DE950CE9(L_0, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:518>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:520>
 		int32_t L_1;
 		L_1 = GameManager_get_Dealer_m5FF06C914AEC5A2B6159562414CEDA02AED79C8A_inline(__this, NULL);
 		int32_t L_2;
 		L_2 = GameRules_NextPlayer_mABFAEAECB3FE010072170ED657F33B557EC5E831(L_1, NULL);
 		V_0 = L_2;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:519>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:521>
 		V_1 = 0;
 		goto IL_0041;
 	}
 
 IL_001b:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:521>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:523>
 		Deck_t1A86445BF36E9BAE173E68A3EFE68EE14A3C52E7* L_3 = __this->____deck;
 		NullCheck(L_3);
 		List_1_tB9B04014FEF25D16919E2A880AA27EA53A52761F* L_4;
 		L_4 = Deck_DealBatch_m1DA1FD9C46F250235338E5022FA47104B1AA4DF3(L_3, 4, NULL);
 		V_2 = L_4;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:522>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:524>
 		HandU5BU5D_tD5E45E974E721F92B6075F9AE604D837B6F2164A* L_5 = __this->____hands;
 		int32_t L_6 = V_0;
 		NullCheck(L_5);
@@ -14923,19 +14929,19 @@ IL_001b:
 		List_1_tB9B04014FEF25D16919E2A880AA27EA53A52761F* L_9 = V_2;
 		NullCheck(L_8);
 		Hand_AddCards_mCAFFFC7B6644AE3587BDEDF0BF8B2F9DF187C52F(L_8, L_9, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:523>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:525>
 		int32_t L_10 = V_0;
 		int32_t L_11;
 		L_11 = GameRules_NextPlayer_mABFAEAECB3FE010072170ED657F33B557EC5E831(L_10, NULL);
 		V_0 = L_11;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:519>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:521>
 		int32_t L_12 = V_1;
 		V_1 = ((int32_t)il2cpp_codegen_add(L_12, 1));
 	}
 
 IL_0041:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:519>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:521>
 		int32_t L_13 = V_1;
 		if ((((int32_t)L_13) < ((int32_t)4)))
 		{
@@ -14943,9 +14949,9 @@ IL_0041:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:526>
-		GameManager_SortAllHands_m4BFFCD51D31061DF3015C25CC96D6D72171E5728(__this, NULL);
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:528>
+		GameManager_SortAllHands_m4BFFCD51D31061DF3015C25CC96D6D72171E5728(__this, NULL);
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:530>
 		Hand_t7A84E047DF7147D62D842E3563A7A187DA1A0082* L_14;
 		L_14 = GameManager_get_HumanHand_mD252DE0184BE905ADFFF3957697442BE91004775(__this, NULL);
 		NullCheck(L_14);
@@ -14957,7 +14963,7 @@ IL_0041:
 		L_17 = String_Concat_m9E3155FB84015C823606188F53B47CB44C444991(_stringLiteral724AA2C47015A407B457F13F0A4F62A8BECE5F7E, L_16, NULL);
 		il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
 		Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(L_17, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:529>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:531>
 		Action_1_tAE282EEEEB631D96484A102992232336B527F6C7* L_18 = __this->___OnHumanHandDealt;
 		Action_1_tAE282EEEEB631D96484A102992232336B527F6C7* L_19 = L_18;
 		if (L_19)
@@ -14977,7 +14983,7 @@ IL_007a:
 		L_20 = GameManager_get_HumanHand_mD252DE0184BE905ADFFF3957697442BE91004775(__this, NULL);
 		NullCheck(G_B5_0);
 		Action_1_Invoke_m7A0A19CE05E28A3F8C9C9EF0298B62404EA56E6C_inline(G_B5_0, L_20, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:530>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:532>
 		return;
 	}
 }
@@ -15004,26 +15010,26 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_DealSecondBatch_m73E330AB287
 	Action_1_tAE282EEEEB631D96484A102992232336B527F6C7* G_B8_0 = NULL;
 	Action_1_tAE282EEEEB631D96484A102992232336B527F6C7* G_B7_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:534>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:536>
 		int32_t L_0;
 		L_0 = GameManager_get_Dealer_m5FF06C914AEC5A2B6159562414CEDA02AED79C8A_inline(__this, NULL);
 		int32_t L_1;
 		L_1 = GameRules_NextPlayer_mABFAEAECB3FE010072170ED657F33B557EC5E831(L_0, NULL);
 		V_0 = L_1;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:535>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:537>
 		V_1 = 0;
 		goto IL_0036;
 	}
 
 IL_0010:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:537>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:539>
 		Deck_t1A86445BF36E9BAE173E68A3EFE68EE14A3C52E7* L_2 = __this->____deck;
 		NullCheck(L_2);
 		List_1_tB9B04014FEF25D16919E2A880AA27EA53A52761F* L_3;
 		L_3 = Deck_DealBatch_m1DA1FD9C46F250235338E5022FA47104B1AA4DF3(L_2, 4, NULL);
 		V_2 = L_3;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:538>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:540>
 		HandU5BU5D_tD5E45E974E721F92B6075F9AE604D837B6F2164A* L_4 = __this->____hands;
 		int32_t L_5 = V_0;
 		NullCheck(L_4);
@@ -15032,19 +15038,19 @@ IL_0010:
 		List_1_tB9B04014FEF25D16919E2A880AA27EA53A52761F* L_8 = V_2;
 		NullCheck(L_7);
 		Hand_AddCards_mCAFFFC7B6644AE3587BDEDF0BF8B2F9DF187C52F(L_7, L_8, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:539>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:541>
 		int32_t L_9 = V_0;
 		int32_t L_10;
 		L_10 = GameRules_NextPlayer_mABFAEAECB3FE010072170ED657F33B557EC5E831(L_9, NULL);
 		V_0 = L_10;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:535>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:537>
 		int32_t L_11 = V_1;
 		V_1 = ((int32_t)il2cpp_codegen_add(L_11, 1));
 	}
 
 IL_0036:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:535>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:537>
 		int32_t L_12 = V_1;
 		if ((((int32_t)L_12) < ((int32_t)4)))
 		{
@@ -15052,7 +15058,7 @@ IL_0036:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:542>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:544>
 		TrumpManager_t92E234FC1D9CBE267ED9783B7061AB79CAC6A4CF* L_13 = __this->____trumpMgr;
 		NullCheck(L_13);
 		bool L_14;
@@ -15063,7 +15069,7 @@ IL_0036:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:544>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:546>
 		HandU5BU5D_tD5E45E974E721F92B6075F9AE604D837B6F2164A* L_15 = __this->____hands;
 		TrumpManager_t92E234FC1D9CBE267ED9783B7061AB79CAC6A4CF* L_16 = __this->____trumpMgr;
 		NullCheck(L_16);
@@ -15073,7 +15079,7 @@ IL_0036:
 		int32_t L_18 = L_17;
 		Hand_t7A84E047DF7147D62D842E3563A7A187DA1A0082* L_19 = (L_15)->GetAt(static_cast<il2cpp_array_size_t>(L_18));
 		V_3 = L_19;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:545>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:547>
 		Hand_t7A84E047DF7147D62D842E3563A7A187DA1A0082* L_20 = V_3;
 		NullCheck(L_20);
 		int32_t L_21;
@@ -15084,7 +15090,7 @@ IL_0036:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:547>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:549>
 		Hand_t7A84E047DF7147D62D842E3563A7A187DA1A0082* L_22 = V_3;
 		NullCheck(L_22);
 		RuntimeObject* L_23;
@@ -15093,18 +15099,18 @@ IL_0036:
 		Card_t0A9DF635E00AE171E2A4DFD4402933CE663B89C8* L_24;
 		L_24 = InterfaceFuncInvoker1< Card_t0A9DF635E00AE171E2A4DFD4402933CE663B89C8*, int32_t >::Invoke(0, IReadOnlyList_1_tA3A4A1CDEAEBE40DC26E1F6DCA8731F49B14F659_il2cpp_TypeInfo_var, L_23, 6);
 		V_4 = L_24;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:548>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:550>
 		Hand_t7A84E047DF7147D62D842E3563A7A187DA1A0082* L_25 = V_3;
 		Card_t0A9DF635E00AE171E2A4DFD4402933CE663B89C8* L_26 = V_4;
 		NullCheck(L_25);
 		bool L_27;
 		L_27 = Hand_RemoveCard_m1D5C42EA77796B968141B703CF2D30D2D605EB2E(L_25, L_26, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:549>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:551>
 		TrumpManager_t92E234FC1D9CBE267ED9783B7061AB79CAC6A4CF* L_28 = __this->____trumpMgr;
 		Card_t0A9DF635E00AE171E2A4DFD4402933CE663B89C8* L_29 = V_4;
 		NullCheck(L_28);
 		TrumpManager_ResolveSeventhCard_m840D708BA04A06E5463FAD89774D05EB4EAE9182(L_28, L_29, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:550>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:552>
 		TrumpManager_t92E234FC1D9CBE267ED9783B7061AB79CAC6A4CF* L_30 = __this->____trumpMgr;
 		NullCheck(L_30);
 		int32_t L_31;
@@ -15119,9 +15125,9 @@ IL_0036:
 
 IL_00a6:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:554>
-		GameManager_SortAllHands_m4BFFCD51D31061DF3015C25CC96D6D72171E5728(__this, NULL);
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:556>
+		GameManager_SortAllHands_m4BFFCD51D31061DF3015C25CC96D6D72171E5728(__this, NULL);
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:558>
 		Hand_t7A84E047DF7147D62D842E3563A7A187DA1A0082* L_35;
 		L_35 = GameManager_get_HumanHand_mD252DE0184BE905ADFFF3957697442BE91004775(__this, NULL);
 		NullCheck(L_35);
@@ -15133,7 +15139,7 @@ IL_00a6:
 		L_38 = String_Concat_m9E3155FB84015C823606188F53B47CB44C444991(_stringLiteralD8D2C99EE83CE1F3E1C00FF285F04616B18E9F08, L_37, NULL);
 		il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
 		Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(L_38, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:557>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:559>
 		Action_1_tAE282EEEEB631D96484A102992232336B527F6C7* L_39 = __this->___OnHumanHandDealt;
 		Action_1_tAE282EEEEB631D96484A102992232336B527F6C7* L_40 = L_39;
 		if (L_40)
@@ -15153,7 +15159,7 @@ IL_00db:
 		L_41 = GameManager_get_HumanHand_mD252DE0184BE905ADFFF3957697442BE91004775(__this, NULL);
 		NullCheck(G_B8_0);
 		Action_1_Invoke_m7A0A19CE05E28A3F8C9C9EF0298B62404EA56E6C_inline(G_B8_0, L_41, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:558>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:560>
 		return;
 	}
 }
@@ -15162,14 +15168,14 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_SortAllHands_m4BFFCD51D31061
 {
 	int32_t V_0 = 0;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:562>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:564>
 		V_0 = 0;
 		goto IL_0015;
 	}
 
 IL_0004:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:563>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:565>
 		HandU5BU5D_tD5E45E974E721F92B6075F9AE604D837B6F2164A* L_0 = __this->____hands;
 		int32_t L_1 = V_0;
 		NullCheck(L_0);
@@ -15177,14 +15183,14 @@ IL_0004:
 		Hand_t7A84E047DF7147D62D842E3563A7A187DA1A0082* L_3 = (L_0)->GetAt(static_cast<il2cpp_array_size_t>(L_2));
 		NullCheck(L_3);
 		Hand_SortForDisplay_mDA2300C2B98BAE393AC45950900653FBC3F76EEF(L_3, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:562>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:564>
 		int32_t L_4 = V_0;
 		V_0 = ((int32_t)il2cpp_codegen_add(L_4, 1));
 	}
 
 IL_0015:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:562>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:564>
 		int32_t L_5 = V_0;
 		if ((((int32_t)L_5) < ((int32_t)4)))
 		{
@@ -15192,7 +15198,7 @@ IL_0015:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:564>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:566>
 		return;
 	}
 }
@@ -15200,11 +15206,11 @@ IL_0015:
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_DealCards_mE814B3D6F846B1ECBA580973A48FA4C0B10608DC (GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:568>
-		GameManager_DealFirstBatch_mDE085114222056FFD2388F7A5D07A04254B38CB2(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:569>
-		GameManager_DealSecondBatch_m73E330AB287B4AA0ED1A10902BDB34A8DE51C328(__this, NULL);
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:570>
+		GameManager_DealFirstBatch_mDE085114222056FFD2388F7A5D07A04254B38CB2(__this, NULL);
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:571>
+		GameManager_DealSecondBatch_m73E330AB287B4AA0ED1A10902BDB34A8DE51C328(__this, NULL);
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:572>
 		return;
 	}
 }
@@ -15212,7 +15218,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_DealCards_mE814B3D6F846B1ECB
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_AfterHumanBiddingAction_m3B43E802076F86E660D40D6F3415FC2E4E162FDE (GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:578>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:580>
 		BiddingManager_tB5C5269891ED90E4AEB9766BC7999C93873CF7F2* L_0 = __this->____biddingMgr;
 		NullCheck(L_0);
 		bool L_1;
@@ -15223,19 +15229,19 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_AfterHumanBiddingAction_m3B4
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:578>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:580>
 		return;
 	}
 
 IL_000e:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:580>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:582>
 		BiddingManager_tB5C5269891ED90E4AEB9766BC7999C93873CF7F2* L_2 = __this->____biddingMgr;
 		NullCheck(L_2);
 		int32_t L_3;
 		L_3 = BiddingManager_get_CurrentBidder_mB241ADB845517E5DA8AB9BE43E47743E1497F197_inline(L_2, NULL);
 		GameManager_SetCurrentPlayer_m0196894DC57C79BB86F9DE2E914BF2F4F67DCFD0(__this, L_3, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:581>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:583>
 		int32_t L_4;
 		L_4 = GameManager_get_CurrentPlayer_m022B7B5079A6C106DB6309569533003B6CC47B42_inline(__this, NULL);
 		if (!L_4)
@@ -15244,15 +15250,15 @@ IL_000e:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:582>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:584>
 		GameManager_RunAIBidding_m63488DAFB0F10C727490EECA5B4FB80976D7ADEF(__this, NULL);
 	}
 
 IL_002d:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:584>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:586>
 		GameManager_NotifyStateChanged_m23F76F0D47C5A063A4FF9828BC3A46D12B429524(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:585>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:587>
 		return;
 	}
 }
@@ -15274,7 +15280,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_RunAIBidding_m63488DAFB0F10C
 	Action_2_tA5402ADB5477AFC401991A96C9B162E5CBEEFEC0* G_B14_0 = NULL;
 	Action_2_tA5402ADB5477AFC401991A96C9B162E5CBEEFEC0* G_B13_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:590>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:592>
 		bool L_0 = __this->___enablePacing;
 		if (!L_0)
 		{
@@ -15293,7 +15299,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_RunAIBidding_m63488DAFB0F10C
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:592>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:594>
 		Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B* L_3 = __this->____aiBiddingRoutine;
 		if (!L_3)
 		{
@@ -15301,14 +15307,14 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_RunAIBidding_m63488DAFB0F10C
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:592>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:594>
 		Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B* L_4 = __this->____aiBiddingRoutine;
 		MonoBehaviour_StopCoroutine_mB0FC91BE84203BD8E360B3FBAE5B958B4C5ED22A(__this, L_4, NULL);
 	}
 
 IL_002f:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:593>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:595>
 		RuntimeObject* L_5;
 		L_5 = GameManager_AIBiddingRoutine_m36657A915E312E4C3FE01AC87279C093C9697FA3(__this, NULL);
 		Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B* L_6;
@@ -15320,13 +15326,13 @@ IL_002f:
 
 IL_0042:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:599>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:601>
 		int32_t L_7;
 		L_7 = GameManager_get_CurrentPlayer_m022B7B5079A6C106DB6309569533003B6CC47B42_inline(__this, NULL);
 		AIPlayer_t9A328DB6CFB290A400E938628DC5D8FF0CABC4D0* L_8;
 		L_8 = GameManager_GetAI_m86495703789E01E84D67D59F71494D6EB63A50E3(__this, L_7, NULL);
 		V_0 = L_8;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:600>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:602>
 		AIPlayer_t9A328DB6CFB290A400E938628DC5D8FF0CABC4D0* L_9 = V_0;
 		if (!L_9)
 		{
@@ -15334,9 +15340,9 @@ IL_0042:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:602>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:603>
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:604>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:605>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:606>
 		BiddingManager_tB5C5269891ED90E4AEB9766BC7999C93873CF7F2* L_10 = __this->____biddingMgr;
 		NullCheck(L_10);
 		int32_t L_11;
@@ -15369,7 +15375,7 @@ IL_0086:
 IL_0087:
 	{
 		V_1 = (bool)G_B9_0;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:606>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:608>
 		AIPlayer_t9A328DB6CFB290A400E938628DC5D8FF0CABC4D0* L_17 = V_0;
 		HandU5BU5D_tD5E45E974E721F92B6075F9AE604D837B6F2164A* L_18 = __this->____hands;
 		int32_t L_19;
@@ -15386,7 +15392,7 @@ IL_0087:
 		Nullable_1_tCF32C56A2641879C053C86F273C0C6EC1B40BC28 L_25;
 		L_25 = AIPlayer_DecideBid_m7E2EE9766BDA61637E27E6BF63DD2E65B509D7A4(L_17, L_21, L_23, L_24, NULL);
 		V_2 = L_25;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:608>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:610>
 		bool L_26;
 		L_26 = Nullable_1_get_HasValue_mCF2FD8B3055FA87FC9C504F2122B3B0FAEDE3EC9_inline((&V_2), Nullable_1_get_HasValue_mCF2FD8B3055FA87FC9C504F2122B3B0FAEDE3EC9_RuntimeMethod_var);
 		if (!L_26)
@@ -15395,7 +15401,7 @@ IL_0087:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:609>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:611>
 		BiddingManager_tB5C5269891ED90E4AEB9766BC7999C93873CF7F2* L_27 = __this->____biddingMgr;
 		int32_t L_28;
 		L_28 = GameManager_get_CurrentPlayer_m022B7B5079A6C106DB6309569533003B6CC47B42_inline(__this, NULL);
@@ -15409,7 +15415,7 @@ IL_0087:
 
 IL_00cc:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:611>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:613>
 		BiddingManager_tB5C5269891ED90E4AEB9766BC7999C93873CF7F2* L_31 = __this->____biddingMgr;
 		int32_t L_32;
 		L_32 = GameManager_get_CurrentPlayer_m022B7B5079A6C106DB6309569533003B6CC47B42_inline(__this, NULL);
@@ -15420,7 +15426,7 @@ IL_00cc:
 
 IL_00de:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:613>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:615>
 		Action_2_tA5402ADB5477AFC401991A96C9B162E5CBEEFEC0* L_34 = __this->___OnBiddingAction;
 		Action_2_tA5402ADB5477AFC401991A96C9B162E5CBEEFEC0* L_35 = L_34;
 		if (L_35)
@@ -15445,7 +15451,7 @@ IL_00ea:
 
 IL_00f6:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:615>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:617>
 		BiddingManager_tB5C5269891ED90E4AEB9766BC7999C93873CF7F2* L_38 = __this->____biddingMgr;
 		NullCheck(L_38);
 		bool L_39;
@@ -15456,7 +15462,7 @@ IL_00f6:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:616>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:618>
 		BiddingManager_tB5C5269891ED90E4AEB9766BC7999C93873CF7F2* L_40 = __this->____biddingMgr;
 		NullCheck(L_40);
 		int32_t L_41;
@@ -15466,7 +15472,7 @@ IL_00f6:
 
 IL_0114:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:597>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:599>
 		BiddingManager_tB5C5269891ED90E4AEB9766BC7999C93873CF7F2* L_42 = __this->____biddingMgr;
 		NullCheck(L_42);
 		bool L_43;
@@ -15487,7 +15493,7 @@ IL_0114:
 
 IL_012c:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:619>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:621>
 		return;
 	}
 }
@@ -15528,7 +15534,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_HandleBiddingComplete_m8B507
 	Action_1_tAE282EEEEB631D96484A102992232336B527F6C7* G_B5_0 = NULL;
 	Action_1_tAE282EEEEB631D96484A102992232336B527F6C7* G_B4_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:658>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:660>
 		Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B* L_0 = __this->____aiBiddingRoutine;
 		if (!L_0)
 		{
@@ -15536,25 +15542,25 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_HandleBiddingComplete_m8B507
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:660>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:662>
 		Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B* L_1 = __this->____aiBiddingRoutine;
 		MonoBehaviour_StopCoroutine_mB0FC91BE84203BD8E360B3FBAE5B958B4C5ED22A(__this, L_1, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:661>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:663>
 		__this->____aiBiddingRoutine = (Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B*)NULL;
 		Il2CppCodeGenWriteBarrier((void**)(&__this->____aiBiddingRoutine), (void*)(Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B*)NULL);
 	}
 
 IL_001b:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:664>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:666>
 		ScoreManager_t511FD5586EAD87B3F77A055A24C43EB7FF48AE1A* L_2 = __this->____scoreMgr;
 		int32_t L_3 = ___0_winner;
 		int32_t L_4 = ___1_bid;
 		NullCheck(L_2);
 		ScoreManager_RegisterBid_m4732F2BDE4C29F3007AB783649C38AAA6323C873(L_2, L_3, L_4, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:665>
-		GameManager_ChangePhase_m298FAF7BE966D09A09D707C001DB4F8AFC2CE8AB(__this, 3, NULL);
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:667>
+		GameManager_ChangePhase_m298FAF7BE966D09A09D707C001DB4F8AFC2CE8AB(__this, 3, NULL);
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:669>
 		int32_t L_5 = ___0_winner;
 		if (L_5)
 		{
@@ -15562,7 +15568,7 @@ IL_001b:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:669>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:671>
 		int32_t L_6 = ___1_bid;
 		int32_t L_7 = L_6;
 		RuntimeObject* L_8 = Box(il2cpp_defaults.int32_class, &L_7);
@@ -15570,9 +15576,9 @@ IL_001b:
 		L_9 = String_Format_mA8DBB4C2516B9723C5A41E6CB1E2FAF4BBE96DD8(_stringLiteral73989D090B4A0291398DA4DCE74FCADFAF3BF9C7, L_8, NULL);
 		il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
 		Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(L_9, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:670>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:672>
 		GameManager_NotifyStateChanged_m23F76F0D47C5A063A4FF9828BC3A46D12B429524(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:671>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:673>
 		Action_1_tAE282EEEEB631D96484A102992232336B527F6C7* L_10 = __this->___OnHumanTrumpSelectionRequired;
 		Action_1_tAE282EEEEB631D96484A102992232336B527F6C7* L_11 = L_10;
 		if (L_11)
@@ -15597,19 +15603,19 @@ IL_0058:
 
 IL_0064:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:675>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:677>
 		HandU5BU5D_tD5E45E974E721F92B6075F9AE604D837B6F2164A* L_13 = __this->____hands;
 		int32_t L_14 = ___0_winner;
 		NullCheck(L_13);
 		int32_t L_15 = L_14;
 		Hand_t7A84E047DF7147D62D842E3563A7A187DA1A0082* L_16 = (L_13)->GetAt(static_cast<il2cpp_array_size_t>(L_15));
 		V_0 = L_16;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:676>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:678>
 		int32_t L_17 = ___0_winner;
 		AIPlayer_t9A328DB6CFB290A400E938628DC5D8FF0CABC4D0* L_18;
 		L_18 = GameManager_GetAI_m86495703789E01E84D67D59F71494D6EB63A50E3(__this, L_17, NULL);
 		V_1 = L_18;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:677>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:679>
 		AIPlayer_t9A328DB6CFB290A400E938628DC5D8FF0CABC4D0* L_19 = V_1;
 		if (!L_19)
 		{
@@ -15617,7 +15623,7 @@ IL_0064:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:678>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:680>
 		AIPlayer_t9A328DB6CFB290A400E938628DC5D8FF0CABC4D0* L_20 = V_1;
 		int32_t L_21 = ___0_winner;
 		Hand_t7A84E047DF7147D62D842E3563A7A187DA1A0082* L_22 = V_0;
@@ -15627,7 +15633,7 @@ IL_0064:
 
 IL_0083:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:680>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:682>
 		TrumpManager_t92E234FC1D9CBE267ED9783B7061AB79CAC6A4CF* L_23 = __this->____trumpMgr;
 		int32_t L_24 = ___0_winner;
 		Hand_t7A84E047DF7147D62D842E3563A7A187DA1A0082* L_25 = V_0;
@@ -15637,7 +15643,7 @@ IL_0083:
 
 IL_0090:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:682>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:684>
 		int32_t L_26 = ___0_winner;
 		int32_t L_27 = L_26;
 		RuntimeObject* L_28 = Box(PlayerSeat_tFA9BA8806B167010C9C8CCD036A9377D0A2EAE9D_il2cpp_TypeInfo_var, &L_27);
@@ -15654,9 +15660,9 @@ IL_0090:
 		L_36 = String_Format_mA0534D6E2AE4D67A6BD8D45B3321323930EB930C(_stringLiteralE5C16F8BC2E411418709233647DB06D721C20B81, L_28, L_31, L_35, NULL);
 		il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
 		Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(L_36, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:683>
-		GameManager_StartDoubleDecisionStep_mE4F1C349714D795C5ADA524C3490ACFE76B762F4(__this, NULL);
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:685>
+		GameManager_StartDoubleDecisionStep_mE4F1C349714D795C5ADA524C3490ACFE76B762F4(__this, NULL);
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:687>
 		return;
 	}
 }
@@ -15672,7 +15678,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_SelectHumanTrump_m8E82343BED
 		s_Il2CppMethodInitialized = true;
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:690>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:692>
 		int32_t L_0;
 		L_0 = GameManager_get_CurrentPhase_m16E98CF942F42D8C5667D017B06AAD113E75B385_inline(__this, NULL);
 		if ((((int32_t)L_0) == ((int32_t)3)))
@@ -15681,18 +15687,18 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_SelectHumanTrump_m8E82343BED
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:690>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:692>
 		return;
 	}
 
 IL_000a:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:692>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:694>
 		TrumpManager_t92E234FC1D9CBE267ED9783B7061AB79CAC6A4CF* L_1 = __this->____trumpMgr;
 		int32_t L_2 = ___0_suit;
 		NullCheck(L_1);
 		TrumpManager_SetTrumpSuit_m3B5D4F7467B9ED0E4B0A15114EFC25ADCF161249(L_1, 0, L_2, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:693>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:695>
 		int32_t L_3 = ___0_suit;
 		int32_t L_4 = L_3;
 		RuntimeObject* L_5 = Box(Suit_tF13436E144190FE1881B6B115D41A7AC064A4365_il2cpp_TypeInfo_var, &L_4);
@@ -15700,9 +15706,9 @@ IL_000a:
 		L_6 = String_Format_mA8DBB4C2516B9723C5A41E6CB1E2FAF4BBE96DD8(_stringLiteral7BFC64503A8C6AAD0FAAFB762D8222FDE42C73EE, L_5, NULL);
 		il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
 		Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(L_6, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:694>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:696>
 		GameManager_StartDoubleDecisionStep_mE4F1C349714D795C5ADA524C3490ACFE76B762F4(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:695>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:697>
 		return;
 	}
 }
@@ -15717,7 +15723,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_SelectHumanSeventhCard_mF07D
 		s_Il2CppMethodInitialized = true;
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:700>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:702>
 		int32_t L_0;
 		L_0 = GameManager_get_CurrentPhase_m16E98CF942F42D8C5667D017B06AAD113E75B385_inline(__this, NULL);
 		if ((((int32_t)L_0) == ((int32_t)3)))
@@ -15726,22 +15732,22 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_SelectHumanSeventhCard_mF07D
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:700>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:702>
 		return;
 	}
 
 IL_000a:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:702>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:704>
 		TrumpManager_t92E234FC1D9CBE267ED9783B7061AB79CAC6A4CF* L_1 = __this->____trumpMgr;
 		NullCheck(L_1);
 		TrumpManager_SetSeventhCardTrump_m8B8879E57B9458E785F644164A919633CA93D4B0(L_1, 0, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:703>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:705>
 		il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
 		Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(_stringLiteral8BD89566C945DAB2233835EB1CBE7551B8DD37F9, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:704>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:706>
 		GameManager_StartDoubleDecisionStep_mE4F1C349714D795C5ADA524C3490ACFE76B762F4(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:705>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:707>
 		return;
 	}
 }
@@ -15756,7 +15762,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_SelectHumanJoker_m937A392DA0
 		s_Il2CppMethodInitialized = true;
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:710>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:712>
 		int32_t L_0;
 		L_0 = GameManager_get_CurrentPhase_m16E98CF942F42D8C5667D017B06AAD113E75B385_inline(__this, NULL);
 		if ((((int32_t)L_0) == ((int32_t)3)))
@@ -15765,22 +15771,22 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_SelectHumanJoker_m937A392DA0
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:710>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:712>
 		return;
 	}
 
 IL_000a:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:712>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:714>
 		TrumpManager_t92E234FC1D9CBE267ED9783B7061AB79CAC6A4CF* L_1 = __this->____trumpMgr;
 		NullCheck(L_1);
 		TrumpManager_SetJokerTrump_m57EF71D276E36041DDCD5F1E070C77F0FC0F1065(L_1, 0, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:713>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:715>
 		il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
 		Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(_stringLiteral3F6EBD0C76570B842F2DF6791947382CC75C270F, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:714>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:716>
 		GameManager_StartDoubleDecisionStep_mE4F1C349714D795C5ADA524C3490ACFE76B762F4(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:715>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:717>
 		return;
 	}
 }
@@ -15807,7 +15813,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_StartDoubleDecisionStep_mE4F
 	Action_1_tBC4F584F56494CDB48C94AC998578F37C53319A7* G_B9_0 = NULL;
 	Action_1_tBC4F584F56494CDB48C94AC998578F37C53319A7* G_B8_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:719>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:721>
 		bool L_0 = __this->____doubleDecisionCompleted;
 		if (!L_0)
 		{
@@ -15815,24 +15821,24 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_StartDoubleDecisionStep_mE4F
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:721>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:723>
 		GameManager_CompleteTrumpSelectionAndStartPlay_m1B2C5BD4BAA7D4CAFD49D8CBA87CBDA3FEF4F82C(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:722>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:724>
 		return;
 	}
 
 IL_000f:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:725>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:727>
 		ScoreManager_t511FD5586EAD87B3F77A055A24C43EB7FF48AE1A* L_1 = __this->____scoreMgr;
 		NullCheck(L_1);
 		int32_t L_2;
 		L_2 = ScoreManager_get_BiddingTeam_m35D59C76B6FC13F2DCBEB0D052E2D2C4277E75AB_inline(L_1, NULL);
 		V_0 = L_2;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:726>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:728>
 		int32_t L_3;
 		L_3 = GameRules_GetTeam_m382E4465E92117D573C5FA0766E6AD603BCD37FD(0, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:728>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:730>
 		int32_t L_4 = V_0;
 		if ((((int32_t)L_3) == ((int32_t)L_4)))
 		{
@@ -15840,12 +15846,12 @@ IL_000f:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:731>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:733>
 		il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
 		Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(_stringLiteral630F7048EFA490F972E1A158B18FFDFEB629B992, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:732>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:734>
 		GameManager_NotifyStateChanged_m23F76F0D47C5A063A4FF9828BC3A46D12B429524(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:733>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:735>
 		Action_tD00B0A84D7945E50C2DFFC28EFEE6ED44ED2AD07* L_5 = __this->___OnDoubleDecisionRequired;
 		Action_tD00B0A84D7945E50C2DFFC28EFEE6ED44ED2AD07* L_6 = L_5;
 		if (L_6)
@@ -15868,11 +15874,11 @@ IL_003f:
 
 IL_0045:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:738>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:740>
 		Nullable_1_t4B7406E6E74D445439E6FC254270E7F0220B66FF L_7;
 		L_7 = GameManager_CheckOpposingAIDouble_m234BD37542A793A296DF35924B11BD8FC6F22877(__this, NULL);
 		V_1 = L_7;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:739>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:741>
 		bool L_8;
 		L_8 = Nullable_1_get_HasValue_m6F4A4906F2F095246C1D9F9A856D532ADF476CF8_inline((&V_1), Nullable_1_get_HasValue_m6F4A4906F2F095246C1D9F9A856D532ADF476CF8_RuntimeMethod_var);
 		if (!L_8)
@@ -15881,13 +15887,13 @@ IL_0045:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:741>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:743>
 		ScoreManager_t511FD5586EAD87B3F77A055A24C43EB7FF48AE1A* L_9 = __this->____scoreMgr;
 		int32_t L_10;
 		L_10 = Nullable_1_get_Value_m96DE4748A5F4D7CE7AF35CAF221298F91E32F00A((&V_1), Nullable_1_get_Value_m96DE4748A5F4D7CE7AF35CAF221298F91E32F00A_RuntimeMethod_var);
 		NullCheck(L_9);
 		ScoreManager_SetDouble_m4A4A84F991FF07B42086CBB9E8D29F62D31B39DC(L_9, L_10, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:742>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:744>
 		int32_t L_11;
 		L_11 = Nullable_1_get_Value_m96DE4748A5F4D7CE7AF35CAF221298F91E32F00A((&V_1), Nullable_1_get_Value_m96DE4748A5F4D7CE7AF35CAF221298F91E32F00A_RuntimeMethod_var);
 		int32_t L_12 = L_11;
@@ -15896,9 +15902,9 @@ IL_0045:
 		L_14 = String_Format_mA8DBB4C2516B9723C5A41E6CB1E2FAF4BBE96DD8(_stringLiteralC70BAEC85081F8919FF02F324BA9037F5A2F3EA4, L_13, NULL);
 		il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
 		Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(L_14, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:743>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:745>
 		GameManager_NotifyStateChanged_m23F76F0D47C5A063A4FF9828BC3A46D12B429524(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:746>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:748>
 		Action_1_tBC4F584F56494CDB48C94AC998578F37C53319A7* L_15 = __this->___OnReDoubleDecisionRequired;
 		Action_1_tBC4F584F56494CDB48C94AC998578F37C53319A7* L_16 = L_15;
 		if (L_16)
@@ -15923,14 +15929,14 @@ IL_0093:
 
 IL_00a0:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:750>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:752>
 		il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
 		Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(_stringLiteralF1E8508A5BAAEAE123EBEA7C38757D9F894EC101, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:751>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:753>
 		__this->____doubleDecisionCompleted = (bool)1;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:752>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:754>
 		GameManager_CompleteTrumpSelectionAndStartPlay_m1B2C5BD4BAA7D4CAFD49D8CBA87CBDA3FEF4F82C(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:755>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:757>
 		return;
 	}
 }
@@ -15952,23 +15958,23 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Nullable_1_t4B7406E6E74D445439E6FC254270E7F02
 	memset((&V_3), 0, sizeof(V_3));
 	AIPlayer_t9A328DB6CFB290A400E938628DC5D8FF0CABC4D0* V_4 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:759>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:761>
 		ScoreManager_t511FD5586EAD87B3F77A055A24C43EB7FF48AE1A* L_0 = __this->____scoreMgr;
 		NullCheck(L_0);
 		int32_t L_1;
 		L_1 = ScoreManager_get_BiddingTeam_m35D59C76B6FC13F2DCBEB0D052E2D2C4277E75AB_inline(L_0, NULL);
 		V_0 = L_1;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:760>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:762>
 		V_1 = 0;
 		goto IL_007b;
 	}
 
 IL_0010:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:762>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:764>
 		int32_t L_2 = V_1;
 		V_2 = L_2;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:763>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:765>
 		int32_t L_3 = V_2;
 		if (!L_3)
 		{
@@ -15976,7 +15982,7 @@ IL_0010:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:764>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:766>
 		bool L_4;
 		L_4 = GameManager_get_IsSinglePlayActive_m7E51ADE9EC708BC108EB3CEE4608B79989C18D22_inline(__this, NULL);
 		if (!L_4)
@@ -16010,7 +16016,7 @@ IL_0010:
 
 IL_003e:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:766>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:768>
 		int32_t L_10 = V_2;
 		int32_t L_11;
 		L_11 = GameRules_GetTeam_m382E4465E92117D573C5FA0766E6AD603BCD37FD(L_10, NULL);
@@ -16021,12 +16027,12 @@ IL_003e:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:768>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:770>
 		int32_t L_13 = V_2;
 		AIPlayer_t9A328DB6CFB290A400E938628DC5D8FF0CABC4D0* L_14;
 		L_14 = GameManager_GetAI_m86495703789E01E84D67D59F71494D6EB63A50E3(__this, L_13, NULL);
 		V_4 = L_14;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:769>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:771>
 		AIPlayer_t9A328DB6CFB290A400E938628DC5D8FF0CABC4D0* L_15 = V_4;
 		if (!L_15)
 		{
@@ -16053,7 +16059,7 @@ IL_003e:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:770>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:772>
 		int32_t L_24 = V_2;
 		Nullable_1_t4B7406E6E74D445439E6FC254270E7F0220B66FF L_25;
 		memset((&L_25), 0, sizeof(L_25));
@@ -16063,14 +16069,14 @@ IL_003e:
 
 IL_0077:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:760>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:762>
 		int32_t L_26 = V_1;
 		V_1 = ((int32_t)il2cpp_codegen_add(L_26, 1));
 	}
 
 IL_007b:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:760>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:762>
 		int32_t L_27 = V_1;
 		if ((((int32_t)L_27) < ((int32_t)4)))
 		{
@@ -16078,7 +16084,7 @@ IL_007b:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:773>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:775>
 		il2cpp_codegen_initobj((&V_3), sizeof(Nullable_1_t4B7406E6E74D445439E6FC254270E7F0220B66FF));
 		Nullable_1_t4B7406E6E74D445439E6FC254270E7F0220B66FF L_28 = V_3;
 		return L_28;
@@ -16104,23 +16110,23 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_CheckBiddingAIReDouble_mA0A7
 	memset((&V_3), 0, sizeof(V_3));
 	AIPlayer_t9A328DB6CFB290A400E938628DC5D8FF0CABC4D0* V_4 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:778>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:780>
 		ScoreManager_t511FD5586EAD87B3F77A055A24C43EB7FF48AE1A* L_0 = __this->____scoreMgr;
 		NullCheck(L_0);
 		int32_t L_1;
 		L_1 = ScoreManager_get_BiddingTeam_m35D59C76B6FC13F2DCBEB0D052E2D2C4277E75AB_inline(L_0, NULL);
 		V_0 = L_1;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:779>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:781>
 		V_1 = 0;
 		goto IL_00a2;
 	}
 
 IL_0013:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:781>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:783>
 		int32_t L_2 = V_1;
 		V_2 = L_2;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:782>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:784>
 		int32_t L_3 = V_2;
 		if (!L_3)
 		{
@@ -16128,7 +16134,7 @@ IL_0013:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:783>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:785>
 		bool L_4;
 		L_4 = GameManager_get_IsSinglePlayActive_m7E51ADE9EC708BC108EB3CEE4608B79989C18D22_inline(__this, NULL);
 		if (!L_4)
@@ -16162,7 +16168,7 @@ IL_0013:
 
 IL_0044:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:785>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:787>
 		int32_t L_10 = V_2;
 		int32_t L_11;
 		L_11 = GameRules_GetTeam_m382E4465E92117D573C5FA0766E6AD603BCD37FD(L_10, NULL);
@@ -16173,12 +16179,12 @@ IL_0044:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:787>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:789>
 		int32_t L_13 = V_2;
 		AIPlayer_t9A328DB6CFB290A400E938628DC5D8FF0CABC4D0* L_14;
 		L_14 = GameManager_GetAI_m86495703789E01E84D67D59F71494D6EB63A50E3(__this, L_13, NULL);
 		V_4 = L_14;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:788>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:790>
 		AIPlayer_t9A328DB6CFB290A400E938628DC5D8FF0CABC4D0* L_15 = V_4;
 		if (!L_15)
 		{
@@ -16205,12 +16211,12 @@ IL_0044:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:790>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:792>
 		ScoreManager_t511FD5586EAD87B3F77A055A24C43EB7FF48AE1A* L_24 = __this->____scoreMgr;
 		int32_t L_25 = V_2;
 		NullCheck(L_24);
 		ScoreManager_SetReDouble_m745CFACCE558B60789A7F1CF239FAA3EB9384B1A(L_24, L_25, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:791>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:793>
 		int32_t L_26 = V_2;
 		int32_t L_27 = L_26;
 		RuntimeObject* L_28 = Box(PlayerSeat_tFA9BA8806B167010C9C8CCD036A9377D0A2EAE9D_il2cpp_TypeInfo_var, &L_27);
@@ -16218,22 +16224,22 @@ IL_0044:
 		L_29 = String_Format_mA8DBB4C2516B9723C5A41E6CB1E2FAF4BBE96DD8(_stringLiteralF25CE8308833A8FC9405080A60F29D78A8FE1F0D, L_28, NULL);
 		il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
 		Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(L_29, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:792>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:794>
 		GameManager_NotifyStateChanged_m23F76F0D47C5A063A4FF9828BC3A46D12B429524(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:793>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:795>
 		return;
 	}
 
 IL_009e:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:779>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:781>
 		int32_t L_30 = V_1;
 		V_1 = ((int32_t)il2cpp_codegen_add(L_30, 1));
 	}
 
 IL_00a2:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:779>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:781>
 		int32_t L_31 = V_1;
 		if ((((int32_t)L_31) < ((int32_t)4)))
 		{
@@ -16241,7 +16247,7 @@ IL_00a2:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:797>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:799>
 		return;
 	}
 }
@@ -16256,7 +16262,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_AcceptHumanDouble_mFBE2A9F61
 		s_Il2CppMethodInitialized = true;
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:802>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:804>
 		bool L_0 = __this->____doubleDecisionCompleted;
 		if (!L_0)
 		{
@@ -16264,28 +16270,28 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_AcceptHumanDouble_mFBE2A9F61
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:802>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:804>
 		return;
 	}
 
 IL_0009:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:803>
-		__this->____doubleDecisionCompleted = (bool)1;
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:805>
+		__this->____doubleDecisionCompleted = (bool)1;
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:807>
 		ScoreManager_t511FD5586EAD87B3F77A055A24C43EB7FF48AE1A* L_1 = __this->____scoreMgr;
 		NullCheck(L_1);
 		ScoreManager_SetDouble_m4A4A84F991FF07B42086CBB9E8D29F62D31B39DC(L_1, 0, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:806>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:808>
 		il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
 		Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(_stringLiteral74EFC61486989B601CCDB2DD4D20DF6871C22AE4, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:807>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:809>
 		GameManager_NotifyStateChanged_m23F76F0D47C5A063A4FF9828BC3A46D12B429524(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:810>
-		GameManager_CheckBiddingAIReDouble_mA0A78D54820F94E730942E61D95020129A58EF4E(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:811>
-		GameManager_CompleteTrumpSelectionAndStartPlay_m1B2C5BD4BAA7D4CAFD49D8CBA87CBDA3FEF4F82C(__this, NULL);
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:812>
+		GameManager_CheckBiddingAIReDouble_mA0A78D54820F94E730942E61D95020129A58EF4E(__this, NULL);
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:813>
+		GameManager_CompleteTrumpSelectionAndStartPlay_m1B2C5BD4BAA7D4CAFD49D8CBA87CBDA3FEF4F82C(__this, NULL);
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:814>
 		return;
 	}
 }
@@ -16300,7 +16306,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_RejectHumanDouble_mD1636AA4F
 		s_Il2CppMethodInitialized = true;
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:817>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:819>
 		bool L_0 = __this->____doubleDecisionCompleted;
 		if (!L_0)
 		{
@@ -16308,20 +16314,20 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_RejectHumanDouble_mD1636AA4F
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:817>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:819>
 		return;
 	}
 
 IL_0009:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:818>
-		__this->____doubleDecisionCompleted = (bool)1;
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:820>
+		__this->____doubleDecisionCompleted = (bool)1;
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:822>
 		il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
 		Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(_stringLiteral7A99BC55BF8B2DCD192F40987F9CE8D46E1DAE27, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:821>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:823>
 		GameManager_CompleteTrumpSelectionAndStartPlay_m1B2C5BD4BAA7D4CAFD49D8CBA87CBDA3FEF4F82C(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:822>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:824>
 		return;
 	}
 }
@@ -16336,7 +16342,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_AcceptHumanReDouble_m9AF19E1
 		s_Il2CppMethodInitialized = true;
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:827>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:829>
 		bool L_0 = __this->____doubleDecisionCompleted;
 		if (!L_0)
 		{
@@ -16344,26 +16350,26 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_AcceptHumanReDouble_m9AF19E1
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:827>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:829>
 		return;
 	}
 
 IL_0009:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:828>
-		__this->____doubleDecisionCompleted = (bool)1;
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:830>
+		__this->____doubleDecisionCompleted = (bool)1;
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:832>
 		ScoreManager_t511FD5586EAD87B3F77A055A24C43EB7FF48AE1A* L_1 = __this->____scoreMgr;
 		NullCheck(L_1);
 		ScoreManager_SetReDouble_m745CFACCE558B60789A7F1CF239FAA3EB9384B1A(L_1, 0, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:831>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:833>
 		il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
 		Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(_stringLiteral587951490F8F5ED9F30C7C0E790EB0CF17AFDF3F, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:832>
-		GameManager_NotifyStateChanged_m23F76F0D47C5A063A4FF9828BC3A46D12B429524(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:833>
-		GameManager_CompleteTrumpSelectionAndStartPlay_m1B2C5BD4BAA7D4CAFD49D8CBA87CBDA3FEF4F82C(__this, NULL);
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:834>
+		GameManager_NotifyStateChanged_m23F76F0D47C5A063A4FF9828BC3A46D12B429524(__this, NULL);
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:835>
+		GameManager_CompleteTrumpSelectionAndStartPlay_m1B2C5BD4BAA7D4CAFD49D8CBA87CBDA3FEF4F82C(__this, NULL);
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:836>
 		return;
 	}
 }
@@ -16378,7 +16384,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_RejectHumanReDouble_mD59F352
 		s_Il2CppMethodInitialized = true;
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:839>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:841>
 		bool L_0 = __this->____doubleDecisionCompleted;
 		if (!L_0)
 		{
@@ -16386,20 +16392,20 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_RejectHumanReDouble_mD59F352
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:839>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:841>
 		return;
 	}
 
 IL_0009:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:840>
-		__this->____doubleDecisionCompleted = (bool)1;
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:842>
+		__this->____doubleDecisionCompleted = (bool)1;
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:844>
 		il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
 		Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(_stringLiteral291AD8A139C070AC088154CF7E5A2DE2B796BE93, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:843>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:845>
 		GameManager_CompleteTrumpSelectionAndStartPlay_m1B2C5BD4BAA7D4CAFD49D8CBA87CBDA3FEF4F82C(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:844>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:846>
 		return;
 	}
 }
@@ -16409,7 +16415,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_ApplyAITrumpChoice_m09488E1D
 	int32_t V_0 = 0;
 	int32_t V_1 = 0;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:848>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:850>
 		AIPlayer_t9A328DB6CFB290A400E938628DC5D8FF0CABC4D0* L_0 = ___0_ai;
 		Hand_t7A84E047DF7147D62D842E3563A7A187DA1A0082* L_1 = ___2_winnerHand;
 		NullCheck(L_0);
@@ -16435,35 +16441,35 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_ApplyAITrumpChoice_m09488E1D
 
 IL_0014:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:852>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:854>
 		TrumpManager_t92E234FC1D9CBE267ED9783B7061AB79CAC6A4CF* L_5 = __this->____trumpMgr;
 		int32_t L_6 = ___1_winner;
 		NullCheck(L_5);
 		TrumpManager_SetSeventhCardTrump_m8B8879E57B9458E785F644164A919633CA93D4B0(L_5, L_6, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:853>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:855>
 		return;
 	}
 
 IL_0021:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:855>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:857>
 		TrumpManager_t92E234FC1D9CBE267ED9783B7061AB79CAC6A4CF* L_7 = __this->____trumpMgr;
 		int32_t L_8 = ___1_winner;
 		NullCheck(L_7);
 		TrumpManager_SetJokerTrump_m57EF71D276E36041DDCD5F1E070C77F0FC0F1065(L_7, L_8, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:856>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:858>
 		return;
 	}
 
 IL_002e:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:858>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:860>
 		TrumpManager_t92E234FC1D9CBE267ED9783B7061AB79CAC6A4CF* L_9 = __this->____trumpMgr;
 		int32_t L_10 = ___1_winner;
 		int32_t L_11 = V_1;
 		NullCheck(L_9);
 		TrumpManager_SetTrumpSuit_m3B5D4F7467B9ED0E4B0A15114EFC25ADCF161249(L_9, L_10, L_11, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:861>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:863>
 		return;
 	}
 }
@@ -16481,32 +16487,32 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_CompleteTrumpSelectionAndSta
 	Action_tD00B0A84D7945E50C2DFFC28EFEE6ED44ED2AD07* G_B2_0 = NULL;
 	Action_tD00B0A84D7945E50C2DFFC28EFEE6ED44ED2AD07* G_B1_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:865>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:867>
 		ScoreManager_t511FD5586EAD87B3F77A055A24C43EB7FF48AE1A* L_0 = __this->____scoreMgr;
 		NullCheck(L_0);
 		int32_t L_1;
 		L_1 = ScoreManager_get_BidWinner_mB1117A05FCF0819156DED8B369C09952EBD02512_inline(L_0, NULL);
 		V_0 = L_1;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:869>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:871>
 		GameManager_ChangePhase_m298FAF7BE966D09A09D707C001DB4F8AFC2CE8AB(__this, 4, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:878>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:880>
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_2 = __this->____trickMgr;
 		int32_t L_3 = V_0;
 		NullCheck(L_2);
 		TrickManager_StartRound_m61ECB091FBA93F12AB8B24083EBCAAFE966C07A6(L_2, L_3, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:879>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:881>
 		int32_t L_4 = V_0;
 		GameManager_SetCurrentPlayer_m0196894DC57C79BB86F9DE2E914BF2F4F67DCFD0(__this, L_4, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:882>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:884>
 		GameManager_DealSecondBatch_m73E330AB287B4AA0ED1A10902BDB34A8DE51C328(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:885>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:887>
 		__this->____waitingForSinglePlayDecision = (bool)1;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:886>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:888>
 		il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
 		Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(_stringLiteral6FAEF7DB2E594212C12F0C3CD5F2CE12C6CBA2B0, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:887>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:889>
 		GameManager_NotifyStateChanged_m23F76F0D47C5A063A4FF9828BC3A46D12B429524(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:888>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:890>
 		Action_tD00B0A84D7945E50C2DFFC28EFEE6ED44ED2AD07* L_5 = __this->___OnSinglePlayEligible;
 		Action_tD00B0A84D7945E50C2DFFC28EFEE6ED44ED2AD07* L_6 = L_5;
 		if (L_6)
@@ -16524,7 +16530,7 @@ IL_004e:
 	{
 		NullCheck(G_B2_0);
 		Action_Invoke_m7126A54DACA72B845424072887B5F3A51FC3808E_inline(G_B2_0, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:889>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:891>
 		return;
 	}
 }
@@ -16532,13 +16538,13 @@ IL_004e:
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_AdvancePlayTurn_m3E4E37D4DAA63EF84413383252A1D2FF057B618D (GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* __this, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:897>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:899>
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_0 = __this->____trickMgr;
 		NullCheck(L_0);
 		int32_t L_1;
 		L_1 = TrickManager_GetCurrentPlayer_m005285BC2D86E45AFA737BFB4CC9B002E4BE1E2E(L_0, NULL);
 		GameManager_SetCurrentPlayer_m0196894DC57C79BB86F9DE2E914BF2F4F67DCFD0(__this, L_1, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:898>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:900>
 		int32_t L_2;
 		L_2 = GameManager_get_CurrentPlayer_m022B7B5079A6C106DB6309569533003B6CC47B42_inline(__this, NULL);
 		if (!L_2)
@@ -16547,13 +16553,13 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_AdvancePlayTurn_m3E4E37D4DAA
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:899>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:901>
 		GameManager_RunAIPlay_m6323605AA41E5983327F6831562BBC630F924237(__this, NULL);
 	}
 
 IL_001f:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:900>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:902>
 		return;
 	}
 }
@@ -16566,7 +16572,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_RunAIPlay_m6323605AA41E59833
 	memset((&V_2), 0, sizeof(V_2));
 	Card_t0A9DF635E00AE171E2A4DFD4402933CE663B89C8* V_3 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:905>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:907>
 		bool L_0 = __this->___enablePacing;
 		if (!L_0)
 		{
@@ -16585,7 +16591,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_RunAIPlay_m6323605AA41E59833
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:907>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:909>
 		Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B* L_3 = __this->____aiPlayRoutine;
 		if (!L_3)
 		{
@@ -16593,14 +16599,14 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_RunAIPlay_m6323605AA41E59833
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:907>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:909>
 		Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B* L_4 = __this->____aiPlayRoutine;
 		MonoBehaviour_StopCoroutine_mB0FC91BE84203BD8E360B3FBAE5B958B4C5ED22A(__this, L_4, NULL);
 	}
 
 IL_002f:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:908>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:910>
 		RuntimeObject* L_5;
 		L_5 = GameManager_AIPlayRoutine_m220BA75AA2C7D1A27341525834800D0FAA13769F(__this, NULL);
 		Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B* L_6;
@@ -16612,13 +16618,13 @@ IL_002f:
 
 IL_0042:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:916>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:918>
 		int32_t L_7;
 		L_7 = GameManager_get_CurrentPlayer_m022B7B5079A6C106DB6309569533003B6CC47B42_inline(__this, NULL);
 		AIPlayer_t9A328DB6CFB290A400E938628DC5D8FF0CABC4D0* L_8;
 		L_8 = GameManager_GetAI_m86495703789E01E84D67D59F71494D6EB63A50E3(__this, L_7, NULL);
 		V_0 = L_8;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:917>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:919>
 		AIPlayer_t9A328DB6CFB290A400E938628DC5D8FF0CABC4D0* L_9 = V_0;
 		if (!L_9)
 		{
@@ -16626,17 +16632,17 @@ IL_0042:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:919>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:921>
 		int32_t L_10;
 		L_10 = GameManager_get_CurrentPlayer_m022B7B5079A6C106DB6309569533003B6CC47B42_inline(__this, NULL);
 		int32_t L_11;
 		L_11 = GameRules_GetPartner_mC25A1844D033DEA58808CDB5C465820FA43B0152(L_10, NULL);
 		V_1 = L_11;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:920>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:922>
 		int32_t L_12;
 		L_12 = GameManager_get_CurrentPlayer_m022B7B5079A6C106DB6309569533003B6CC47B42_inline(__this, NULL);
 		GameManager_MaybeAIRevealTrump_m6C8EE0A8B2C30A2B191BFD92150A6061B0F2593F(__this, L_12, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:922>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:924>
 		TrumpManager_t92E234FC1D9CBE267ED9783B7061AB79CAC6A4CF* L_13 = __this->____trumpMgr;
 		int32_t L_14;
 		L_14 = GameManager_get_CurrentPlayer_m022B7B5079A6C106DB6309569533003B6CC47B42_inline(__this, NULL);
@@ -16644,12 +16650,12 @@ IL_0042:
 		Nullable_1_tB03AEE708613D24091BEC5B640EB7F3E57371BBB L_15;
 		L_15 = TrumpManager_GetVisibleTrump_m001FBDE4CB6B429C66D9F565A9AEF9F5FEF0B79B(L_13, L_14, NULL);
 		V_2 = L_15;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:924>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:925>
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:926>
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:927>
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:928>
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:929>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:930>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:931>
 		AIPlayer_t9A328DB6CFB290A400E938628DC5D8FF0CABC4D0* L_16 = V_0;
 		HandU5BU5D_tD5E45E974E721F92B6075F9AE604D837B6F2164A* L_17 = __this->____hands;
 		int32_t L_18;
@@ -16671,7 +16677,7 @@ IL_0042:
 		Card_t0A9DF635E00AE171E2A4DFD4402933CE663B89C8* L_27;
 		L_27 = AIPlayer_DecideCardToPlay_m79F4E9EA1F12231F8B62A66758147D6C177C28A3(L_16, L_20, L_22, L_23, L_24, L_26, NULL);
 		V_3 = L_27;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:931>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:933>
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_28 = __this->____trickMgr;
 		int32_t L_29;
 		L_29 = GameManager_get_CurrentPlayer_m022B7B5079A6C106DB6309569533003B6CC47B42_inline(__this, NULL);
@@ -16685,7 +16691,7 @@ IL_0042:
 		NullCheck(L_28);
 		bool L_35;
 		L_35 = TrickManager_PlayCard_m4F2153E23DB7F5EE0406753C9CAC06EA39A71919(L_28, L_29, L_30, L_34, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:933>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:935>
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_36 = __this->____trickMgr;
 		NullCheck(L_36);
 		bool L_37;
@@ -16696,7 +16702,7 @@ IL_0042:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:934>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:936>
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_38 = __this->____trickMgr;
 		NullCheck(L_38);
 		int32_t L_39;
@@ -16706,9 +16712,9 @@ IL_0042:
 
 IL_00e9:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:912>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:913>
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:914>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:915>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:916>
 		int32_t L_40;
 		L_40 = GameManager_get_CurrentPhase_m16E98CF942F42D8C5667D017B06AAD113E75B385_inline(__this, NULL);
 		if ((!(((uint32_t)L_40) == ((uint32_t)4))))
@@ -16737,7 +16743,7 @@ IL_00e9:
 
 IL_010a:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:937>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:939>
 		return;
 	}
 }
@@ -16767,7 +16773,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_MaybeAIRevealTrump_m6C8EE0A8
 	Nullable_1_tB03AEE708613D24091BEC5B640EB7F3E57371BBB V_1;
 	memset((&V_1), 0, sizeof(V_1));
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:984>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:986>
 		int32_t L_0 = ___0_seat;
 		bool L_1;
 		L_1 = GameManager_CanRevealTrump_mBEC2D5974A1220F3658622CE15277BD0109BB86C(__this, L_0, NULL);
@@ -16777,18 +16783,18 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_MaybeAIRevealTrump_m6C8EE0A8
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:984>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:986>
 		return;
 	}
 
 IL_000a:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:986>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:988>
 		int32_t L_2 = ___0_seat;
 		AIPlayer_t9A328DB6CFB290A400E938628DC5D8FF0CABC4D0* L_3;
 		L_3 = GameManager_GetAI_m86495703789E01E84D67D59F71494D6EB63A50E3(__this, L_2, NULL);
 		V_0 = L_3;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:987>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:989>
 		AIPlayer_t9A328DB6CFB290A400E938628DC5D8FF0CABC4D0* L_4 = V_0;
 		if (L_4)
 		{
@@ -16796,20 +16802,20 @@ IL_000a:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:987>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:989>
 		return;
 	}
 
 IL_0016:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:989>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:991>
 		TrumpManager_t92E234FC1D9CBE267ED9783B7061AB79CAC6A4CF* L_5 = __this->____trumpMgr;
 		int32_t L_6 = ___0_seat;
 		NullCheck(L_5);
 		Nullable_1_tB03AEE708613D24091BEC5B640EB7F3E57371BBB L_7;
 		L_7 = TrumpManager_GetVisibleTrump_m001FBDE4CB6B429C66D9F565A9AEF9F5FEF0B79B(L_5, L_6, NULL);
 		V_1 = L_7;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:990>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:992>
 		AIPlayer_t9A328DB6CFB290A400E938628DC5D8FF0CABC4D0* L_8 = V_0;
 		HandU5BU5D_tD5E45E974E721F92B6075F9AE604D837B6F2164A* L_9 = __this->____hands;
 		int32_t L_10 = ___0_seat;
@@ -16830,16 +16836,16 @@ IL_0016:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:991>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:993>
 		return;
 	}
 
 IL_0040:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:993>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:995>
 		bool L_17;
 		L_17 = GameManager_RevealTrump_mA76B57650092BA9B5F4CDE7E899E9849EC37BE92(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:994>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:996>
 		return;
 	}
 }
@@ -16857,7 +16863,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_HandleCardPlayed_m9BAB8136CA
 	Action_2_t07AD11FCD1DEC0BA2D7FDB25F1C49181EB6D15F1* G_B2_0 = NULL;
 	Action_2_t07AD11FCD1DEC0BA2D7FDB25F1C49181EB6D15F1* G_B1_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:998>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1000>
 		int32_t L_0 = ___0_player;
 		int32_t L_1 = L_0;
 		RuntimeObject* L_2 = Box(PlayerSeat_tFA9BA8806B167010C9C8CCD036A9377D0A2EAE9D_il2cpp_TypeInfo_var, &L_1);
@@ -16866,7 +16872,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_HandleCardPlayed_m9BAB8136CA
 		L_4 = String_Format_mFB7DA489BD99F4670881FF50EC017BFB0A5C0987(_stringLiteral37129F46B1491E9CBB4E49E1116C6369144BFA84, L_2, L_3, NULL);
 		il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
 		Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(L_4, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:999>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1001>
 		Action_2_t07AD11FCD1DEC0BA2D7FDB25F1C49181EB6D15F1* L_5 = __this->___OnCardPlayed;
 		Action_2_t07AD11FCD1DEC0BA2D7FDB25F1C49181EB6D15F1* L_6 = L_5;
 		if (L_6)
@@ -16890,9 +16896,9 @@ IL_0022:
 
 IL_0029:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1000>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1002>
 		GameManager_NotifyStateChanged_m23F76F0D47C5A063A4FF9828BC3A46D12B429524(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1001>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1003>
 		return;
 	}
 }
@@ -16916,7 +16922,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_HandleTrickWon_m17A539F9F087
 	Action_2_t5BC2B569355036C6FCD4E1E5BC98C86F4ED7D205* G_B2_0 = NULL;
 	Action_2_t5BC2B569355036C6FCD4E1E5BC98C86F4ED7D205* G_B1_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1005>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1007>
 		int32_t L_0 = ___0_winner;
 		int32_t L_1 = L_0;
 		RuntimeObject* L_2 = Box(PlayerSeat_tFA9BA8806B167010C9C8CCD036A9377D0A2EAE9D_il2cpp_TypeInfo_var, &L_1);
@@ -16933,7 +16939,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_HandleTrickWon_m17A539F9F087
 		L_10 = String_Format_mA0534D6E2AE4D67A6BD8D45B3321323930EB930C(_stringLiteral46AE08FF2B269F6F9A23E5813D72CBD52D762730, L_2, L_5, L_9, NULL);
 		il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
 		Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(L_10, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1006>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1008>
 		Action_2_t5BC2B569355036C6FCD4E1E5BC98C86F4ED7D205* L_11 = __this->___OnTrickWon;
 		Action_2_t5BC2B569355036C6FCD4E1E5BC98C86F4ED7D205* L_12 = L_11;
 		if (L_12)
@@ -16957,9 +16963,9 @@ IL_0037:
 
 IL_003e:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1007>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1009>
 		GameManager_NotifyStateChanged_m23F76F0D47C5A063A4FF9828BC3A46D12B429524(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1010>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1012>
 		bool L_15;
 		L_15 = GameManager_get_IsSinglePlayActive_m7E51ADE9EC708BC108EB3CEE4608B79989C18D22_inline(__this, NULL);
 		if (!L_15)
@@ -16987,7 +16993,7 @@ IL_003e:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1012>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1014>
 		Nullable_1_t4B7406E6E74D445439E6FC254270E7F0220B66FF L_19;
 		L_19 = GameManager_get_SinglePlayerSeat_m950AAB26BADE1563E447099E90CB91700782452C_inline(__this, NULL);
 		V_0 = L_19;
@@ -16996,7 +17002,7 @@ IL_003e:
 		int32_t L_21;
 		L_21 = GameRules_GetTeam_m382E4465E92117D573C5FA0766E6AD603BCD37FD(L_20, NULL);
 		V_1 = L_21;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1013>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1015>
 		int32_t L_22 = ___0_winner;
 		int32_t L_23;
 		L_23 = GameRules_GetTeam_m382E4465E92117D573C5FA0766E6AD603BCD37FD(L_22, NULL);
@@ -17007,7 +17013,7 @@ IL_003e:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1015>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1017>
 		int32_t L_25 = ___0_winner;
 		int32_t L_26 = L_25;
 		RuntimeObject* L_27 = Box(PlayerSeat_tFA9BA8806B167010C9C8CCD036A9377D0A2EAE9D_il2cpp_TypeInfo_var, &L_26);
@@ -17015,32 +17021,32 @@ IL_003e:
 		L_28 = String_Format_mA8DBB4C2516B9723C5A41E6CB1E2FAF4BBE96DD8(_stringLiteral56B8A2ACB223FC879BCD389541BF2B7AFE2E78F3, L_27, NULL);
 		il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
 		Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(L_28, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1016>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1018>
 		MonoBehaviour_StopAllCoroutines_m872033451D42013A99867D09337490017E9ED318(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1017>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1019>
 		__this->____aiPlayRoutine = (Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B*)NULL;
 		Il2CppCodeGenWriteBarrier((void**)(&__this->____aiPlayRoutine), (void*)(Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B*)NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1018>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1020>
 		__this->____aiBiddingRoutine = (Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B*)NULL;
 		Il2CppCodeGenWriteBarrier((void**)(&__this->____aiBiddingRoutine), (void*)(Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B*)NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1019>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1021>
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_29 = __this->____trickMgr;
 		NullCheck(L_29);
 		TrickManager_TerminateRoundEarly_mBEAB91022AAD958951AE49BE3B0F7C6D4C782E12(L_29, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1020>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1022>
 		GameManager_ChangePhase_m298FAF7BE966D09A09D707C001DB4F8AFC2CE8AB(__this, 5, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1021>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1023>
 		ScoreManager_t511FD5586EAD87B3F77A055A24C43EB7FF48AE1A* L_30 = __this->____scoreMgr;
 		int32_t L_31 = V_1;
 		NullCheck(L_30);
 		ScoreManager_ScoreSingleHand_mBAA2BCE83A782F0FB8AF8DA294B3E826FC565CF4(L_30, L_31, (bool)0, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1022>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1024>
 		return;
 	}
 
 IL_00cb:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1025>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1027>
 		return;
 	}
 }
@@ -17067,7 +17073,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_HandleRoundComplete_mB058762
 	bool V_6 = false;
 	int32_t V_7 = 0;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1029>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1031>
 		int32_t L_0;
 		L_0 = GameManager_get_CurrentPhase_m16E98CF942F42D8C5667D017B06AAD113E75B385_inline(__this, NULL);
 		if ((((int32_t)L_0) == ((int32_t)5)))
@@ -17086,21 +17092,21 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_HandleRoundComplete_mB058762
 
 IL_0012:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1029>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1031>
 		return;
 	}
 
 IL_0013:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1031>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1033>
 		GameManager_ChangePhase_m298FAF7BE966D09A09D707C001DB4F8AFC2CE8AB(__this, 5, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1032>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1034>
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_2 = __this->____trickMgr;
 		NullCheck(L_2);
 		Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C* L_3;
 		L_3 = TrickManager_GetTeamPoints_mAA35D867FE0471B40BEC5A7EBAFEDB3349FAAF0E(L_2, NULL);
 		V_0 = L_3;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1033>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1035>
 		ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918* L_4 = (ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918*)(ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918*)SZArrayNew(ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918_il2cpp_TypeInfo_var, (uint32_t)4);
 		ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918* L_5 = L_4;
 		String_t* L_6;
@@ -17138,7 +17144,7 @@ IL_0013:
 		L_21 = String_Format_m918500C1EFB475181349A79989BB79BB36102894(_stringLiteral981AF043CF51EB1DEDC5065BAC20DE0326189A3F, L_15, NULL);
 		il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
 		Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(L_21, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1035>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1037>
 		bool L_22;
 		L_22 = GameManager_get_IsSinglePlayActive_m7E51ADE9EC708BC108EB3CEE4608B79989C18D22_inline(__this, NULL);
 		if (!L_22)
@@ -17158,7 +17164,7 @@ IL_0013:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1037>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1039>
 		Nullable_1_t4B7406E6E74D445439E6FC254270E7F0220B66FF L_25;
 		L_25 = GameManager_get_SinglePlayerSeat_m950AAB26BADE1563E447099E90CB91700782452C_inline(__this, NULL);
 		V_1 = L_25;
@@ -17167,25 +17173,25 @@ IL_0013:
 		int32_t L_27;
 		L_27 = GameRules_GetTeam_m382E4465E92117D573C5FA0766E6AD603BCD37FD(L_26, NULL);
 		V_2 = L_27;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1038>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1040>
 		int32_t L_28 = V_2;
 		V_3 = ((int32_t)il2cpp_codegen_subtract(1, L_28));
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1039>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1041>
 		V_4 = 0;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1040>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1042>
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_29 = __this->____trickMgr;
 		NullCheck(L_29);
 		Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C* L_30;
 		L_30 = TrickManager_GetTricksTaken_m1549C4004F0EA0954348DE5B336CDCC63EE37438(L_29, NULL);
 		V_5 = L_30;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1041>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1043>
 		V_7 = 0;
 		goto IL_00c2;
 	}
 
 IL_00a8:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1043>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1045>
 		int32_t L_31 = V_7;
 		int32_t L_32;
 		L_32 = GameRules_GetTeam_m382E4465E92117D573C5FA0766E6AD603BCD37FD(L_31, NULL);
@@ -17196,7 +17202,7 @@ IL_00a8:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1044>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1046>
 		int32_t L_34 = V_4;
 		Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C* L_35 = V_5;
 		int32_t L_36 = V_7;
@@ -17208,14 +17214,14 @@ IL_00a8:
 
 IL_00bc:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1041>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1043>
 		int32_t L_39 = V_7;
 		V_7 = ((int32_t)il2cpp_codegen_add(L_39, 1));
 	}
 
 IL_00c2:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1041>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1043>
 		int32_t L_40 = V_7;
 		if ((((int32_t)L_40) < ((int32_t)4)))
 		{
@@ -17223,10 +17229,10 @@ IL_00c2:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1046>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1048>
 		int32_t L_41 = V_4;
 		V_6 = (bool)((((int32_t)L_41) == ((int32_t)0))? 1 : 0);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1047>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1049>
 		ScoreManager_t511FD5586EAD87B3F77A055A24C43EB7FF48AE1A* L_42 = __this->____scoreMgr;
 		int32_t L_43 = V_2;
 		bool L_44 = V_6;
@@ -17237,12 +17243,12 @@ IL_00c2:
 
 IL_00dd:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1051>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1053>
 		ScoreManager_t511FD5586EAD87B3F77A055A24C43EB7FF48AE1A* L_45 = __this->____scoreMgr;
 		Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C* L_46 = V_0;
 		NullCheck(L_45);
 		ScoreManager_ScoreRound_mC4E51198D5BC13F31252586486BFD81B17468C5F(L_45, L_46, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1053>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1055>
 		return;
 	}
 }
@@ -17272,7 +17278,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_HandleRoundScored_m626C48D2F
 	Action_1_t10DCB0C07D0D3C565CEACADC80D1152B35A45F6C* G_B11_0 = NULL;
 	Action_1_t10DCB0C07D0D3C565CEACADC80D1152B35A45F6C* G_B10_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1057>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1059>
 		ScoreManager_t511FD5586EAD87B3F77A055A24C43EB7FF48AE1A* L_0 = __this->____scoreMgr;
 		NullCheck(L_0);
 		bool L_1;
@@ -17283,7 +17289,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_HandleRoundScored_m626C48D2F
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1059>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1061>
 		ScoreManager_t511FD5586EAD87B3F77A055A24C43EB7FF48AE1A* L_2 = __this->____scoreMgr;
 		NullCheck(L_2);
 		bool L_3;
@@ -17306,7 +17312,7 @@ IL_0021:
 IL_0026:
 	{
 		V_0 = G_B4_0;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1060>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1062>
 		StringU5BU5D_t7674CD946EC0CE7B3AE0BE70E6EE85F2ECD9F248* L_4 = (StringU5BU5D_t7674CD946EC0CE7B3AE0BE70E6EE85F2ECD9F248*)(StringU5BU5D_t7674CD946EC0CE7B3AE0BE70E6EE85F2ECD9F248*)SZArrayNew(StringU5BU5D_t7674CD946EC0CE7B3AE0BE70E6EE85F2ECD9F248_il2cpp_TypeInfo_var, (uint32_t)6);
 		StringU5BU5D_t7674CD946EC0CE7B3AE0BE70E6EE85F2ECD9F248* L_5 = L_4;
 		NullCheck(L_5);
@@ -17343,7 +17349,7 @@ IL_0026:
 
 IL_006c:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1064>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1066>
 		bool L_17 = ___2_biddingTeamWon;
 		if (L_17)
 		{
@@ -17363,7 +17369,7 @@ IL_0076:
 IL_007b:
 	{
 		V_1 = G_B8_0;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1065>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1067>
 		ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918* L_18 = (ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918*)(ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918*)SZArrayNew(ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918_il2cpp_TypeInfo_var, (uint32_t)4);
 		ObjectU5BU5D_t8061030B0A12A55D5AD8652A20C922FE99450918* L_19 = L_18;
 		int32_t L_20 = ___0_biddingTeam;
@@ -17400,7 +17406,7 @@ IL_007b:
 
 IL_00b5:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1067>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1069>
 		Action_1_t10DCB0C07D0D3C565CEACADC80D1152B35A45F6C* L_32 = __this->___OnRoundScored;
 		Action_1_t10DCB0C07D0D3C565CEACADC80D1152B35A45F6C* L_33 = L_32;
 		if (L_33)
@@ -17423,9 +17429,9 @@ IL_00c1:
 
 IL_00c7:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1068>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1070>
 		GameManager_NotifyStateChanged_m23F76F0D47C5A063A4FF9828BC3A46D12B429524(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1069>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1071>
 		return;
 	}
 }
@@ -17443,9 +17449,9 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_HandleGameOver_mC3F3D04F91BE
 	Action_1_tD69A6DC9FBE94131E52F5A73B2A9D4AB51EEC404* G_B2_0 = NULL;
 	Action_1_tD69A6DC9FBE94131E52F5A73B2A9D4AB51EEC404* G_B1_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1073>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1075>
 		GameManager_ChangePhase_m298FAF7BE966D09A09D707C001DB4F8AFC2CE8AB(__this, 6, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1074>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1076>
 		int32_t L_0 = ___0_winningTeam;
 		String_t* L_1;
 		L_1 = GameRules_TeamName_mA2578C7EFBAEE4D169A3590ED5BE29739C51D47C(L_0, NULL);
@@ -17457,7 +17463,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_HandleGameOver_mC3F3D04F91BE
 		L_4 = String_Concat_m093934F71A9B351911EE46311674ED463B180006(_stringLiteral079C693966A7287F999CCE5396124B395DB5DB8C, L_1, _stringLiteral76231B056AAF482B7E793B699B6FC081CC5578CE, L_3, NULL);
 		il2cpp_codegen_runtime_class_init_inline(Debug_t8394C7EEAECA3689C2C9B9DE9C7166D73596276F_il2cpp_TypeInfo_var);
 		Debug_Log_m87A9A3C761FF5C43ED8A53B16190A53D08F818BB(L_4, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1075>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1077>
 		Action_1_tD69A6DC9FBE94131E52F5A73B2A9D4AB51EEC404* L_5 = __this->___OnGameOver;
 		Action_1_tD69A6DC9FBE94131E52F5A73B2A9D4AB51EEC404* L_6 = L_5;
 		if (L_6)
@@ -17480,9 +17486,9 @@ IL_0038:
 
 IL_003e:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1076>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1078>
 		GameManager_NotifyStateChanged_m23F76F0D47C5A063A4FF9828BC3A46D12B429524(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1077>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1079>
 		return;
 	}
 }
@@ -17492,10 +17498,10 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_ChangePhase_m298FAF7BE966D09
 	Action_1_tF4BBCE2E7543F3F634A40E56CA150D03759FDAF5* G_B2_0 = NULL;
 	Action_1_tF4BBCE2E7543F3F634A40E56CA150D03759FDAF5* G_B1_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1085>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1087>
 		int32_t L_0 = ___0_phase;
 		GameManager_set_CurrentPhase_m4A6E496DD5ABF5B3F0D7ED4F8B31E47B449AEFB1_inline(__this, L_0, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1086>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1088>
 		Action_1_tF4BBCE2E7543F3F634A40E56CA150D03759FDAF5* L_1 = __this->___OnPhaseChanged;
 		Action_1_tF4BBCE2E7543F3F634A40E56CA150D03759FDAF5* L_2 = L_1;
 		if (L_2)
@@ -17514,7 +17520,7 @@ IL_0012:
 		int32_t L_3 = ___0_phase;
 		NullCheck(G_B2_0);
 		Action_1_Invoke_mC4F072C5C10BD35B693191C49D8221220FA7E60D_inline(G_B2_0, L_3, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1087>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1089>
 		return;
 	}
 }
@@ -17524,10 +17530,10 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_SetCurrentPlayer_m0196894DC5
 	Action_1_tBC4F584F56494CDB48C94AC998578F37C53319A7* G_B2_0 = NULL;
 	Action_1_tBC4F584F56494CDB48C94AC998578F37C53319A7* G_B1_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1091>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1093>
 		int32_t L_0 = ___0_seat;
 		GameManager_set_CurrentPlayer_mD5C82A2926C9C83F77B7D932E2AB83E29850883B_inline(__this, L_0, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1092>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1094>
 		Action_1_tBC4F584F56494CDB48C94AC998578F37C53319A7* L_1 = __this->___OnCurrentPlayerChanged;
 		Action_1_tBC4F584F56494CDB48C94AC998578F37C53319A7* L_2 = L_1;
 		if (L_2)
@@ -17550,9 +17556,9 @@ IL_0013:
 
 IL_0019:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1093>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1095>
 		GameManager_NotifyStateChanged_m23F76F0D47C5A063A4FF9828BC3A46D12B429524(__this, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1094>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1096>
 		return;
 	}
 }
@@ -17562,7 +17568,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_NotifyStateChanged_m23F76F0D
 	Action_tD00B0A84D7945E50C2DFFC28EFEE6ED44ED2AD07* G_B2_0 = NULL;
 	Action_tD00B0A84D7945E50C2DFFC28EFEE6ED44ED2AD07* G_B1_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1096>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1098>
 		Action_tD00B0A84D7945E50C2DFFC28EFEE6ED44ED2AD07* L_0 = __this->___OnStateChanged;
 		Action_tD00B0A84D7945E50C2DFFC28EFEE6ED44ED2AD07* L_1 = L_0;
 		if (L_1)
@@ -17610,7 +17616,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR AIPlayer_t9A328DB6CFB290A400E938628DC5D8FF0CA
 
 IL_0016:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1102>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1104>
 		AIPlayerU5BU5D_tBFD6D22AFB15F98257D79BBAFDC3F67D88BEF9CB* L_1 = __this->____aiPlayers;
 		NullCheck(L_1);
 		int32_t L_2 = 0;
@@ -17620,7 +17626,7 @@ IL_0016:
 
 IL_001f:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1103>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1105>
 		AIPlayerU5BU5D_tBFD6D22AFB15F98257D79BBAFDC3F67D88BEF9CB* L_4 = __this->____aiPlayers;
 		NullCheck(L_4);
 		int32_t L_5 = 1;
@@ -17630,7 +17636,7 @@ IL_001f:
 
 IL_0028:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1104>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1106>
 		AIPlayerU5BU5D_tBFD6D22AFB15F98257D79BBAFDC3F67D88BEF9CB* L_7 = __this->____aiPlayers;
 		NullCheck(L_7);
 		int32_t L_8 = 2;
@@ -17640,7 +17646,7 @@ IL_0028:
 
 IL_0031:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1105>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:1107>
 		return (AIPlayer_t9A328DB6CFB290A400E938628DC5D8FF0CABC4D0*)NULL;
 	}
 }
@@ -17775,7 +17781,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void U3CU3Ec__ctor_m662270F5C5B932E8981CA660F
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool U3CU3Ec_U3CCanDeclareMarriageU3Eb__126_0_m80A1C4C828143E5FF93EA293D8BCF3718E5B607F (U3CU3Ec_t81AAACD7C6A2BE3E473E8BFF082506DC1F95FD6E* __this, Card_t0A9DF635E00AE171E2A4DFD4402933CE663B89C8* ___0_c, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:325>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:327>
 		Card_t0A9DF635E00AE171E2A4DFD4402933CE663B89C8* L_0 = ___0_c;
 		NullCheck(L_0);
 		int32_t L_1;
@@ -17787,7 +17793,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool U3CU3Ec_U3CCanDeclareMarriageU3Eb__126_0
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool U3CU3Ec_U3CCanDeclareMarriageU3Eb__126_1_mED1454E52313EA11BEF4CACAAA0F680090E3AAFA (U3CU3Ec_t81AAACD7C6A2BE3E473E8BFF082506DC1F95FD6E* __this, Card_t0A9DF635E00AE171E2A4DFD4402933CE663B89C8* ___0_c, const RuntimeMethod* method) 
 {
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:326>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:328>
 		Card_t0A9DF635E00AE171E2A4DFD4402933CE663B89C8* L_0 = ___0_c;
 		NullCheck(L_0);
 		int32_t L_1;
@@ -17872,7 +17878,7 @@ IL_0017:
 
 IL_0023:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:627>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:629>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_4 = V_1;
 		NullCheck(L_4);
 		Action_1_tBC4F584F56494CDB48C94AC998578F37C53319A7* L_5 = L_4->___OnAIBiddingThinking;
@@ -17900,7 +17906,7 @@ IL_002f:
 
 IL_003a:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:629>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:631>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_9 = V_1;
 		NullCheck(L_9);
 		float L_10 = L_9->___aiBidDelay;
@@ -17915,7 +17921,7 @@ IL_003a:
 IL_0054:
 	{
 		__this->___U3CU3E1__state = (-1);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:631>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:633>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_12 = V_1;
 		NullCheck(L_12);
 		BiddingManager_tB5C5269891ED90E4AEB9766BC7999C93873CF7F2* L_13 = L_12->____biddingMgr;
@@ -17940,13 +17946,13 @@ IL_0054:
 
 IL_0070:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:632>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:634>
 		return (bool)0;
 	}
 
 IL_0072:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:634>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:636>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_17 = V_1;
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_18 = V_1;
 		NullCheck(L_18);
@@ -17956,7 +17962,7 @@ IL_0072:
 		AIPlayer_t9A328DB6CFB290A400E938628DC5D8FF0CABC4D0* L_20;
 		L_20 = GameManager_GetAI_m86495703789E01E84D67D59F71494D6EB63A50E3(L_17, L_19, NULL);
 		V_2 = L_20;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:635>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:637>
 		AIPlayer_t9A328DB6CFB290A400E938628DC5D8FF0CABC4D0* L_21 = V_2;
 		if (L_21)
 		{
@@ -17964,15 +17970,15 @@ IL_0072:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:635>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:637>
 		return (bool)0;
 	}
 
 IL_0084:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:637>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:638>
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:639>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:640>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:641>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_22 = V_1;
 		NullCheck(L_22);
 		BiddingManager_tB5C5269891ED90E4AEB9766BC7999C93873CF7F2* L_23 = L_22->____biddingMgr;
@@ -18011,7 +18017,7 @@ IL_00b5:
 IL_00b6:
 	{
 		V_3 = (bool)G_B16_0;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:641>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:643>
 		AIPlayer_t9A328DB6CFB290A400E938628DC5D8FF0CABC4D0* L_32 = V_2;
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_33 = V_1;
 		NullCheck(L_33);
@@ -18034,7 +18040,7 @@ IL_00b6:
 		Nullable_1_tCF32C56A2641879C053C86F273C0C6EC1B40BC28 L_43;
 		L_43 = AIPlayer_DecideBid_m7E2EE9766BDA61637E27E6BF63DD2E65B509D7A4(L_32, L_38, L_41, L_42, NULL);
 		V_4 = L_43;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:643>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:645>
 		bool L_44;
 		L_44 = Nullable_1_get_HasValue_mCF2FD8B3055FA87FC9C504F2122B3B0FAEDE3EC9_inline((&V_4), Nullable_1_get_HasValue_mCF2FD8B3055FA87FC9C504F2122B3B0FAEDE3EC9_RuntimeMethod_var);
 		if (!L_44)
@@ -18043,7 +18049,7 @@ IL_00b6:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:644>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:646>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_45 = V_1;
 		NullCheck(L_45);
 		BiddingManager_tB5C5269891ED90E4AEB9766BC7999C93873CF7F2* L_46 = L_45->____biddingMgr;
@@ -18061,7 +18067,7 @@ IL_00b6:
 
 IL_00fc:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:646>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:648>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_51 = V_1;
 		NullCheck(L_51);
 		BiddingManager_tB5C5269891ED90E4AEB9766BC7999C93873CF7F2* L_52 = L_51->____biddingMgr;
@@ -18076,7 +18082,7 @@ IL_00fc:
 
 IL_010e:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:648>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:650>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_56 = V_1;
 		NullCheck(L_56);
 		Action_2_tA5402ADB5477AFC401991A96C9B162E5CBEEFEC0* L_57 = L_56->___OnBiddingAction;
@@ -18105,7 +18111,7 @@ IL_011a:
 
 IL_0127:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:650>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:652>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_62 = V_1;
 		NullCheck(L_62);
 		BiddingManager_tB5C5269891ED90E4AEB9766BC7999C93873CF7F2* L_63 = L_62->____biddingMgr;
@@ -18118,7 +18124,7 @@ IL_0127:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:651>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:653>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_65 = V_1;
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_66 = V_1;
 		NullCheck(L_66);
@@ -18132,7 +18138,7 @@ IL_0127:
 
 IL_0145:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:623>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:625>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_69 = V_1;
 		NullCheck(L_69);
 		BiddingManager_tB5C5269891ED90E4AEB9766BC7999C93873CF7F2* L_70 = L_69->____biddingMgr;
@@ -18157,12 +18163,12 @@ IL_0145:
 
 IL_015d:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:653>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:655>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_74 = V_1;
 		NullCheck(L_74);
 		L_74->____aiBiddingRoutine = (Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B*)NULL;
 		Il2CppCodeGenWriteBarrier((void**)(&L_74->____aiBiddingRoutine), (void*)(Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B*)NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:654>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:656>
 		return (bool)0;
 	}
 }
@@ -18276,7 +18282,7 @@ IL_0026:
 
 IL_0032:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:945>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:947>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_3 = V_1;
 		NullCheck(L_3);
 		float L_4 = L_3->___aiPlayDelay;
@@ -18291,7 +18297,7 @@ IL_0032:
 IL_004c:
 	{
 		__this->___U3CU3E1__state = (-1);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:947>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:949>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_6 = V_1;
 		NullCheck(L_6);
 		int32_t L_7;
@@ -18326,13 +18332,13 @@ IL_004c:
 
 IL_0071:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:948>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:950>
 		return (bool)0;
 	}
 
 IL_0073:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:950>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:952>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_13 = V_1;
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_14 = V_1;
 		NullCheck(L_14);
@@ -18342,7 +18348,7 @@ IL_0073:
 		AIPlayer_t9A328DB6CFB290A400E938628DC5D8FF0CABC4D0* L_16;
 		L_16 = GameManager_GetAI_m86495703789E01E84D67D59F71494D6EB63A50E3(L_13, L_15, NULL);
 		V_2 = L_16;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:951>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:953>
 		AIPlayer_t9A328DB6CFB290A400E938628DC5D8FF0CABC4D0* L_17 = V_2;
 		if (L_17)
 		{
@@ -18350,13 +18356,13 @@ IL_0073:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:951>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:953>
 		return (bool)0;
 	}
 
 IL_0085:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:953>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:955>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_18 = V_1;
 		NullCheck(L_18);
 		int32_t L_19;
@@ -18364,7 +18370,7 @@ IL_0085:
 		int32_t L_20;
 		L_20 = GameRules_GetPartner_mC25A1844D033DEA58808CDB5C465820FA43B0152(L_19, NULL);
 		V_3 = L_20;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:954>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:956>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_21 = V_1;
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_22 = V_1;
 		NullCheck(L_22);
@@ -18372,7 +18378,7 @@ IL_0085:
 		L_23 = GameManager_get_CurrentPlayer_m022B7B5079A6C106DB6309569533003B6CC47B42_inline(L_22, NULL);
 		NullCheck(L_21);
 		GameManager_MaybeAIRevealTrump_m6C8EE0A8B2C30A2B191BFD92150A6061B0F2593F(L_21, L_23, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:956>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:958>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_24 = V_1;
 		NullCheck(L_24);
 		TrumpManager_t92E234FC1D9CBE267ED9783B7061AB79CAC6A4CF* L_25 = L_24->____trumpMgr;
@@ -18384,12 +18390,12 @@ IL_0085:
 		Nullable_1_tB03AEE708613D24091BEC5B640EB7F3E57371BBB L_28;
 		L_28 = TrumpManager_GetVisibleTrump_m001FBDE4CB6B429C66D9F565A9AEF9F5FEF0B79B(L_25, L_27, NULL);
 		V_4 = L_28;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:958>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:959>
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:960>
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:961>
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:962>
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:963>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:964>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:965>
 		AIPlayer_t9A328DB6CFB290A400E938628DC5D8FF0CABC4D0* L_29 = V_2;
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_30 = V_1;
 		NullCheck(L_30);
@@ -18419,7 +18425,7 @@ IL_0085:
 		Card_t0A9DF635E00AE171E2A4DFD4402933CE663B89C8* L_44;
 		L_44 = AIPlayer_DecideCardToPlay_m79F4E9EA1F12231F8B62A66758147D6C177C28A3(L_29, L_35, L_38, L_39, L_40, L_43, NULL);
 		V_5 = L_44;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:965>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:967>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_45 = V_1;
 		NullCheck(L_45);
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_46 = L_45->____trickMgr;
@@ -18455,7 +18461,7 @@ IL_00f6:
 IL_00f7:
 	{
 		V_6 = G_B14_0;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:966>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:968>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_50 = V_1;
 		NullCheck(L_50);
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_51 = L_50->____trickMgr;
@@ -18495,7 +18501,7 @@ IL_011e:
 	{
 		NullCheck(G_B17_1);
 		G_B17_1->___U3CcompletesTrickU3E5__2 = (bool)G_B17_0;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:967>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:969>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_58 = V_1;
 		NullCheck(L_58);
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_59 = L_58->____trickMgr;
@@ -18517,7 +18523,7 @@ IL_011e:
 		NullCheck(L_59);
 		bool L_69;
 		L_69 = TrickManager_PlayCard_m4F2153E23DB7F5EE0406753C9CAC06EA39A71919(L_59, L_61, L_62, L_68, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:969>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:971>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_70 = V_1;
 		NullCheck(L_70);
 		float L_71 = L_70->___cardTravelDuration;
@@ -18532,7 +18538,7 @@ IL_011e:
 IL_015e:
 	{
 		__this->___U3CU3E1__state = (-1);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:971>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:973>
 		bool L_73 = __this->___U3CcompletesTrickU3E5__2;
 		if (!L_73)
 		{
@@ -18540,7 +18546,7 @@ IL_015e:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:973>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:975>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_74 = V_1;
 		NullCheck(L_74);
 		float L_75 = L_74->___trickClearDelay;
@@ -18559,7 +18565,7 @@ IL_0187:
 
 IL_018e:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:976>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:978>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_77 = V_1;
 		NullCheck(L_77);
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_78 = L_77->____trickMgr;
@@ -18572,7 +18578,7 @@ IL_018e:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:977>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:979>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_80 = V_1;
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_81 = V_1;
 		NullCheck(L_81);
@@ -18586,9 +18592,9 @@ IL_018e:
 
 IL_01ac:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:941>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:942>
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:943>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:944>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:945>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_84 = V_1;
 		NullCheck(L_84);
 		int32_t L_85;
@@ -18623,12 +18629,12 @@ IL_01ac:
 
 IL_01cd:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:979>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:981>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_91 = V_1;
 		NullCheck(L_91);
 		L_91->____aiPlayRoutine = (Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B*)NULL;
 		Il2CppCodeGenWriteBarrier((void**)(&L_91->____aiPlayRoutine), (void*)(Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B*)NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:980>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:982>
 		return (bool)0;
 	}
 }
@@ -18718,7 +18724,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool U3CDelayedAdvancePlayTurnU3Ed__122_MoveN
 IL_0017:
 	{
 		__this->___U3CU3E1__state = (-1);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:275>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:277>
 		float L_4 = __this->___delay;
 		WaitForSeconds_tF179DF251655B8DF044952E70A60DF4B358A3DD3* L_5 = (WaitForSeconds_tF179DF251655B8DF044952E70A60DF4B358A3DD3*)il2cpp_codegen_object_new(WaitForSeconds_tF179DF251655B8DF044952E70A60DF4B358A3DD3_il2cpp_TypeInfo_var);
 		WaitForSeconds__ctor_m579F95BADEDBAB4B3A7E302C6EE3995926EF2EFC(L_5, L_4, NULL);
@@ -18731,7 +18737,7 @@ IL_0017:
 IL_0038:
 	{
 		__this->___U3CU3E1__state = (-1);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:276>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:278>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_6 = V_1;
 		NullCheck(L_6);
 		TrickManager_tF8EDA1EA4914A60C958800759910D496AFDA8F2C* L_7 = L_6->____trickMgr;
@@ -18744,7 +18750,7 @@ IL_0038:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:277>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:279>
 		GameManager_tEBE4EC2B8E67E144E8432EE0CEEC0AF2FA90227A* L_9 = V_1;
 		NullCheck(L_9);
 		GameManager_AdvancePlayTurn_m3E4E37D4DAA63EF84413383252A1D2FF057B618D(L_9, NULL);
@@ -18752,7 +18758,7 @@ IL_0038:
 
 IL_0052:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:278>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/Game/GameManager.cs:280>
 		return (bool)0;
 	}
 }
@@ -26595,7 +26601,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* G_B2_0 = NULL;
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* G_B1_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:46>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:48>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_0 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____tableFeltSprite;
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_1 = L_0;
@@ -26633,7 +26639,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* G_B2_0 = NULL;
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* G_B1_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:47>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:49>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_0 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____boardSprite;
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_1 = L_0;
@@ -26671,7 +26677,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* G_B2_0 = NULL;
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* G_B1_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:48>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:50>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_0 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____cardFrontSprite;
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_1 = L_0;
@@ -26709,7 +26715,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* G_B2_0 = NULL;
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* G_B1_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:49>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:51>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_0 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____cardBackSprite;
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_1 = L_0;
@@ -26751,7 +26757,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* G_B3_0 = NULL;
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* G_B2_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:50>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:52>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_0 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____redCardBackSprite;
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_1 = L_0;
@@ -26806,7 +26812,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* G_B2_0 = NULL;
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* G_B1_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:51>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:53>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_0 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____roundedPanelSprite;
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_1 = L_0;
@@ -26846,7 +26852,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* G_B2_0 = NULL;
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* G_B1_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:52>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:54>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_0 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____roundedCardSlotSprite;
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_1 = L_0;
@@ -26890,7 +26896,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* G_B2_0 = NULL;
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* G_B1_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:53>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:55>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_0 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____pillBadgeSprite;
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_1 = L_0;
@@ -26932,7 +26938,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* G_B2_0 = NULL;
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* G_B1_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:54>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:56>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_0 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____circleAvatarSprite;
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_1 = L_0;
@@ -26972,7 +26978,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* G_B2_0 = NULL;
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* G_B1_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:57>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:59>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_0 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____vectorAvatarSprite;
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_1 = L_0;
@@ -27012,7 +27018,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* G_B2_0 = NULL;
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* G_B1_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:60>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:62>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_0 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____trumpBgSprite;
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_1 = L_0;
@@ -27039,6 +27045,82 @@ IL_0019:
 	}
 }
 // Method Definition Index: 65422
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* CardVisualTheme_get_PopupBG_mF69D06BCD17F1FBE74417F4F9A206326D6D02133 (const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* G_B2_0 = NULL;
+	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* G_B1_0 = NULL;
+	{
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:65>
+		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
+		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_0 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____popupBgSprite;
+		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_1 = L_0;
+		if (L_1)
+		{
+			G_B2_0 = L_1;
+			goto IL_0014;
+		}
+		G_B1_0 = L_1;
+	}
+	{
+		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
+		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_2;
+		L_2 = CardVisualTheme_LoadPopupBgSprite_m8FDD0615B70567DE204A62C1EE703DE02A9E86A9(NULL);
+		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_3 = L_2;
+		((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____popupBgSprite = L_3;
+		Il2CppCodeGenWriteBarrier((void**)(&((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____popupBgSprite), (void*)L_3);
+		G_B2_0 = L_3;
+	}
+
+IL_0014:
+	{
+		return G_B2_0;
+	}
+}
+// Method Definition Index: 65423
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* CardVisualTheme_get_DealerCoin_m6F6E920A6609D24ED8F4C942C01DCDB62722555F (const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
+		s_Il2CppMethodInitialized = true;
+	}
+	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* G_B2_0 = NULL;
+	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* G_B1_0 = NULL;
+	{
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:68>
+		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
+		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_0 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____dealerCoinSprite;
+		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_1 = L_0;
+		if (L_1)
+		{
+			G_B2_0 = L_1;
+			goto IL_0014;
+		}
+		G_B1_0 = L_1;
+	}
+	{
+		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
+		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_2;
+		L_2 = CardVisualTheme_LoadDealerCoinSprite_m83B017413855E56FF2D8B188842DA67BABC2D9F5(NULL);
+		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_3 = L_2;
+		((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____dealerCoinSprite = L_3;
+		Il2CppCodeGenWriteBarrier((void**)(&((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____dealerCoinSprite), (void*)L_3);
+		G_B2_0 = L_3;
+	}
+
+IL_0014:
+	{
+		return G_B2_0;
+	}
+}
+// Method Definition Index: 65424
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Font_tC95270EA3198038970422D78B74A7F2E218A96B6* CardVisualTheme_GetFont_m92777BA5F6AE0098710ECC759D467D9363A4A23E (const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -27052,7 +27134,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Font_tC95270EA3198038970422D78B74A7F2E218A96B
 		s_Il2CppMethodInitialized = true;
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:64>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:72>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		Font_tC95270EA3198038970422D78B74A7F2E218A96B6* L_0 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____defaultFont;
 		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
@@ -27064,7 +27146,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Font_tC95270EA3198038970422D78B74A7F2E218A96B
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:64>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:72>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		Font_tC95270EA3198038970422D78B74A7F2E218A96B6* L_2 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____defaultFont;
 		return L_2;
@@ -27072,13 +27154,13 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Font_tC95270EA3198038970422D78B74A7F2E218A96B
 
 IL_0013:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:65>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:73>
 		Font_tC95270EA3198038970422D78B74A7F2E218A96B6* L_3;
 		L_3 = Resources_GetBuiltinResource_TisFont_tC95270EA3198038970422D78B74A7F2E218A96B6_m3B4545F25A016D36D9AE93723A3449804A127D73(_stringLiteral91EABC919E48AAD7331BDBE21DBB8D4C623A4A25, Resources_GetBuiltinResource_TisFont_tC95270EA3198038970422D78B74A7F2E218A96B6_m3B4545F25A016D36D9AE93723A3449804A127D73_RuntimeMethod_var);
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____defaultFont = L_3;
 		Il2CppCodeGenWriteBarrier((void**)(&((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____defaultFont), (void*)L_3);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:66>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:74>
 		Font_tC95270EA3198038970422D78B74A7F2E218A96B6* L_4 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____defaultFont;
 		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
 		bool L_5;
@@ -27089,7 +27171,7 @@ IL_0013:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:67>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:75>
 		Font_tC95270EA3198038970422D78B74A7F2E218A96B6* L_6;
 		L_6 = Resources_GetBuiltinResource_TisFont_tC95270EA3198038970422D78B74A7F2E218A96B6_m3B4545F25A016D36D9AE93723A3449804A127D73(_stringLiteral1C4303CE90A80E03466A934F3A49CF1FBA75C709, Resources_GetBuiltinResource_TisFont_tC95270EA3198038970422D78B74A7F2E218A96B6_m3B4545F25A016D36D9AE93723A3449804A127D73_RuntimeMethod_var);
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
@@ -27099,13 +27181,13 @@ IL_0013:
 
 IL_003e:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:68>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:76>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		Font_tC95270EA3198038970422D78B74A7F2E218A96B6* L_7 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____defaultFont;
 		return L_7;
 	}
 }
-// Method Definition Index: 65423
+// Method Definition Index: 65425
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Color_tD001788D726C3A7F1379BEED0260B9591F440C1F CardVisualTheme_GetSuitColor_m5F67A85313369400CD5DF8ED1B01C72606491A71 (int32_t ___0_suit, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -27115,7 +27197,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Color_tD001788D726C3A7F1379BEED0260B9591F440C
 		s_Il2CppMethodInitialized = true;
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:73>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:81>
 		int32_t L_0 = ___0_suit;
 		if ((((int32_t)L_0) == ((int32_t)2)))
 		{
@@ -27142,7 +27224,7 @@ IL_000e:
 		return L_3;
 	}
 }
-// Method Definition Index: 65424
+// Method Definition Index: 65426
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* CardVisualTheme_GetSuitSymbol_m975A86F656D75E6E4F095588C21DD43780CFA99F (int32_t ___0_suit, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -27157,14 +27239,14 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* CardVisualTheme_GetSuitSymbol_m975A
 	}
 	String_t* V_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:78>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:79>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:80>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:81>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:82>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:83>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:84>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:85>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:86>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:87>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:88>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:89>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:90>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:91>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:92>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:93>
 		int32_t L_0 = ___0_suit;
 		switch (L_0)
 		{
@@ -27192,35 +27274,35 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* CardVisualTheme_GetSuitSymbol_m975A
 
 IL_0018:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:80>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:88>
 		V_0 = _stringLiteralCB0B38E085DB4D82F1F8E2D5FFA87679899F8E27;
 		goto IL_003e;
 	}
 
 IL_0020:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:81>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:89>
 		V_0 = _stringLiteral9353229FEAE90F69FD00B32309FF7495D98F2ACE;
 		goto IL_003e;
 	}
 
 IL_0028:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:82>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:90>
 		V_0 = _stringLiteralB9C8705A23DE64A7C23E91CAFA403A15FCF82D21;
 		goto IL_003e;
 	}
 
 IL_0030:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:83>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:91>
 		V_0 = _stringLiteral463DF0D1B4A10955AED259E5B64FCE911CFD2144;
 		goto IL_003e;
 	}
 
 IL_0038:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:84>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:92>
 		V_0 = _stringLiteral738F291E53E97C08DAE378C71EF70A60E31AE900;
 	}
 
@@ -27230,7 +27312,7 @@ IL_003e:
 		return L_1;
 	}
 }
-// Method Definition Index: 65425
+// Method Definition Index: 65427
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* CardVisualTheme_GetSuitName_m8F7E75B31A3A3E4C14520B1981D3ACEA74EB484F (int32_t ___0_suit, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -27245,14 +27327,14 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* CardVisualTheme_GetSuitName_m8F7E75
 	}
 	String_t* V_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:90>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:91>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:92>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:93>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:94>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:95>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:96>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:97>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:98>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:99>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:100>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:101>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:102>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:103>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:104>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:105>
 		int32_t L_0 = ___0_suit;
 		switch (L_0)
 		{
@@ -27280,35 +27362,35 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* CardVisualTheme_GetSuitName_m8F7E75
 
 IL_0018:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:92>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:100>
 		V_0 = _stringLiteralAFED36ACC0553B4C248473FE0F0D2CB5C55B1242;
 		goto IL_003e;
 	}
 
 IL_0020:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:93>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:101>
 		V_0 = _stringLiteral682FEDED66F647D937011C0CE117C16BE01ADAE4;
 		goto IL_003e;
 	}
 
 IL_0028:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:94>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:102>
 		V_0 = _stringLiteralBE644828128F864F09A606C586AB717966B82591;
 		goto IL_003e;
 	}
 
 IL_0030:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:95>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:103>
 		V_0 = _stringLiteral750E05FF6A97E7FAC48B6D7FCDD7D218DE488D25;
 		goto IL_003e;
 	}
 
 IL_0038:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:96>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:104>
 		V_0 = _stringLiteral5D54E959817188DBAD9E65FA3DB55F06B70F5E3C;
 	}
 
@@ -27318,7 +27400,7 @@ IL_003e:
 		return L_1;
 	}
 }
-// Method Definition Index: 65426
+// Method Definition Index: 65428
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* CardVisualTheme_GetRankString_m3861C3C7AC87E00B21C85A5B944939726FB0DFD1 (int32_t ___0_rank, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -27337,18 +27419,18 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* CardVisualTheme_GetRankString_m3861
 	}
 	String_t* V_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:102>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:103>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:104>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:105>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:106>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:107>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:108>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:109>
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:110>
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:111>
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:112>
 		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:113>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:114>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:115>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:116>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:117>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:118>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:119>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:120>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:121>
 		int32_t L_0 = ___0_rank;
 		switch (((int32_t)il2cpp_codegen_subtract((int32_t)L_0, 7)))
 		{
@@ -27392,63 +27474,63 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR String_t* CardVisualTheme_GetRankString_m3861
 
 IL_002a:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:104>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:112>
 		V_0 = _stringLiteral7402F76B2D6078A455F77607AF6E7350B6DE019E;
 		goto IL_0078;
 	}
 
 IL_0032:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:105>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:113>
 		V_0 = _stringLiteralB16CF3324CA15FF0851B0F99DD86AC638C3E0CAE;
 		goto IL_0078;
 	}
 
 IL_003a:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:106>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:114>
 		V_0 = _stringLiteral25D74BC981E6316A5E3CAEEA0BAF3C438F5C94DA;
 		goto IL_0078;
 	}
 
 IL_0042:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:107>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:115>
 		V_0 = _stringLiteralAA4DA1A93F07E2E4B09F8D5E2C45905E26A45E79;
 		goto IL_0078;
 	}
 
 IL_004a:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:108>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:116>
 		V_0 = _stringLiteral0EBD646B60E1C3FCE0203770591ED3C3D63537DC;
 		goto IL_0078;
 	}
 
 IL_0052:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:109>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:117>
 		V_0 = _stringLiteral49A7EA21ECB328D154FA2262BB41626D795F4D90;
 		goto IL_0078;
 	}
 
 IL_005a:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:110>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:118>
 		V_0 = _stringLiteral3D714DD3E8E77A697EF557E85ED2B014A96328C5;
 		goto IL_0078;
 	}
 
 IL_0062:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:111>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:119>
 		V_0 = _stringLiteralEF420ABFDDBDA7B9EE665D85EF62E4A437554003;
 		goto IL_0078;
 	}
 
 IL_006a:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:112>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:120>
 		Il2CppFakeBox<int32_t> L_1(Rank_t87458AEE5C31A0183496B301CE8B385BB6D2E2A3_il2cpp_TypeInfo_var, (&___0_rank));
 		String_t* L_2;
 		L_2 = Enum_ToString_m946B0B83C4470457D0FF555D862022C72BB55741((Enum_t2A1A94B24E3B776EEF4E5E485E290BB9D4D072E2*)(&L_1), NULL);
@@ -27461,19 +27543,19 @@ IL_0078:
 		return L_3;
 	}
 }
-// Method Definition Index: 65427
+// Method Definition Index: 65429
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t CardVisualTheme_GetPoints_mE6A035E3B0CFD97F9D8B9A8451ECFD3D513E77E4 (int32_t ___0_rank, const RuntimeMethod* method) 
 {
 	int32_t V_0 = 0;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:118>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:119>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:120>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:121>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:122>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:123>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:124>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:125>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:126>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:127>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:128>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:129>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:130>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:131>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:132>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:133>
 		int32_t L_0 = ___0_rank;
 		switch (((int32_t)il2cpp_codegen_subtract((int32_t)L_0, ((int32_t)9))))
 		{
@@ -27509,35 +27591,35 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t CardVisualTheme_GetPoints_mE6A035E3B0
 
 IL_0023:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:120>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:128>
 		V_0 = 3;
 		goto IL_0035;
 	}
 
 IL_0027:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:121>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:129>
 		V_0 = 2;
 		goto IL_0035;
 	}
 
 IL_002b:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:122>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:130>
 		V_0 = 1;
 		goto IL_0035;
 	}
 
 IL_002f:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:123>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:131>
 		V_0 = 1;
 		goto IL_0035;
 	}
 
 IL_0033:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:124>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:132>
 		V_0 = 0;
 	}
 
@@ -27547,7 +27629,7 @@ IL_0035:
 		return L_1;
 	}
 }
-// Method Definition Index: 65428
+// Method Definition Index: 65430
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Color_tD001788D726C3A7F1379BEED0260B9591F440C1F CardVisualTheme_GetPointsBadgeColor_mFA6B37A135AA60C949FD18A14956284FE11D01B7 (int32_t ___0_pts, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -27559,13 +27641,13 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Color_tD001788D726C3A7F1379BEED0260B9591F440C
 	Color_tD001788D726C3A7F1379BEED0260B9591F440C1F V_0;
 	memset((&V_0), 0, sizeof(V_0));
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:130>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:131>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:132>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:133>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:134>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:135>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:136>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:138>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:139>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:140>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:141>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:142>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:143>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:144>
 		int32_t L_0 = ___0_pts;
 		switch (((int32_t)il2cpp_codegen_subtract(L_0, 1)))
 		{
@@ -27589,7 +27671,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Color_tD001788D726C3A7F1379BEED0260B9591F440C
 
 IL_0016:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:132>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:140>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		Color_tD001788D726C3A7F1379BEED0260B9591F440C1F L_1 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->___ColorJackPts;
 		V_0 = L_1;
@@ -27598,7 +27680,7 @@ IL_0016:
 
 IL_001e:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:133>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:141>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		Color_tD001788D726C3A7F1379BEED0260B9591F440C1F L_2 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->___ColorNinePts;
 		V_0 = L_2;
@@ -27607,7 +27689,7 @@ IL_001e:
 
 IL_0026:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:134>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:142>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		Color_tD001788D726C3A7F1379BEED0260B9591F440C1F L_3 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->___ColorTenAcePts;
 		V_0 = L_3;
@@ -27616,7 +27698,7 @@ IL_0026:
 
 IL_002e:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:135>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:143>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		Color_tD001788D726C3A7F1379BEED0260B9591F440C1F L_4 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->___ColorZeroPts;
 		V_0 = L_4;
@@ -27628,7 +27710,7 @@ IL_0034:
 		return L_5;
 	}
 }
-// Method Definition Index: 65429
+// Method Definition Index: 65431
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* CardVisualTheme_GetSuitSprite_m5A7268059A17B0509DCD24856B30FC9998E8031E (int32_t ___0_suit, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -27641,10 +27723,10 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 	int32_t V_0 = 0;
 	int32_t V_1 = 0;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:141>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:149>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		CardVisualTheme_EnsureSuitSprites_mF3DD67E87B9CFE7577D7733233385B85D9CC2551(NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:142>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:150>
 		SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B* L_0 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____suitSprites;
 		if (!L_0)
 		{
@@ -27661,14 +27743,14 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:144>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:145>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:146>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:147>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:148>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:149>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:150>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:151>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:152>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:153>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:154>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:155>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:156>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:157>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:158>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:159>
 		int32_t L_2 = ___0_suit;
 		switch (L_2)
 		{
@@ -27696,35 +27778,35 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 
 IL_002e:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:146>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:154>
 		V_1 = 0;
 		goto IL_0040;
 	}
 
 IL_0032:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:147>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:155>
 		V_1 = 1;
 		goto IL_0040;
 	}
 
 IL_0036:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:148>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:156>
 		V_1 = 2;
 		goto IL_0040;
 	}
 
 IL_003a:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:149>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:157>
 		V_1 = 3;
 		goto IL_0040;
 	}
 
 IL_003e:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:150>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:158>
 		V_1 = 0;
 	}
 
@@ -27732,7 +27814,7 @@ IL_0040:
 	{
 		int32_t L_3 = V_1;
 		V_0 = L_3;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:152>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:160>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B* L_4 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____suitSprites;
 		int32_t L_5 = V_0;
@@ -27748,7 +27830,7 @@ IL_0040:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:152>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:160>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B* L_9 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____suitSprites;
 		int32_t L_10 = V_0;
@@ -27760,11 +27842,11 @@ IL_0040:
 
 IL_0059:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:154>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:162>
 		return (Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99*)NULL;
 	}
 }
-// Method Definition Index: 65430
+// Method Definition Index: 65432
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* CardVisualTheme_LoadOrGenerateFelt_m463657AA3C350B864B8AE405F71685CE5A2050AF (const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -27783,11 +27865,11 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 	int32_t V_3 = 0;
 	float V_4 = 0.0f;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:161>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:169>
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_0;
 		L_0 = Resources_Load_TisSprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99_mD30BD3A93DAF8B841F2BE37B3780DE390A04085A(_stringLiteralCA931761E86DE69CE6890FEC63C6ABD3E4BB2436, Resources_Load_TisSprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99_mD30BD3A93DAF8B841F2BE37B3780DE390A04085A_RuntimeMethod_var);
 		V_0 = L_0;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:162>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:170>
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_1 = V_0;
 		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
 		bool L_2;
@@ -27798,18 +27880,18 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:162>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:170>
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_3 = V_0;
 		return L_3;
 	}
 
 IL_0016:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:164>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:172>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_4;
 		L_4 = Resources_Load_TisTexture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4_mBEC87DD291ED9662B46356519E0723C0ABB12877(_stringLiteralCA931761E86DE69CE6890FEC63C6ABD3E4BB2436, Resources_Load_TisTexture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4_mBEC87DD291ED9662B46356519E0723C0ABB12877_RuntimeMethod_var);
 		V_1 = L_4;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:165>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:173>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_5 = V_1;
 		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
 		bool L_6;
@@ -27820,7 +27902,7 @@ IL_0016:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:166>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:174>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_7 = V_1;
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_8 = V_1;
 		NullCheck(L_8);
@@ -27843,31 +27925,31 @@ IL_0016:
 
 IL_005d:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:169>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:177>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_15 = (Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4*)il2cpp_codegen_object_new(Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4_il2cpp_TypeInfo_var);
 		Texture2D__ctor_m3BA82E87442B7F69E118477069AE11101B9DF796(L_15, ((int32_t)64), ((int32_t)64), NULL);
 		V_1 = L_15;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:170>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:178>
 		V_2 = 0;
 		goto IL_00c3;
 	}
 
 IL_006b:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:172>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:180>
 		V_3 = 0;
 		goto IL_00ba;
 	}
 
 IL_006f:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:174>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:182>
 		int32_t L_16 = V_3;
 		int32_t L_17 = V_2;
 		float L_18;
 		L_18 = Mathf_PerlinNoise_mAB0E53C29FE95469CF303364910AD0D8662A9A6A(((float)il2cpp_codegen_multiply(((float)L_16), (0.100000001f))), ((float)il2cpp_codegen_multiply(((float)L_17), (0.100000001f))), NULL);
 		V_4 = ((float)il2cpp_codegen_multiply(L_18, (0.0500000007f)));
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:175>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:183>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_19 = V_1;
 		int32_t L_20 = V_3;
 		int32_t L_21 = V_2;
@@ -27879,14 +27961,14 @@ IL_006f:
 		Color__ctor_m3786F0D6E510D9CFA544523A955870BD2A514C8C_inline((&L_25), ((float)il2cpp_codegen_add((0.0399999991f), L_22)), ((float)il2cpp_codegen_add((0.219999999f), L_23)), ((float)il2cpp_codegen_add((0.119999997f), L_24)), (1.0f), NULL);
 		NullCheck(L_19);
 		Texture2D_SetPixel_m2CCFC5F729135D59DC4A697C2605A3FC5C8574DB(L_19, L_20, L_21, L_25, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:172>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:180>
 		int32_t L_26 = V_3;
 		V_3 = ((int32_t)il2cpp_codegen_add(L_26, 1));
 	}
 
 IL_00ba:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:172>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:180>
 		int32_t L_27 = V_3;
 		if ((((int32_t)L_27) < ((int32_t)((int32_t)64))))
 		{
@@ -27894,14 +27976,14 @@ IL_00ba:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:170>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:178>
 		int32_t L_28 = V_2;
 		V_2 = ((int32_t)il2cpp_codegen_add(L_28, 1));
 	}
 
 IL_00c3:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:170>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:178>
 		int32_t L_29 = V_2;
 		if ((((int32_t)L_29) < ((int32_t)((int32_t)64))))
 		{
@@ -27909,11 +27991,11 @@ IL_00c3:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:178>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:186>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_30 = V_1;
 		NullCheck(L_30);
 		Texture2D_Apply_mA014182C9EE0BBF6EEE3B286854F29E50EB972DC(L_30, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:179>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:187>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_31 = V_1;
 		Rect_tA04E0F8A1830E767F40FB27ECD8D309303571F0D L_32;
 		memset((&L_32), 0, sizeof(L_32));
@@ -27926,7 +28008,7 @@ IL_00c3:
 		return L_34;
 	}
 }
-// Method Definition Index: 65431
+// Method Definition Index: 65433
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* CardVisualTheme_LoadOrGenerateCardFront_m061A8112566BCA622D137EC0529F6901AAB81F8C (const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -27947,7 +28029,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 	Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* G_B6_0 = NULL;
 	Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* G_B5_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:186>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:194>
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_0;
 		L_0 = Resources_Load_TisSprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99_mD30BD3A93DAF8B841F2BE37B3780DE390A04085A(_stringLiteral19D34ABC847A37FAF86F7806E980B184D58393F7, Resources_Load_TisSprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99_mD30BD3A93DAF8B841F2BE37B3780DE390A04085A_RuntimeMethod_var);
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_1 = L_0;
@@ -27967,7 +28049,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 IL_0018:
 	{
 		V_0 = G_B2_0;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:187>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:195>
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_3 = V_0;
 		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
 		bool L_4;
@@ -27978,14 +28060,14 @@ IL_0018:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:187>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:195>
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_5 = V_0;
 		return L_5;
 	}
 
 IL_0024:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:189>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:197>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_6;
 		L_6 = Resources_Load_TisTexture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4_mBEC87DD291ED9662B46356519E0723C0ABB12877(_stringLiteral19D34ABC847A37FAF86F7806E980B184D58393F7, Resources_Load_TisTexture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4_mBEC87DD291ED9662B46356519E0723C0ABB12877_RuntimeMethod_var);
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_7 = L_6;
@@ -28005,7 +28087,7 @@ IL_0024:
 IL_003c:
 	{
 		V_1 = G_B6_0;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:190>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:198>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_9 = V_1;
 		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
 		bool L_10;
@@ -28016,7 +28098,7 @@ IL_003c:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:191>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:199>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_11 = V_1;
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_12 = V_1;
 		NullCheck(L_12);
@@ -28039,7 +28121,7 @@ IL_003c:
 
 IL_0079:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:193>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:201>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		Color_tD001788D726C3A7F1379BEED0260B9591F440C1F L_19 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->___ColorCardPaper;
 		Color_tD001788D726C3A7F1379BEED0260B9591F440C1F L_20 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->___ColorBorderGold;
@@ -28048,7 +28130,7 @@ IL_0079:
 		return L_21;
 	}
 }
-// Method Definition Index: 65432
+// Method Definition Index: 65434
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* CardVisualTheme_LoadOrGenerateCardBack_m61D63A2EBF543A77CB735943A1E11C43D64DFA24 (const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -28069,7 +28151,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 	Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* G_B6_0 = NULL;
 	Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* G_B5_0 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:200>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:208>
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_0;
 		L_0 = Resources_Load_TisSprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99_mD30BD3A93DAF8B841F2BE37B3780DE390A04085A(_stringLiteralBB034444CC585CF3206A24ECC16C85BF21848BB5, Resources_Load_TisSprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99_mD30BD3A93DAF8B841F2BE37B3780DE390A04085A_RuntimeMethod_var);
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_1 = L_0;
@@ -28089,7 +28171,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 IL_0018:
 	{
 		V_0 = G_B2_0;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:201>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:209>
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_3 = V_0;
 		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
 		bool L_4;
@@ -28100,14 +28182,14 @@ IL_0018:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:201>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:209>
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_5 = V_0;
 		return L_5;
 	}
 
 IL_0024:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:203>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:211>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_6;
 		L_6 = Resources_Load_TisTexture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4_mBEC87DD291ED9662B46356519E0723C0ABB12877(_stringLiteralBB034444CC585CF3206A24ECC16C85BF21848BB5, Resources_Load_TisTexture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4_mBEC87DD291ED9662B46356519E0723C0ABB12877_RuntimeMethod_var);
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_7 = L_6;
@@ -28127,7 +28209,7 @@ IL_0024:
 IL_003c:
 	{
 		V_1 = G_B6_0;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:204>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:212>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_9 = V_1;
 		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
 		bool L_10;
@@ -28138,7 +28220,7 @@ IL_003c:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:205>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:213>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_11 = V_1;
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_12 = V_1;
 		NullCheck(L_12);
@@ -28161,7 +28243,7 @@ IL_003c:
 
 IL_0079:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:207>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:215>
 		Color_tD001788D726C3A7F1379BEED0260B9591F440C1F L_19;
 		memset((&L_19), 0, sizeof(L_19));
 		Color__ctor_mCD6889CDE39F18704CD6EA8E2EFBFA48BA3E13B0_inline((&L_19), (0.100000001f), (0.150000006f), (0.280000001f), NULL);
@@ -28172,7 +28254,7 @@ IL_0079:
 		return L_21;
 	}
 }
-// Method Definition Index: 65433
+// Method Definition Index: 65435
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* CardVisualTheme_GetAvatarForSeat_mC1AA015113B5D0D6028A691E23CDDF65612E79CA (int32_t ___0_seat, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -28192,7 +28274,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* V_1 = NULL;
 	String_t* V_2 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:218>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:226>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		Dictionary_2_t8CC1ED895E243EB5091FCFFAAFE454B872D07591* L_0 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____seatAvatars;
 		int32_t L_1 = ___0_seat;
@@ -28215,21 +28297,21 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:219>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:227>
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_5 = V_0;
 		return L_5;
 	}
 
 IL_001a:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:221>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:222>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:223>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:224>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:225>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:226>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:227>
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:228>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:229>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:230>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:231>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:232>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:233>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:234>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:235>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:236>
 		int32_t L_6 = ___0_seat;
 		switch (L_6)
 		{
@@ -28257,58 +28339,58 @@ IL_001a:
 
 IL_0032:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:223>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:231>
 		V_2 = _stringLiteralBFA870D28A6367837477A42155124BABB3D12CD5;
 		goto IL_0058;
 	}
 
 IL_003a:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:224>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:232>
 		V_2 = _stringLiteralDA392C644C803C64C4AB68B38DCC0BEE80CF7F7A;
 		goto IL_0058;
 	}
 
 IL_0042:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:225>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:233>
 		V_2 = _stringLiteralED0BC13D68B06287760BCAC2A232B984C428587B;
 		goto IL_0058;
 	}
 
 IL_004a:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:226>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:234>
 		V_2 = _stringLiteralEB846926D5C519A63A6DE0ECC01FA33B1874197C;
 		goto IL_0058;
 	}
 
 IL_0052:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:227>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:235>
 		V_2 = _stringLiteralBFA870D28A6367837477A42155124BABB3D12CD5;
 	}
 
 IL_0058:
 	{
 		String_t* L_7 = V_2;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:230>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:238>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_8;
 		L_8 = CardVisualTheme_LoadAvatarSprite_m23926EED8A657E5128135B7FDA66435F7FAD1A7A(L_7, NULL);
 		V_1 = L_8;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:231>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:239>
 		Dictionary_2_t8CC1ED895E243EB5091FCFFAAFE454B872D07591* L_9 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____seatAvatars;
 		int32_t L_10 = ___0_seat;
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_11 = V_1;
 		NullCheck(L_9);
 		Dictionary_2_set_Item_m74A87AB69F461BD57EBCCA3F18C2085589A6CD92(L_9, L_10, L_11, Dictionary_2_set_Item_m74A87AB69F461BD57EBCCA3F18C2085589A6CD92_RuntimeMethod_var);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:232>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:240>
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_12 = V_1;
 		return L_12;
 	}
 }
-// Method Definition Index: 65434
+// Method Definition Index: 65436
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* CardVisualTheme_LoadAvatarSprite_m23926EED8A657E5128135B7FDA66435F7FAD1A7A (String_t* ___0_name, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -28325,12 +28407,12 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 	SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B* V_1 = NULL;
 	Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* V_2 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:238>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:246>
 		String_t* L_0 = ___0_name;
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_1;
 		L_1 = Resources_Load_TisSprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99_mD30BD3A93DAF8B841F2BE37B3780DE390A04085A(L_0, Resources_Load_TisSprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99_mD30BD3A93DAF8B841F2BE37B3780DE390A04085A_RuntimeMethod_var);
 		V_0 = L_1;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:239>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:247>
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_2 = V_0;
 		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
 		bool L_3;
@@ -28341,19 +28423,19 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:239>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:247>
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_4 = V_0;
 		return L_4;
 	}
 
 IL_0012:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:242>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:250>
 		String_t* L_5 = ___0_name;
 		SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B* L_6;
 		L_6 = Resources_LoadAll_TisSprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99_m5AB56F241D4637483AB93C9A1AADA0A304C8607E(L_5, Resources_LoadAll_TisSprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99_m5AB56F241D4637483AB93C9A1AADA0A304C8607E_RuntimeMethod_var);
 		V_1 = L_6;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:243>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:251>
 		SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B* L_7 = V_1;
 		if (!L_7)
 		{
@@ -28382,7 +28464,7 @@ IL_0012:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:244>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:252>
 		SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B* L_13 = V_1;
 		NullCheck(L_13);
 		int32_t L_14 = 0;
@@ -28392,12 +28474,12 @@ IL_0012:
 
 IL_002f:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:247>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:255>
 		String_t* L_16 = ___0_name;
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_17;
 		L_17 = Resources_Load_TisTexture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4_mBEC87DD291ED9662B46356519E0723C0ABB12877(L_16, Resources_Load_TisTexture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4_mBEC87DD291ED9662B46356519E0723C0ABB12877_RuntimeMethod_var);
 		V_2 = L_17;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:248>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:256>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_18 = V_2;
 		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
 		bool L_19;
@@ -28408,7 +28490,7 @@ IL_002f:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:249>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:257>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_20 = V_2;
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_21 = V_2;
 		NullCheck(L_21);
@@ -28431,14 +28513,14 @@ IL_002f:
 
 IL_0072:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:252>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:260>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_28;
 		L_28 = CardVisualTheme_get_VectorAvatar_mEB44BD3796D14CDC7A28490A38387D839B328521(NULL);
 		return L_28;
 	}
 }
-// Method Definition Index: 65435
+// Method Definition Index: 65437
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* CardVisualTheme_LoadVectorAvatar_mFE233B0C637074AC6CFC9229A8F9BF3E3781731D (const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -28454,11 +28536,11 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* V_0 = NULL;
 	Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* V_1 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:258>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:266>
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_0;
 		L_0 = Resources_Load_TisSprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99_mD30BD3A93DAF8B841F2BE37B3780DE390A04085A(_stringLiteral1FC5A67796EBD4778DAC693A1467D3D1DB91C60C, Resources_Load_TisSprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99_mD30BD3A93DAF8B841F2BE37B3780DE390A04085A_RuntimeMethod_var);
 		V_0 = L_0;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:259>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:267>
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_1 = V_0;
 		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
 		bool L_2;
@@ -28469,18 +28551,18 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:259>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:267>
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_3 = V_0;
 		return L_3;
 	}
 
 IL_0016:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:262>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:270>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_4;
 		L_4 = Resources_Load_TisTexture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4_mBEC87DD291ED9662B46356519E0723C0ABB12877(_stringLiteral1FC5A67796EBD4778DAC693A1467D3D1DB91C60C, Resources_Load_TisTexture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4_mBEC87DD291ED9662B46356519E0723C0ABB12877_RuntimeMethod_var);
 		V_1 = L_4;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:263>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:271>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_5 = V_1;
 		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
 		bool L_6;
@@ -28491,7 +28573,7 @@ IL_0016:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:264>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:272>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_7 = V_1;
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_8 = V_1;
 		NullCheck(L_8);
@@ -28514,14 +28596,14 @@ IL_0016:
 
 IL_005d:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:267>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:275>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_15;
 		L_15 = CardVisualTheme_get_CircleAvatar_mB8CFB15E30E1DFD31058DCE8CA91B7BB6CD7B9B4(NULL);
 		return L_15;
 	}
 }
-// Method Definition Index: 65436
+// Method Definition Index: 65438
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* CardVisualTheme_LoadBoardSprite_m4201345826AB4C6F729538AC5FB9DE184FB0437F (const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -28537,11 +28619,11 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* V_0 = NULL;
 	Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* V_1 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:272>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:280>
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_0;
 		L_0 = Resources_Load_TisSprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99_mD30BD3A93DAF8B841F2BE37B3780DE390A04085A(_stringLiteral968F635FF33085D155B064FF14E5E5726D644EEF, Resources_Load_TisSprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99_mD30BD3A93DAF8B841F2BE37B3780DE390A04085A_RuntimeMethod_var);
 		V_0 = L_0;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:273>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:281>
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_1 = V_0;
 		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
 		bool L_2;
@@ -28552,18 +28634,18 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:273>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:281>
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_3 = V_0;
 		return L_3;
 	}
 
 IL_0016:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:274>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:282>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_4;
 		L_4 = Resources_Load_TisTexture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4_mBEC87DD291ED9662B46356519E0723C0ABB12877(_stringLiteral968F635FF33085D155B064FF14E5E5726D644EEF, Resources_Load_TisTexture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4_mBEC87DD291ED9662B46356519E0723C0ABB12877_RuntimeMethod_var);
 		V_1 = L_4;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:275>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:283>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_5 = V_1;
 		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
 		bool L_6;
@@ -28574,7 +28656,7 @@ IL_0016:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:276>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:284>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_7 = V_1;
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_8 = V_1;
 		NullCheck(L_8);
@@ -28597,14 +28679,274 @@ IL_0016:
 
 IL_005d:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:277>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:285>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_15;
 		L_15 = CardVisualTheme_get_TableFelt_mE16D538A9F910CDC8B8FEE02663E05D9DD3F96BB(NULL);
 		return L_15;
 	}
 }
-// Method Definition Index: 65437
+// Method Definition Index: 65439
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* CardVisualTheme_LoadPopupBgSprite_m8FDD0615B70567DE204A62C1EE703DE02A9E86A9 (const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Resources_LoadAll_TisSprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99_m5AB56F241D4637483AB93C9A1AADA0A304C8607E_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Resources_Load_TisSprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99_mD30BD3A93DAF8B841F2BE37B3780DE390A04085A_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Resources_Load_TisTexture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4_mBEC87DD291ED9662B46356519E0723C0ABB12877_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral05986F1D29B2765F37041E7C352817E9193D88ED);
+		s_Il2CppMethodInitialized = true;
+	}
+	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* V_0 = NULL;
+	SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B* V_1 = NULL;
+	Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* V_2 = NULL;
+	{
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:290>
+		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_0;
+		L_0 = Resources_Load_TisSprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99_mD30BD3A93DAF8B841F2BE37B3780DE390A04085A(_stringLiteral05986F1D29B2765F37041E7C352817E9193D88ED, Resources_Load_TisSprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99_mD30BD3A93DAF8B841F2BE37B3780DE390A04085A_RuntimeMethod_var);
+		V_0 = L_0;
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:291>
+		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_1 = V_0;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_2;
+		L_2 = Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602(L_1, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (!L_2)
+		{
+			goto IL_0016;
+		}
+	}
+	{
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:291>
+		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_3 = V_0;
+		return L_3;
+	}
+
+IL_0016:
+	{
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:293>
+		SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B* L_4;
+		L_4 = Resources_LoadAll_TisSprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99_m5AB56F241D4637483AB93C9A1AADA0A304C8607E(_stringLiteral05986F1D29B2765F37041E7C352817E9193D88ED, Resources_LoadAll_TisSprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99_m5AB56F241D4637483AB93C9A1AADA0A304C8607E_RuntimeMethod_var);
+		V_1 = L_4;
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:294>
+		SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B* L_5 = V_1;
+		if (!L_5)
+		{
+			goto IL_0037;
+		}
+	}
+	{
+		SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B* L_6 = V_1;
+		NullCheck(L_6);
+		if (!(((RuntimeArray*)L_6)->max_length))
+		{
+			goto IL_0037;
+		}
+	}
+	{
+		SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B* L_7 = V_1;
+		NullCheck(L_7);
+		int32_t L_8 = 0;
+		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_9 = (L_7)->GetAt(static_cast<il2cpp_array_size_t>(L_8));
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_10;
+		L_10 = Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602(L_9, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (!L_10)
+		{
+			goto IL_0037;
+		}
+	}
+	{
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:295>
+		SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B* L_11 = V_1;
+		NullCheck(L_11);
+		int32_t L_12 = 0;
+		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_13 = (L_11)->GetAt(static_cast<il2cpp_array_size_t>(L_12));
+		return L_13;
+	}
+
+IL_0037:
+	{
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:297>
+		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_14;
+		L_14 = Resources_Load_TisTexture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4_mBEC87DD291ED9662B46356519E0723C0ABB12877(_stringLiteral05986F1D29B2765F37041E7C352817E9193D88ED, Resources_Load_TisTexture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4_mBEC87DD291ED9662B46356519E0723C0ABB12877_RuntimeMethod_var);
+		V_2 = L_14;
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:298>
+		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_15 = V_2;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_16;
+		L_16 = Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602(L_15, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (!L_16)
+		{
+			goto IL_007e;
+		}
+	}
+	{
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:299>
+		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_17 = V_2;
+		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_18 = V_2;
+		NullCheck(L_18);
+		int32_t L_19;
+		L_19 = VirtualFuncInvoker0< int32_t >::Invoke(5, L_18);
+		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_20 = V_2;
+		NullCheck(L_20);
+		int32_t L_21;
+		L_21 = VirtualFuncInvoker0< int32_t >::Invoke(7, L_20);
+		Rect_tA04E0F8A1830E767F40FB27ECD8D309303571F0D L_22;
+		memset((&L_22), 0, sizeof(L_22));
+		Rect__ctor_m18C3033D135097BEE424AAA68D91C706D2647F23_inline((&L_22), (0.0f), (0.0f), ((float)L_19), ((float)L_21), NULL);
+		Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 L_23;
+		memset((&L_23), 0, sizeof(L_23));
+		Vector2__ctor_m9525B79969AFFE3254B303A40997A56DEEB6F548_inline((&L_23), (0.5f), (0.5f), NULL);
+		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_24;
+		L_24 = Sprite_Create_m827A9BDEC4566AB71966A40DB48A09BB064D81E7(L_17, L_22, L_23, NULL);
+		return L_24;
+	}
+
+IL_007e:
+	{
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:301>
+		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
+		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_25;
+		L_25 = CardVisualTheme_get_RoundedPanel_m6922E896A18FADA9A3BFF6FDB58801855A0EF957(NULL);
+		return L_25;
+	}
+}
+// Method Definition Index: 65440
+IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* CardVisualTheme_LoadDealerCoinSprite_m83B017413855E56FF2D8B188842DA67BABC2D9F5 (const RuntimeMethod* method) 
+{
+	static bool s_Il2CppMethodInitialized;
+	if (!s_Il2CppMethodInitialized)
+	{
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Resources_LoadAll_TisSprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99_m5AB56F241D4637483AB93C9A1AADA0A304C8607E_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Resources_Load_TisSprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99_mD30BD3A93DAF8B841F2BE37B3780DE390A04085A_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&Resources_Load_TisTexture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4_mBEC87DD291ED9662B46356519E0723C0ABB12877_RuntimeMethod_var);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral46634A25C4960FADA85C105EC91E16BB81477B20);
+		s_Il2CppMethodInitialized = true;
+	}
+	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* V_0 = NULL;
+	SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B* V_1 = NULL;
+	Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* V_2 = NULL;
+	{
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:306>
+		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_0;
+		L_0 = Resources_Load_TisSprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99_mD30BD3A93DAF8B841F2BE37B3780DE390A04085A(_stringLiteral46634A25C4960FADA85C105EC91E16BB81477B20, Resources_Load_TisSprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99_mD30BD3A93DAF8B841F2BE37B3780DE390A04085A_RuntimeMethod_var);
+		V_0 = L_0;
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:307>
+		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_1 = V_0;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_2;
+		L_2 = Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602(L_1, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (!L_2)
+		{
+			goto IL_0016;
+		}
+	}
+	{
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:307>
+		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_3 = V_0;
+		return L_3;
+	}
+
+IL_0016:
+	{
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:309>
+		SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B* L_4;
+		L_4 = Resources_LoadAll_TisSprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99_m5AB56F241D4637483AB93C9A1AADA0A304C8607E(_stringLiteral46634A25C4960FADA85C105EC91E16BB81477B20, Resources_LoadAll_TisSprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99_m5AB56F241D4637483AB93C9A1AADA0A304C8607E_RuntimeMethod_var);
+		V_1 = L_4;
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:310>
+		SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B* L_5 = V_1;
+		if (!L_5)
+		{
+			goto IL_0037;
+		}
+	}
+	{
+		SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B* L_6 = V_1;
+		NullCheck(L_6);
+		if (!(((RuntimeArray*)L_6)->max_length))
+		{
+			goto IL_0037;
+		}
+	}
+	{
+		SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B* L_7 = V_1;
+		NullCheck(L_7);
+		int32_t L_8 = 0;
+		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_9 = (L_7)->GetAt(static_cast<il2cpp_array_size_t>(L_8));
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_10;
+		L_10 = Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602(L_9, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (!L_10)
+		{
+			goto IL_0037;
+		}
+	}
+	{
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:311>
+		SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B* L_11 = V_1;
+		NullCheck(L_11);
+		int32_t L_12 = 0;
+		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_13 = (L_11)->GetAt(static_cast<il2cpp_array_size_t>(L_12));
+		return L_13;
+	}
+
+IL_0037:
+	{
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:313>
+		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_14;
+		L_14 = Resources_Load_TisTexture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4_mBEC87DD291ED9662B46356519E0723C0ABB12877(_stringLiteral46634A25C4960FADA85C105EC91E16BB81477B20, Resources_Load_TisTexture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4_mBEC87DD291ED9662B46356519E0723C0ABB12877_RuntimeMethod_var);
+		V_2 = L_14;
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:314>
+		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_15 = V_2;
+		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
+		bool L_16;
+		L_16 = Object_op_Inequality_mD0BE578448EAA61948F25C32F8DD55AB1F778602(L_15, (Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C*)NULL, NULL);
+		if (!L_16)
+		{
+			goto IL_007e;
+		}
+	}
+	{
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:315>
+		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_17 = V_2;
+		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_18 = V_2;
+		NullCheck(L_18);
+		int32_t L_19;
+		L_19 = VirtualFuncInvoker0< int32_t >::Invoke(5, L_18);
+		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_20 = V_2;
+		NullCheck(L_20);
+		int32_t L_21;
+		L_21 = VirtualFuncInvoker0< int32_t >::Invoke(7, L_20);
+		Rect_tA04E0F8A1830E767F40FB27ECD8D309303571F0D L_22;
+		memset((&L_22), 0, sizeof(L_22));
+		Rect__ctor_m18C3033D135097BEE424AAA68D91C706D2647F23_inline((&L_22), (0.0f), (0.0f), ((float)L_19), ((float)L_21), NULL);
+		Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 L_23;
+		memset((&L_23), 0, sizeof(L_23));
+		Vector2__ctor_m9525B79969AFFE3254B303A40997A56DEEB6F548_inline((&L_23), (0.5f), (0.5f), NULL);
+		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_24;
+		L_24 = Sprite_Create_m827A9BDEC4566AB71966A40DB48A09BB064D81E7(L_17, L_22, L_23, NULL);
+		return L_24;
+	}
+
+IL_007e:
+	{
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:317>
+		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
+		Color_tD001788D726C3A7F1379BEED0260B9591F440C1F L_25 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->___ColorGold;
+		Color_tD001788D726C3A7F1379BEED0260B9591F440C1F L_26;
+		memset((&L_26), 0, sizeof(L_26));
+		Color__ctor_mCD6889CDE39F18704CD6EA8E2EFBFA48BA3E13B0_inline((&L_26), (0.600000024f), (0.449999988f), (0.0500000007f), NULL);
+		Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* L_27;
+		L_27 = CardVisualTheme_CreateCircleSprite_m6ACC6A554DE3DA83BCA5DBFA73E4A347AD0518A9(((int32_t)64), L_25, L_26, 3, NULL);
+		return L_27;
+	}
+}
+// Method Definition Index: 65441
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void CardVisualTheme_EnsureSuitSprites_mF3DD67E87B9CFE7577D7733233385B85D9CC2551 (const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -28621,7 +28963,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void CardVisualTheme_EnsureSuitSprites_mF3DD6
 	int32_t V_1 = 0;
 	int32_t V_2 = 0;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:282>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:322>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B* L_0 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____suitSprites;
 		if (!L_0)
@@ -28630,22 +28972,22 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void CardVisualTheme_EnsureSuitSprites_mF3DD6
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:282>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:322>
 		return;
 	}
 
 IL_0008:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:283>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:323>
 		SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B* L_1 = (SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B*)(SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B*)SZArrayNew(SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B_il2cpp_TypeInfo_var, (uint32_t)4);
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____suitSprites = L_1;
 		Il2CppCodeGenWriteBarrier((void**)(&((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____suitSprites), (void*)L_1);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:285>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:325>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_2;
 		L_2 = Resources_Load_TisTexture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4_mBEC87DD291ED9662B46356519E0723C0ABB12877(_stringLiteral1E8116CD259786C8C584FE0025E2502CE69D2BDA, Resources_Load_TisTexture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4_mBEC87DD291ED9662B46356519E0723C0ABB12877_RuntimeMethod_var);
 		V_0 = L_2;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:286>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:326>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_3 = V_0;
 		il2cpp_codegen_runtime_class_init_inline(Object_tC12DECB6760A7F2CBF65D9DCF18D044C2D97152C_il2cpp_TypeInfo_var);
 		bool L_4;
@@ -28656,25 +28998,25 @@ IL_0008:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:286>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:326>
 		return;
 	}
 
 IL_0028:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:290>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:330>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_5 = V_0;
 		NullCheck(L_5);
 		int32_t L_6;
 		L_6 = VirtualFuncInvoker0< int32_t >::Invoke(5, L_5);
 		V_1 = ((int32_t)(L_6/2));
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:291>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:331>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_7 = V_0;
 		NullCheck(L_7);
 		int32_t L_8;
 		L_8 = VirtualFuncInvoker0< int32_t >::Invoke(7, L_7);
 		V_2 = ((int32_t)(L_8/2));
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:293>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:333>
 		il2cpp_codegen_runtime_class_init_inline(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var);
 		SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B* L_9 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____suitSprites;
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_10 = V_0;
@@ -28691,7 +29033,7 @@ IL_0028:
 		L_16 = Sprite_Create_m827A9BDEC4566AB71966A40DB48A09BB064D81E7(L_10, L_14, L_15, NULL);
 		NullCheck(L_9);
 		(L_9)->SetAt(static_cast<il2cpp_array_size_t>(0), (Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99*)L_16);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:294>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:334>
 		SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B* L_17 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____suitSprites;
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_18 = V_0;
 		int32_t L_19 = V_1;
@@ -28708,7 +29050,7 @@ IL_0028:
 		L_25 = Sprite_Create_m827A9BDEC4566AB71966A40DB48A09BB064D81E7(L_18, L_23, L_24, NULL);
 		NullCheck(L_17);
 		(L_17)->SetAt(static_cast<il2cpp_array_size_t>(1), (Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99*)L_25);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:295>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:335>
 		SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B* L_26 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____suitSprites;
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_27 = V_0;
 		int32_t L_28 = V_1;
@@ -28723,7 +29065,7 @@ IL_0028:
 		L_32 = Sprite_Create_m827A9BDEC4566AB71966A40DB48A09BB064D81E7(L_27, L_30, L_31, NULL);
 		NullCheck(L_26);
 		(L_26)->SetAt(static_cast<il2cpp_array_size_t>(2), (Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99*)L_32);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:296>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:336>
 		SpriteU5BU5D_tCEE379E10CAD9DBFA770B331480592548ED0EA1B* L_33 = ((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____suitSprites;
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_34 = V_0;
 		int32_t L_35 = V_1;
@@ -28739,11 +29081,11 @@ IL_0028:
 		L_40 = Sprite_Create_m827A9BDEC4566AB71966A40DB48A09BB064D81E7(L_34, L_38, L_39, NULL);
 		NullCheck(L_33);
 		(L_33)->SetAt(static_cast<il2cpp_array_size_t>(3), (Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99*)L_40);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:297>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:337>
 		return;
 	}
 }
-// Method Definition Index: 65438
+// Method Definition Index: 65442
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* CardVisualTheme_CreateRoundedRectSprite_mBAB07ABE4CCA608572E69CB8777C0D7187E2EA7F (int32_t ___0_w, int32_t ___1_h, int32_t ___2_radius, Color_tD001788D726C3A7F1379BEED0260B9591F440C1F ___3_fill, Color_tD001788D726C3A7F1379BEED0260B9591F440C1F ___4_border, int32_t ___5_borderWidth, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -28786,38 +29128,38 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 	int32_t G_B24_6 = 0;
 	Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* G_B24_7 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:303>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:343>
 		int32_t L_0 = ___0_w;
 		int32_t L_1 = ___1_h;
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_2 = (Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4*)il2cpp_codegen_object_new(Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4_il2cpp_TypeInfo_var);
 		Texture2D__ctor_mECF60A9EC0638EC353C02C8E99B6B465D23BE917(L_2, L_0, L_1, 4, (bool)0, NULL);
 		V_0 = L_2;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:304>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:344>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_3 = V_0;
 		NullCheck(L_3);
 		Texture_set_filterMode_mE423E58C0C16D059EA62BA87AD70F44AEA50CCC9(L_3, 1, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:305>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:345>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_4 = V_0;
 		NullCheck(L_4);
 		Texture_set_wrapMode_m1F74A690E3883EC9C5C371D502D09642F15D0F7E(L_4, 1, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:307>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:347>
 		int32_t L_5 = ___2_radius;
 		V_1 = ((float)L_5);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:308>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:348>
 		V_2 = 0;
 		goto IL_0148;
 	}
 
 IL_0022:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:310>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:350>
 		V_3 = 0;
 		goto IL_013d;
 	}
 
 IL_0029:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:313>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:353>
 		int32_t L_6 = V_3;
 		float L_7 = V_1;
 		if ((((float)((float)L_6)) < ((float)L_7)))
@@ -28857,7 +29199,7 @@ IL_0044:
 IL_0045:
 	{
 		V_4 = G_B7_0;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:314>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:354>
 		int32_t L_15 = V_2;
 		float L_16 = V_1;
 		if ((((float)((float)L_15)) < ((float)L_16)))
@@ -28897,7 +29239,7 @@ IL_0062:
 IL_0063:
 	{
 		V_5 = G_B12_0;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:315>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:355>
 		int32_t L_24 = V_3;
 		int32_t L_25 = V_2;
 		Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 L_26;
@@ -28911,7 +29253,7 @@ IL_0063:
 		float L_30;
 		L_30 = Vector2_Distance_mBACBB1609E1894D68F882D86A93519E311810C89_inline(L_26, L_29, NULL);
 		V_6 = L_30;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:317>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:357>
 		float L_31 = V_6;
 		float L_32 = V_1;
 		if ((!(((float)L_31) > ((float)L_32))))
@@ -28920,7 +29262,7 @@ IL_0063:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:319>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:359>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_33 = V_0;
 		int32_t L_34 = V_3;
 		int32_t L_35 = V_2;
@@ -28933,7 +29275,7 @@ IL_0063:
 
 IL_0095:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:321>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:361>
 		int32_t L_37 = ___5_borderWidth;
 		if ((((int32_t)L_37) <= ((int32_t)0)))
 		{
@@ -28986,13 +29328,13 @@ IL_0095:
 
 IL_00bb:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:324>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:364>
 		float L_51 = V_1;
 		float L_52 = V_6;
 		float L_53;
 		L_53 = Mathf_Clamp01_mA7E048DBDA832D399A581BE4D6DED9FA44CE0F14_inline(((float)il2cpp_codegen_subtract(L_51, L_52)), NULL);
 		V_7 = L_53;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:325>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:365>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_54 = V_0;
 		int32_t L_55 = V_3;
 		int32_t L_56 = V_2;
@@ -29015,13 +29357,13 @@ IL_00bb:
 
 IL_00f4:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:329>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:369>
 		float L_67 = V_1;
 		float L_68 = V_6;
 		float L_69;
 		L_69 = Mathf_Clamp01_mA7E048DBDA832D399A581BE4D6DED9FA44CE0F14_inline(((float)il2cpp_codegen_subtract(L_67, L_68)), NULL);
 		V_8 = L_69;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:330>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:370>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_70 = V_0;
 		int32_t L_71 = V_3;
 		int32_t L_72 = V_2;
@@ -29090,14 +29432,14 @@ IL_012e:
 
 IL_0139:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:310>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:350>
 		int32_t L_85 = V_3;
 		V_3 = ((int32_t)il2cpp_codegen_add(L_85, 1));
 	}
 
 IL_013d:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:310>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:350>
 		int32_t L_86 = V_3;
 		int32_t L_87 = ___0_w;
 		if ((((int32_t)L_86) < ((int32_t)L_87)))
@@ -29106,14 +29448,14 @@ IL_013d:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:308>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:348>
 		int32_t L_88 = V_2;
 		V_2 = ((int32_t)il2cpp_codegen_add(L_88, 1));
 	}
 
 IL_0148:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:308>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:348>
 		int32_t L_89 = V_2;
 		int32_t L_90 = ___1_h;
 		if ((((int32_t)L_89) < ((int32_t)L_90)))
@@ -29122,11 +29464,11 @@ IL_0148:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:334>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:374>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_91 = V_0;
 		NullCheck(L_91);
 		Texture2D_Apply_mA014182C9EE0BBF6EEE3B286854F29E50EB972DC(L_91, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:335>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:375>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_92 = V_0;
 		int32_t L_93 = ___0_w;
 		int32_t L_94 = ___1_h;
@@ -29148,7 +29490,7 @@ IL_0148:
 		return L_102;
 	}
 }
-// Method Definition Index: 65439
+// Method Definition Index: 65443
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* CardVisualTheme_CreateCircleSprite_m6ACC6A554DE3DA83BCA5DBFA73E4A347AD0518A9 (int32_t ___0_size, Color_tD001788D726C3A7F1379BEED0260B9591F440C1F ___1_fill, Color_tD001788D726C3A7F1379BEED0260B9591F440C1F ___2_border, int32_t ___3_borderWidth, const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -29188,41 +29530,41 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CA
 	int32_t G_B10_6 = 0;
 	Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* G_B10_7 = NULL;
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:340>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:380>
 		int32_t L_0 = ___0_size;
 		int32_t L_1 = ___0_size;
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_2 = (Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4*)il2cpp_codegen_object_new(Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4_il2cpp_TypeInfo_var);
 		Texture2D__ctor_mECF60A9EC0638EC353C02C8E99B6B465D23BE917(L_2, L_0, L_1, 4, (bool)0, NULL);
 		V_0 = L_2;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:341>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:381>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_3 = V_0;
 		NullCheck(L_3);
 		Texture_set_filterMode_mE423E58C0C16D059EA62BA87AD70F44AEA50CCC9(L_3, 1, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:342>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:382>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_4 = V_0;
 		NullCheck(L_4);
 		Texture_set_wrapMode_m1F74A690E3883EC9C5C371D502D09642F15D0F7E(L_4, 1, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:344>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:384>
 		int32_t L_5 = ___0_size;
 		V_1 = ((float)il2cpp_codegen_multiply(((float)((int32_t)il2cpp_codegen_subtract(L_5, 1))), (0.5f)));
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:345>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:385>
 		float L_6 = V_1;
 		V_2 = L_6;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:347>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:387>
 		V_3 = 0;
 		goto IL_00fe;
 	}
 
 IL_002c:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:349>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:389>
 		V_4 = 0;
 		goto IL_00f2;
 	}
 
 IL_0034:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:351>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:391>
 		int32_t L_7 = V_4;
 		int32_t L_8 = V_3;
 		Vector2_t1FD6F485C871E832B347AB2DC8CBA08B739D8DF7 L_9;
@@ -29236,7 +29578,7 @@ IL_0034:
 		float L_13;
 		L_13 = Vector2_Distance_mBACBB1609E1894D68F882D86A93519E311810C89_inline(L_9, L_12, NULL);
 		V_5 = L_13;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:352>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:392>
 		float L_14 = V_5;
 		float L_15 = V_2;
 		if ((!(((float)L_14) > ((float)L_15))))
@@ -29245,7 +29587,7 @@ IL_0034:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:354>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:394>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_16 = V_0;
 		int32_t L_17 = V_4;
 		int32_t L_18 = V_3;
@@ -29258,7 +29600,7 @@ IL_0034:
 
 IL_0064:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:356>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:396>
 		int32_t L_20 = ___3_borderWidth;
 		if ((((int32_t)L_20) <= ((int32_t)0)))
 		{
@@ -29275,13 +29617,13 @@ IL_0064:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:358>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:398>
 		float L_24 = V_2;
 		float L_25 = V_5;
 		float L_26;
 		L_26 = Mathf_Clamp01_mA7E048DBDA832D399A581BE4D6DED9FA44CE0F14_inline(((float)il2cpp_codegen_subtract(L_24, L_25)), NULL);
 		V_6 = L_26;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:359>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:399>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_27 = V_0;
 		int32_t L_28 = V_4;
 		int32_t L_29 = V_3;
@@ -29304,13 +29646,13 @@ IL_0064:
 
 IL_00a6:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:363>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:403>
 		float L_40 = V_2;
 		float L_41 = V_5;
 		float L_42;
 		L_42 = Mathf_Clamp01_mA7E048DBDA832D399A581BE4D6DED9FA44CE0F14_inline(((float)il2cpp_codegen_subtract(L_40, L_41)), NULL);
 		V_7 = L_42;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:364>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:404>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_43 = V_0;
 		int32_t L_44 = V_4;
 		int32_t L_45 = V_3;
@@ -29379,14 +29721,14 @@ IL_00e1:
 
 IL_00ec:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:349>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:389>
 		int32_t L_58 = V_4;
 		V_4 = ((int32_t)il2cpp_codegen_add(L_58, 1));
 	}
 
 IL_00f2:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:349>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:389>
 		int32_t L_59 = V_4;
 		int32_t L_60 = ___0_size;
 		if ((((int32_t)L_59) < ((int32_t)L_60)))
@@ -29395,14 +29737,14 @@ IL_00f2:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:347>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:387>
 		int32_t L_61 = V_3;
 		V_3 = ((int32_t)il2cpp_codegen_add(L_61, 1));
 	}
 
 IL_00fe:
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:347>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:387>
 		int32_t L_62 = V_3;
 		int32_t L_63 = ___0_size;
 		if ((((int32_t)L_62) < ((int32_t)L_63)))
@@ -29411,11 +29753,11 @@ IL_00fe:
 		}
 	}
 	{
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:368>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:408>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_64 = V_0;
 		NullCheck(L_64);
 		Texture2D_Apply_mA014182C9EE0BBF6EEE3B286854F29E50EB972DC(L_64, NULL);
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:369>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:409>
 		Texture2D_tE6505BC111DD8A424A9DBE8E05D7D09E11FFFCF4* L_65 = V_0;
 		int32_t L_66 = ___0_size;
 		int32_t L_67 = ___0_size;
@@ -29430,7 +29772,7 @@ IL_00fe:
 		return L_70;
 	}
 }
-// Method Definition Index: 65440
+// Method Definition Index: 65444
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void CardVisualTheme__cctor_m42BE1FC222D5210DAACF74169DECB39B38D0FB45 (const RuntimeMethod* method) 
 {
 	static bool s_Il2CppMethodInitialized;
@@ -29512,7 +29854,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void CardVisualTheme__cctor_m42BE1FC222D5210D
 		memset((&L_13), 0, sizeof(L_13));
 		Color__ctor_m3786F0D6E510D9CFA544523A955870BD2A514C8C_inline((&L_13), (0.400000006f), (0.449999988f), (0.550000012f), (0.850000024f), NULL);
 		((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->___ColorZeroPts = L_13;
-		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:210>
+		//<source_info:C:/Users/Sadib/Documents/GitHub/29Game/Assets/Scripts/UI/CardVisualTheme.cs:218>
 		Dictionary_2_t8CC1ED895E243EB5091FCFFAAFE454B872D07591* L_14 = (Dictionary_2_t8CC1ED895E243EB5091FCFFAAFE454B872D07591*)il2cpp_codegen_object_new(Dictionary_2_t8CC1ED895E243EB5091FCFFAAFE454B872D07591_il2cpp_TypeInfo_var);
 		Dictionary_2__ctor_mF18399CA4DE2A9C9E4F0F5E9D09FAF4D156D5A09(L_14, Dictionary_2__ctor_mF18399CA4DE2A9C9E4F0F5E9D09FAF4D156D5A09_RuntimeMethod_var);
 		((CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields*)il2cpp_codegen_static_fields_for(CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_il2cpp_TypeInfo_var))->____seatAvatars = L_14;

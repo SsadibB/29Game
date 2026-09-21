@@ -158,6 +158,8 @@ namespace Game29
                     break;
 
                 case GamePhase.TrumpSelection:
+                    // Bidding is now over — restore all avatars that were dimmed for passing.
+                    ResetAllPassStates();
                     if (_gm != null)
                     {
                         PlayerSeat bidWinner = _gm.GetBidWinner();
@@ -173,6 +175,8 @@ namespace Game29
                     break;
 
                 case GamePhase.Playing:
+                    // Safety-net: ensure no bidding-pass dim state persists into gameplay.
+                    ResetAllPassStates();
                     scoreHUD.SetStatusMessage("YOUR TURN — Select a card to play");
                     if (biddingPanel != null) biddingPanel.Hide();
                     if (trumpSelectionModal != null) trumpSelectionModal.Hide();
@@ -202,13 +206,15 @@ namespace Game29
             {
                 // When a player is bidding, change only that player's Avatar Image color to 255, 255, 255, 255.
                 // Their partner's Avatar Image must also remain 255, 255, 255, 255.
+                // A seat that has already passed stays dimmed for the rest of the
+                // bidding phase — skip it so its inactive look isn't overwritten.
                 PlayerSeatUI activeSeatUI = GetSeatUI(seat);
-                if (activeSeatUI != null && activeSeatUI.AvatarBg != null)
+                if (activeSeatUI != null && !activeSeatUI.IsPassed && activeSeatUI.AvatarBg != null)
                     activeSeatUI.AvatarBg.color = Color.white;
 
                 PlayerSeat partnerSeat = GameRules.GetPartner(seat);
                 PlayerSeatUI partnerSeatUI = GetSeatUI(partnerSeat);
-                if (partnerSeatUI != null && partnerSeatUI.AvatarBg != null)
+                if (partnerSeatUI != null && !partnerSeatUI.IsPassed && partnerSeatUI.AvatarBg != null)
                     partnerSeatUI.AvatarBg.color = Color.white;
 
                 if (seat == GameManager.HumanSeat)
@@ -258,8 +264,25 @@ namespace Game29
             }
             else
             {
-                // Show a persistent Pass bubble and dim the avatar
-                if (seatUI != null) seatUI.ShowPersistentPass();
+                // The dimmed "passed" look is a temporary BIDDING-only state.
+                //
+                // Event ordering matters here: when the LAST player passes,
+                // BiddingManager completes bidding synchronously, so GameManager
+                // has already moved on to TrumpSelection/Playing (and we already ran
+                // ResetAllPassStates) BEFORE this OnBiddingAction callback arrives.
+                // Dimming at that point would leave that avatar inactive for the whole
+                // card-playing phase with nothing left to clear it.
+                if (_gm != null && _gm.CurrentPhase == GamePhase.Bidding)
+                {
+                    // Still bidding: persistent Pass bubble + dimmed avatar.
+                    if (seatUI != null) seatUI.ShowPersistentPass();
+                }
+                else
+                {
+                    // Bidding already ended: just flash a normal auto-hiding Pass
+                    // bubble — never dim the avatar.
+                    if (seatUI != null) seatUI.ShowActionBubble("Pass");
+                }
             }
             scoreHUD.UpdateHUD(_gm);
         }
@@ -456,8 +479,8 @@ namespace Game29
         {
             if (southSeat != null) southSeat.SetActiveTurn(current == PlayerSeat.South);
             if (northSeat != null) northSeat.SetActiveTurn(current == PlayerSeat.North);
-            if (westSeat  != null) westSeat.SetActiveTurn(current  == PlayerSeat.West);
-            if (eastSeat  != null) eastSeat.SetActiveTurn(current  == PlayerSeat.East);
+            if (westSeat != null) westSeat.SetActiveTurn(current == PlayerSeat.West);
+            if (eastSeat != null) eastSeat.SetActiveTurn(current == PlayerSeat.East);
         }
 
         /// <summary>
@@ -470,8 +493,8 @@ namespace Game29
             PlayerSeat dealer = _gm.Dealer;
             if (southSeat != null) southSeat.SetDealerCoin(dealer == PlayerSeat.South);
             if (northSeat != null) northSeat.SetDealerCoin(dealer == PlayerSeat.North);
-            if (westSeat  != null) westSeat.SetDealerCoin(dealer  == PlayerSeat.West);
-            if (eastSeat  != null) eastSeat.SetDealerCoin(dealer  == PlayerSeat.East);
+            if (westSeat != null) westSeat.SetDealerCoin(dealer == PlayerSeat.West);
+            if (eastSeat != null) eastSeat.SetDealerCoin(dealer == PlayerSeat.East);
         }
 
         /// <summary>
@@ -482,8 +505,8 @@ namespace Game29
         {
             if (southSeat != null) southSeat.ResetPassState();
             if (northSeat != null) northSeat.ResetPassState();
-            if (westSeat  != null) westSeat.ResetPassState();
-            if (eastSeat  != null) eastSeat.ResetPassState();
+            if (westSeat != null) westSeat.ResetPassState();
+            if (eastSeat != null) eastSeat.ResetPassState();
         }
 
         private void OnHumanCardSelected(Card card)

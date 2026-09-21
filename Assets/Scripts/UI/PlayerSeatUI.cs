@@ -43,6 +43,8 @@ namespace Game29
 
         public Transform CardContainer => cardContainer != null ? cardContainer : transform;
         public Image AvatarBg => avatarBg;
+        /// <summary>True while this seat is dimmed because it passed in the current bidding phase (temporary, visual-only).</summary>
+        public bool IsPassed => _isPassed;
         public Image AvatarIcon => avatarIcon;
         public Sprite AvatarSprite { get => avatarSprite; set { avatarSprite = value; ApplyAvatar(); } }
 
@@ -76,9 +78,9 @@ namespace Game29
             return Seat switch
             {
                 PlayerSeat.North => new Vector2(40f, -40f),
-                PlayerSeat.East  => new Vector2(-50f, 40f),
-                PlayerSeat.West  => new Vector2(50f, 40f),
-                _                => new Vector2(40f, 40f),   // South
+                PlayerSeat.East => new Vector2(-50f, 40f),
+                PlayerSeat.West => new Vector2(50f, 40f),
+                _ => new Vector2(40f, 40f),   // South
             };
         }
 
@@ -362,7 +364,7 @@ namespace Game29
                 {
                     coinRT.anchorMin = new Vector2(0.5f, 0.5f);
                     coinRT.anchorMax = new Vector2(0.5f, 0.5f);
-                    coinRT.pivot     = new Vector2(0.5f, 0.5f);
+                    coinRT.pivot = new Vector2(0.5f, 0.5f);
                     // Offset relative to avatar so coin sits visibly next to it.
                     coinRT.anchoredPosition = GetDealerCoinOffset();
                     coinRT.sizeDelta = new Vector2(40, 40);
@@ -373,15 +375,15 @@ namespace Game29
                 if (coinSprite != null)
                 {
                     dealerCoinImage.sprite = coinSprite;
-                    dealerCoinImage.color  = Color.white;
-                    dealerCoinImage.type   = Image.Type.Simple;
+                    dealerCoinImage.color = Color.white;
+                    dealerCoinImage.type = Image.Type.Simple;
                     dealerCoinImage.preserveAspect = true;
                 }
                 else
                 {
                     // Fallback: gold circle if asset not found
                     dealerCoinImage.sprite = CardVisualTheme.CreateCircleSprite(40, CardVisualTheme.ColorGold, Color.white, 2);
-                    dealerCoinImage.color  = Color.white;
+                    dealerCoinImage.color = Color.white;
                 }
                 dealerCoinImage.raycastTarget = false;
                 coinObj.SetActive(false);
@@ -513,8 +515,8 @@ namespace Game29
             _isPassed = true;
 
             // Dim the avatar to signal this player is out of bidding
-            if (avatarBg   != null) avatarBg.color   = new Color(1f, 1f, 1f, 0.35f);
-            if (avatarIcon != null) avatarIcon.color  = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+            if (avatarBg != null) avatarBg.color = new Color(1f, 1f, 1f, 0.35f);
+            if (avatarIcon != null) avatarIcon.color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
 
             if (actionBubbleBg == null || actionBubbleText == null) return;
 
@@ -549,10 +551,15 @@ namespace Game29
             if (!_isPassed) return;
             _isPassed = false;
 
-            // Restore avatar (SetupIdentity handles name label color as well)
-            if (avatarBg   != null) avatarBg.color  = Color.white;
-            if (avatarIcon != null) avatarIcon.color = Color.white;
-            SetupIdentity();
+            // Restore avatar (SetupIdentity handles name label color as well).
+            // A Single-Play disabled partner is a separate gameplay state — leave
+            // that seat's disabled visuals alone; only the bidding dim is cleared.
+            if (!_isDisabledPartner)
+            {
+                if (avatarBg != null) avatarBg.color = Color.white;
+                if (avatarIcon != null) avatarIcon.color = Color.white;
+                SetupIdentity();
+            }
 
             // Restore action bubble text color and hide the bubble
             if (actionBubbleText != null)

@@ -4700,11 +4700,11 @@ struct DrawerGroup_t6D442F24B259663FE80E1BF0028F340F1F33DEBF  : public RuntimeOb
 {
 	BaseDrawerU5BU5D_t852AC492A22D51BB7326B6C69C3B4F1D201D7B33* ___m_Drawers;
 };
-struct U3CU3Ec__DisplayClass59_0_t145F7D464C313D9B5E5DD66844E5F1BF0FC7CAD5  : public RuntimeObject
+struct U3CU3Ec__DisplayClass65_0_tD88B75B5601513C7FA2FAFAF7E01062E26F59A2D  : public RuntimeObject
 {
 	CardUI_t44E937D15E15AC6CF71ADE6B10BDECCCF0F7811A* ___ui;
 };
-struct U3CHideActionBubbleRoutineU3Ed__53_tB5A15F048200FF3F19C3D0AF13E6555E36BD3F79  : public RuntimeObject
+struct U3CHideActionBubbleRoutineU3Ed__59_tA7C5D4C1561454A27D921F7375DA88A23E0291D4  : public RuntimeObject
 {
 	int32_t ___U3CU3E1__state;
 	RuntimeObject* ___U3CU3E2__current;
@@ -41535,11 +41535,13 @@ struct PlayerSeatUI_tFC590D98DD4051189E6E82579B64A93EE98E4306  : public MonoBeha
 	Text_tD60B2346DAA6666BF0D822FF607F0B220C2B9E62* ___actionBubbleText;
 	Button_t6786514A57F7AFDEE5431112FEA0CAB24F5AE098* ___skipButton;
 	Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* ___cardContainer;
+	Image_tBC1D03F63BF71132E9A5E472B8742F172A011E7E* ___dealerCoinImage;
 	List_1_t032EFD44CD4A84FB6FBD4BA1375961ABE14B8FCD* ____spawnedCards;
 	Coroutine_t85EA685566A254C23F3FD77AB5BDFFFF8799596B* ____actionBubbleCoroutine;
 	bool ____skipButtonInitialized;
 	bool ____skipButtonVisible;
 	bool ____thinkingVisible;
+	bool ____isPassed;
 	Tween_t8CB06EBC48A5B6F5065C490E4F4909C18CE7983C* ____skipPulseTween;
 	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ____originalActionBubbleScale;
 	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ____originalSkipButtonScale;
@@ -43113,6 +43115,8 @@ struct CardVisualTheme_tCA4A7B3844501E507F80975F4DFFE02F6C86268E_StaticFields
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* ____circleAvatarSprite;
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* ____vectorAvatarSprite;
 	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* ____trumpBgSprite;
+	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* ____popupBgSprite;
+	Sprite_tAFF74BC83CD68037494CB0B4F28CBDF8971CAB99* ____dealerCoinSprite;
 	Font_tC95270EA3198038970422D78B74A7F2E218A96B6* ____defaultFont;
 	Dictionary_2_t8CC1ED895E243EB5091FCFFAAFE454B872D07591* ____seatAvatars;
 };
@@ -51629,9 +51633,9 @@ const Il2CppTypeDefinitionSizes g_typeDefinitionSize7715 = { sizeof(U3CWaitForGa
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize7716;
 const Il2CppTypeDefinitionSizes g_typeDefinitionSize7716 = { sizeof(GameTableUI_t3ADEBBBAC23109F22D9E68A8131221C943E4998F), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize7717;
-const Il2CppTypeDefinitionSizes g_typeDefinitionSize7717 = { sizeof(U3CU3Ec__DisplayClass59_0_t145F7D464C313D9B5E5DD66844E5F1BF0FC7CAD5), -1, 0, 0 };
+const Il2CppTypeDefinitionSizes g_typeDefinitionSize7717 = { sizeof(U3CU3Ec__DisplayClass65_0_tD88B75B5601513C7FA2FAFAF7E01062E26F59A2D), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize7718;
-const Il2CppTypeDefinitionSizes g_typeDefinitionSize7718 = { sizeof(U3CHideActionBubbleRoutineU3Ed__53_tB5A15F048200FF3F19C3D0AF13E6555E36BD3F79), -1, 0, 0 };
+const Il2CppTypeDefinitionSizes g_typeDefinitionSize7718 = { sizeof(U3CHideActionBubbleRoutineU3Ed__59_tA7C5D4C1561454A27D921F7375DA88A23E0291D4), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize7719;
 const Il2CppTypeDefinitionSizes g_typeDefinitionSize7719 = { sizeof(PlayerSeatUI_tFC590D98DD4051189E6E82579B64A93EE98E4306), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize7720;
