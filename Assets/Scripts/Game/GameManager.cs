@@ -418,6 +418,33 @@ namespace Game29
         public bool IsTrumpRevealed() => _trumpMgr.TrumpRevealed;
         public int GetMinimumBid() => _biddingMgr.MinimumRaiseBid();
 
+        /// <summary>
+        /// Trump "type" label for the Decision Panel — only what is currently public
+        /// knowledge, never the hidden suit itself.
+        ///   • Joker      → always public the instant it's chosen: "NO TRUMP".
+        ///   • 7th Card   → the *mode* is public the instant it's chosen ("7TH"), but the
+        ///                  actual suit stays hidden until revealed, at which point this
+        ///                  returns the real suit name instead.
+        ///   • Suit       → nothing is public until the suit is actually revealed
+        ///                  (returns null beforehand, so the Decision Panel omits the row).
+        /// </summary>
+        public string GetPublicTrumpTypeLabel()
+        {
+            switch (_trumpMgr.Mode)
+            {
+                case TrumpMode.Joker:
+                    return "JOKER";
+                case TrumpMode.SeventhCard:
+                    return (_trumpMgr.TrumpRevealed && _trumpMgr.TrumpSuit.HasValue)
+                        ? _trumpMgr.TrumpSuit.Value.ToString().ToUpper()
+                        : "7TH";
+                default: // TrumpMode.Suit
+                    return (_trumpMgr.TrumpRevealed && _trumpMgr.TrumpSuit.HasValue)
+                        ? _trumpMgr.TrumpSuit.Value.ToString().ToUpper()
+                        : null;
+            }
+        }
+
         /// <summary>Returns the legal cards South can play right now (empty if not their turn).</summary>
         public List<Card> GetHumanValidPlays()
         {

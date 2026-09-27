@@ -349,12 +349,11 @@ namespace Game29
             if (decisionPanel == null) BuildUIIfMissing();
             if (decisionPanel != null)
             {
-                bool eligible = _gm != null && GameRules.IsEligibleForSinglePlay(_gm.HumanHand);
-                string msg = eligible
-                    ? "Hand meets Single Play condition! Choose SINGLE to play alone, or NO to play with partner."
-                    : "Do you want to play single alone? Choose SINGLE to play alone, or NO to play with partner.";
-                scoreHUD.SetStatusMessage(msg);
-                decisionPanel.ShowSinglePlay(
+                scoreHUD.SetStatusMessage("DO YOU WANT TO PLAY SINGLE?");
+                decisionPanel.ShowSinglePlayDecision(
+                    _gm.GetBidWinner().ToString(),
+                    _gm.GetFinalBid(),
+                    _gm.GetPublicTrumpTypeLabel(),
                     onConfirm: () => _gm.AcceptSinglePlay(),
                     onReject: () => _gm.RejectSinglePlay()
                 );
@@ -366,8 +365,11 @@ namespace Game29
             if (decisionPanel == null) BuildUIIfMissing();
             if (decisionPanel != null)
             {
-                scoreHUD.SetStatusMessage("Do you want to set DOUBLE against the bidding team?");
-                decisionPanel.ShowDouble(
+                scoreHUD.SetStatusMessage("DO YOU WANT TO SET DOUBLE?");
+                decisionPanel.ShowDoubleDecision(
+                    _gm.GetBidWinner().ToString(),
+                    _gm.GetFinalBid(),
+                    _gm.GetPublicTrumpTypeLabel(),
                     onConfirm: () => _gm.AcceptHumanDouble(),
                     onReject: () => _gm.RejectHumanDouble()
                 );
@@ -379,10 +381,11 @@ namespace Game29
             if (decisionPanel == null) BuildUIIfMissing();
             if (decisionPanel != null)
             {
-                string doublerPos = doubler.ToString().ToUpper();
-                scoreHUD.SetStatusMessage($"{doublerPos} set DOUBLE! Do you want to RE-DOUBLE?");
-                decisionPanel.ShowReDouble(
-                    doublerPos,
+                scoreHUD.SetStatusMessage("DO YOU WANT TO RE-DOUBLE?");
+                decisionPanel.ShowReDoubleDecision(
+                    _gm.GetBidWinner().ToString(),
+                    _gm.GetFinalBid(),
+                    _gm.GetPublicTrumpTypeLabel(),
                     onConfirm: () => _gm.AcceptHumanReDouble(),
                     onReject: () => _gm.RejectHumanReDouble()
                 );

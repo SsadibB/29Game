@@ -94,13 +94,15 @@ namespace Game29
         private const float FanMaxRotationDeg = 24f;
         private const float FanArcHeight = 34f;
 
-        /// <summary>Returns the (extra Y offset, rotation) for hand card index i of count.</summary>
+        /// <summary>
+        /// Returns the (extra Y offset, rotation) for hand card index i of count.
+        /// South's hand (the only caller of this method, via RenderHumanHand) is kept
+        /// perfectly straight — no arc offset, no Z rotation — per the current-player
+        /// layout requirement, so this always returns (0, 0) regardless of count.
+        /// </summary>
         private (float yOffset, float rotZ) GetFanOffset(int i, int count)
         {
-            if (count <= 1) return (0f, 0f);
-            float u = (i / (float)(count - 1)) * 2f - 1f; // -1 (leftmost) .. 1 (rightmost)
-            float rot = Mathf.Clamp(count * 1.4f, 6f, FanMaxRotationDeg);
-            return (-FanArcHeight * (u * u), -u * rot);
+            return (0f, 0f);
         }
 
         // Same arc/fan treatment as the human hand above, scaled down for the
@@ -1045,7 +1047,7 @@ namespace Game29
             float spacing = horizontal ? 20f : 22f;
             float start = -(cardCount - 1) * spacing * 0.5f;
 
-            // Smoothly remove played card and refan remaining cards without destroying/respawning
+            // Smoothly remove a played card without destroying/respawning the rest.
             if (!animate && _spawnedCards.Count > 0 && cardCount < _spawnedCards.Count)
             {
                 int toRemove = _spawnedCards.Count - cardCount;
@@ -1061,23 +1063,11 @@ namespace Game29
                     _spawnedCards.RemoveAt(lastIdx);
                 }
 
-                if (cardCount <= 0) return;
-
-                for (int i = 0; i < cardCount; i++)
-                {
-                    var (arcOffset, rotZ) = GetAIFanOffset(i, cardCount);
-                    Vector2 pos = horizontal
-                        ? new Vector2(start + i * spacing, arcOffset)
-                        : new Vector2(arcOffset, start + i * spacing);
-
-                    RectTransform rt = _spawnedCards[i].GetComponent<RectTransform>();
-                    if (rt != null)
-                    {
-                        rt.DOKill();
-                        rt.DOAnchorPos(pos, 0.28f).SetEase(Ease.OutQuad);
-                        rt.DORotate(new Vector3(0, 0, rotZ), 0.28f).SetEase(Ease.OutQuad);
-                    }
-                }
+                // North, East and West all keep their remaining cards exactly where
+                // they already are — original curved layout, spacing and Z rotation
+                // untouched — so playing a card only removes that one card and never
+                // re-fans or re-rotates the rest of the hand. (South is unaffected:
+                // it's rendered separately via RenderHumanHand, not this method.)
                 return;
             }
 
