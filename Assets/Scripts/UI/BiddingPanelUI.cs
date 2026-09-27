@@ -28,16 +28,18 @@ namespace Game29
 
         // -- Outer panel -------------------------------------------------------
         /// <summary>Overall size of the panel in pixels.</summary>
-        private static readonly Vector2 PanelSize = new Vector2(900, 550);
+        private static readonly Vector2 PanelSize = new Vector2(750, 500);
         /// <summary>Panel tint — white so PopupBG image shows through unchanged.</summary>
         private static readonly Color PanelBgColor = Color.white;
 
         // -- Grid layout -------------------------------------------------------
+        // Sized to fit the 650x400 panel: 4 cols x 130 + 3 x 10 = 550 wide
+        // (50px side padding), 4 rows x 75 + 3 x 8 = 324 tall (38px top/bottom).
         private const int GridColumns = 4;
-        private const float BtnWidth = 150f;   // width of each number button
-        private const float BtnHeight = 90f;   // height for all buttons
-        private const float BtnSpacingX = 14f;    // horizontal gap
-        private const float BtnSpacingY = 14f;    // vertical gap
+        private const float BtnWidth = 140f;   // width of each number button
+        private const float BtnHeight = 75f;   // height for all buttons
+        private const float BtnSpacingX = 10f;    // horizontal gap
+        private const float BtnSpacingY = 8f;    // vertical gap
         /// <summary>
         /// Nudges the whole grid up (+) or down (-) from dead-centre of the panel, in pixels.
         /// The grid is centred vertically automatically; use this only to compensate for
@@ -48,7 +50,7 @@ namespace Game29
         // -- Number buttons (active) -------------------------------------------
         private static readonly Color BtnActiveBg = new Color(0.18f, 0.14f, 0.10f, 1.00f);
         private static readonly Color BtnActiveText = Color.white;
-        private const int BtnFontSize = 32;
+        private const int BtnFontSize = 26;
         /// <summary>Border outline colour on every bid/pass button. Hex #B1B1B1.</summary>
         private static readonly Color BtnBorderColor = new Color(0.694f, 0.694f, 0.694f, 1f); // #B1B1B1
         /// <summary>Thickness of the button border in pixels.</summary>
@@ -61,7 +63,7 @@ namespace Game29
         // -- Pass button -------------------------------------------------------
         private static readonly Color PassActiveBg = new Color(0.18f, 0.14f, 0.10f, 1.00f);
         private static readonly Color PassActiveText = Color.white;
-        private const int PassFontSize = 32;
+        private const int PassFontSize = 26;
         private const FontStyle PassFontStyle = FontStyle.Bold;
 
         #endregion

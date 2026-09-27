@@ -319,7 +319,7 @@ namespace Game29
             // Round Display: Team: [goted card points] / Opponent: [goted card points]
             if (boardCardPointsText != null)
             {
-                string label = teamIndex == 0 ? "Team" : "Opponent";
+                string label = teamIndex == 0 ? "Points" : "Points";
                 boardCardPointsText.text = $"{label}: <b>{boardCardPoints}</b>";
             }
 

@@ -123,8 +123,8 @@ namespace Game29
         }
 
         // Card dimensions for landscape layout
-        private const float HumanCardW = 130f;
-        private const float HumanCardH = 190f;
+        private const float HumanCardW = 180f;
+        private const float HumanCardH = 250f;
         private const float AICardW = 55f;
         private const float AICardH = 80f;
 
