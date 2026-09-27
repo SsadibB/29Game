@@ -10,7 +10,7 @@ namespace Game29
     /// <summary>
     /// Master UI Manager for the 29 Card Game — Landscape Layout.
     /// Reference resolution: 1920×1080.
-    /// Board background uses board.png from Resources.
+    /// Board background uses Board.jpg from Resources.
     /// Player seat layout:
     ///   South  (Human)    — bottom-center with 8 large interactive cards
     ///   North  (Partner)  — top-center
@@ -148,18 +148,19 @@ namespace Game29
                     scoreHUD.SetStatusMessage("Dealing cards from the deck...");
                     trickArea.ClearAll();
                     biddingPanel.Hide();
-                    // Clear pass state from the previous round so avatars are restored.
-                    ResetAllPassStates();
                     break;
 
                 case GamePhase.Bidding:
                     scoreHUD.SetStatusMessage("Bidding Phase — Place your bid");
                     trickArea.ClearAll();
+                    // New bidding round: clear every seat's previous bid or PASS.
+                    ResetAllPassStates();
                     break;
 
                 case GamePhase.TrumpSelection:
-                    // Bidding is now over — restore all avatars that were dimmed for passing.
-                    ResetAllPassStates();
+                    // Keep each seat's bid or PASS visible. Only restore avatars
+                    // that were dimmed for passing.
+                    EndAllBiddingDimming();
                     if (_gm != null)
                     {
                         PlayerSeat bidWinner = _gm.GetBidWinner();
@@ -175,8 +176,9 @@ namespace Game29
                     break;
 
                 case GamePhase.Playing:
-                    // Safety-net: ensure no bidding-pass dim state persists into gameplay.
-                    ResetAllPassStates();
+                    // Safety-net: undim pass avatars, but leave bid/PASS bubbles up
+                    // until the next bidding round.
+                    EndAllBiddingDimming();
                     scoreHUD.SetStatusMessage("YOUR TURN — Select a card to play");
                     if (biddingPanel != null) biddingPanel.Hide();
                     if (trumpSelectionModal != null) trumpSelectionModal.Hide();
@@ -253,36 +255,26 @@ namespace Game29
 
         private void HandleBiddingAction(PlayerSeat seat, int? bid)
         {
+            // The trump panel is already up — bidding bubbles must stay off,
+            // including the action that just closed the auction.
+            if (trumpSelectionModal != null && trumpSelectionModal.gameObject.activeInHierarchy)
+            {
+                ResetAllPassStates();
+                scoreHUD.UpdateHUD(_gm);
+                return;
+            }
+
             PlayerSeatUI seatUI = GetSeatUI(seat);
-            // Hide the "Thinking…" bubble that was shown when the AI began deciding.
             if (seatUI != null) seatUI.HideThinking();
 
             if (bid.HasValue)
             {
-                // Show a normal (auto-hiding) bid bubble
-                if (seatUI != null) seatUI.ShowActionBubble($"Bid {bid.Value}!");
+                if (seatUI != null) seatUI.ShowBiddingAction(bid.Value.ToString(), false, false);
             }
             else
             {
-                // The dimmed "passed" look is a temporary BIDDING-only state.
-                //
-                // Event ordering matters here: when the LAST player passes,
-                // BiddingManager completes bidding synchronously, so GameManager
-                // has already moved on to TrumpSelection/Playing (and we already ran
-                // ResetAllPassStates) BEFORE this OnBiddingAction callback arrives.
-                // Dimming at that point would leave that avatar inactive for the whole
-                // card-playing phase with nothing left to clear it.
-                if (_gm != null && _gm.CurrentPhase == GamePhase.Bidding)
-                {
-                    // Still bidding: persistent Pass bubble + dimmed avatar.
-                    if (seatUI != null) seatUI.ShowPersistentPass();
-                }
-                else
-                {
-                    // Bidding already ended: just flash a normal auto-hiding Pass
-                    // bubble — never dim the avatar.
-                    if (seatUI != null) seatUI.ShowActionBubble("Pass");
-                }
+                bool stillBidding = _gm != null && _gm.CurrentPhase == GamePhase.Bidding;
+                if (seatUI != null) seatUI.ShowBiddingAction("PASS", true, stillBidding);
             }
             scoreHUD.UpdateHUD(_gm);
         }
@@ -340,7 +332,10 @@ namespace Game29
         {
             if (trumpSelectionModal == null) BuildUIIfMissing();
             if (trumpSelectionModal != null)
+            {
                 trumpSelectionModal.Show(_gm.GetCurrentBid(), hand);
+                ResetAllPassStates();
+            }
             scoreHUD.SetStatusMessage("★ YOU WON THE BID! Choose your Trump card ★");
         }
 
@@ -501,8 +496,7 @@ namespace Game29
         }
 
         /// <summary>
-        /// Resets the persistent Pass state on every seat (restores avatars and bubbles).
-        /// Called when a new Dealing phase begins (i.e. a new round starts).
+        /// Clears every seat's bid or PASS bubble. Called when a new bidding round begins.
         /// </summary>
         private void ResetAllPassStates()
         {
@@ -510,6 +504,15 @@ namespace Game29
             if (northSeat != null) northSeat.ResetPassState();
             if (westSeat != null) westSeat.ResetPassState();
             if (eastSeat != null) eastSeat.ResetPassState();
+        }
+
+        /// <summary>Restores pass-dimmed avatars without removing bid or PASS bubbles.</summary>
+        private void EndAllBiddingDimming()
+        {
+            if (southSeat != null) southSeat.EndBiddingDimming();
+            if (northSeat != null) northSeat.EndBiddingDimming();
+            if (westSeat != null) westSeat.EndBiddingDimming();
+            if (eastSeat != null) eastSeat.EndBiddingDimming();
         }
 
         private void OnHumanCardSelected(Card card)
@@ -587,7 +590,7 @@ namespace Game29
 
         /// <summary>
         /// Explicitly positions all board components for the landscape 1920×1080 canvas
-        /// using board.png as the background.
+        /// using Board.jpg as the background.
         /// </summary>
         public void ApplyLandscapeLayout()
         {
@@ -603,7 +606,7 @@ namespace Game29
             // 2. Full-Screen Board Background
             if (tableBackground == null)
             {
-                Transform bgT = transform.Find("Board_BG") ?? transform.Find("TableFelt_BG");
+                Transform bgT = transform.Find("Board") ?? transform.Find("TableFelt_BG");
                 if (bgT != null) tableBackground = bgT.GetComponent<Image>();
             }
 
@@ -702,8 +705,8 @@ namespace Game29
             // Background
             if (tableBackground == null)
             {
-                Transform bgT = transform.Find("Board_BG") ?? transform.Find("TableFelt_BG");
-                GameObject bgObj = bgT != null ? bgT.gameObject : new GameObject("Board_BG");
+                Transform bgT = transform.Find("Board") ?? transform.Find("TableFelt_BG");
+                GameObject bgObj = bgT != null ? bgT.gameObject : new GameObject("Board");
                 if (bgT == null) bgObj.transform.SetParent(transform, false);
                 tableBackground = bgObj.GetComponent<Image>() ?? bgObj.AddComponent<Image>();
             }

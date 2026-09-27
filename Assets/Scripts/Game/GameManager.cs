@@ -691,6 +691,9 @@ namespace Game29
             }
 
             _scoreMgr.RegisterBid(winner, bid);
+            // The last bidder is often the dealer, who just passed. Trump selection
+            // belongs to the bid winner, so the turn glow follows them.
+            SetCurrentPlayer(winner);
             ChangePhase(GamePhase.TrumpSelection);
 
             if (winner == HumanSeat)

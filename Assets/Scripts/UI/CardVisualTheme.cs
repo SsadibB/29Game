@@ -1,11 +1,12 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game29
 {
     /// <summary>
     /// Central theme and asset provider for the 29 Game visual representation.
-    /// Handles loading textures from Resources (TableFelt, CardFront, CardBack, SuitIcons),
+    /// Handles loading textures from Resources (TableFelt, Cards/*, SuitIcons),
     /// generates procedural antialiased rounded sprites, and provides color palettes and labels.
     /// </summary>
     public static class CardVisualTheme
@@ -44,6 +45,7 @@ namespace Game29
         private static Sprite _popupBgSprite;
         private static Sprite _dealerCoinSprite;
         private static Font _defaultFont;
+        private static readonly Dictionary<string, Sprite> _cardFaceSprites = new Dictionary<string, Sprite>();
 
         public static Sprite TableFelt => _tableFeltSprite ??= LoadOrGenerateFelt();
         public static Sprite BoardBackground => _boardSprite ??= LoadBoardSprite();
@@ -144,6 +146,66 @@ namespace Game29
             };
         }
 
+        /// <summary>
+        /// Full printed face for a dealt card, from Resources/Cards
+        /// (for example Cards/ace_of_spades). Null if that image is missing.
+        /// </summary>
+        public static Sprite GetCardFace(Card card)
+        {
+            if (card == null) return null;
+            return GetCardFace(card.Suit, card.Rank);
+        }
+
+        /// <summary>Full printed face for a suit and rank. Null if that image is missing.</summary>
+        public static Sprite GetCardFace(Suit suit, Rank rank)
+        {
+            return LoadCardSprite($"{GetRankFileName(rank)}_of_{GetSuitFileName(suit)}");
+        }
+
+        /// <summary>
+        /// Loads a card image from Resources/Cards by filename, without the extension.
+        /// Examples: "ace_of_spades", "7_of_hearts", "2_of_clubs", "Card_Back".
+        /// </summary>
+        public static Sprite LoadCardSprite(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName)) return null;
+            if (_cardFaceSprites.TryGetValue(fileName, out Sprite cached) && cached != null)
+                return cached;
+
+            Sprite sprite = LoadSpriteFlexible($"Cards/{fileName}");
+            if (sprite != null)
+                _cardFaceSprites[fileName] = sprite;
+            return sprite;
+        }
+
+        private static string GetRankFileName(Rank rank)
+        {
+            return rank switch
+            {
+                Rank.Seven => "7",
+                Rank.Eight => "8",
+                Rank.Nine => "9",
+                Rank.Ten => "10",
+                Rank.Jack => "jack",
+                Rank.Queen => "queen",
+                Rank.King => "king",
+                Rank.Ace => "ace",
+                _ => rank.ToString().ToLowerInvariant()
+            };
+        }
+
+        private static string GetSuitFileName(Suit suit)
+        {
+            return suit switch
+            {
+                Suit.Hearts => "hearts",
+                Suit.Diamonds => "diamonds",
+                Suit.Clubs => "clubs",
+                Suit.Spades => "spades",
+                _ => suit.ToString().ToLowerInvariant()
+            };
+        }
+
         public static Sprite GetSuitSprite(Suit suit)
         {
             EnsureSuitSprites();
@@ -203,8 +265,10 @@ namespace Game29
 
         private static Sprite LoadOrGenerateCardBack()
         {
-            // "GreenBack" is the current back-face asset (used for opponents' cards
-            // and the trump card slot); "CardBack" is kept as a fallback for older imports.
+            Sprite art = LoadSpriteFlexible("Cards/Card_Back");
+            if (art != null) return art;
+
+            // Older imports, kept so a missing Cards/Card_Back still shows a back.
             Sprite s = Resources.Load<Sprite>("GreenBack") ?? Resources.Load<Sprite>("CardBack");
             if (s != null) return s;
 
@@ -213,6 +277,22 @@ namespace Game29
                 return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
 
             return CreateRoundedRectSprite(180, 260, 20, new Color(0.10f, 0.15f, 0.28f), ColorBorderGold, 4);
+        }
+
+        private static Sprite LoadSpriteFlexible(string path)
+        {
+            Sprite s = Resources.Load<Sprite>(path);
+            if (s != null) return s;
+
+            Sprite[] subs = Resources.LoadAll<Sprite>(path);
+            if (subs != null && subs.Length > 0 && subs[0] != null)
+                return subs[0];
+
+            Texture2D tex = Resources.Load<Texture2D>(path);
+            if (tex != null)
+                return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+
+            return null;
         }
 
         private static readonly System.Collections.Generic.Dictionary<PlayerSeat, Sprite> _seatAvatars = new();
@@ -277,11 +357,35 @@ namespace Game29
 
         private static Sprite LoadBoardSprite()
         {
-            Sprite s = Resources.Load<Sprite>("board");
-            if (s != null) return s;
-            Texture2D tex = Resources.Load<Texture2D>("board");
-            if (tex != null)
-                return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+            // Board.jpg and board.png both live in Resources. On Windows those
+            // paths are the same resource name, so Resources.Load("board") can
+            // return either file and the table background flips between them.
+            // Always take the asset whose name is "Board" (Board.jpg).
+            Sprite[] sprites = Resources.LoadAll<Sprite>("Board");
+            if (sprites != null)
+            {
+                for (int i = 0; i < sprites.Length; i++)
+                {
+                    Sprite sprite = sprites[i];
+                    if (sprite == null) continue;
+                    if (sprite.name == "Board" || sprite.name.StartsWith("Board_"))
+                        return sprite;
+                    if (sprite.texture != null && sprite.texture.name == "Board")
+                        return sprite;
+                }
+            }
+
+            Texture2D[] textures = Resources.LoadAll<Texture2D>("Board");
+            if (textures != null)
+            {
+                for (int i = 0; i < textures.Length; i++)
+                {
+                    Texture2D tex = textures[i];
+                    if (tex != null && tex.name == "Board")
+                        return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+                }
+            }
+
             return TableFelt;
         }
 

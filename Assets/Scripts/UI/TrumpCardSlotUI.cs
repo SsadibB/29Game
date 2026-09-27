@@ -179,6 +179,8 @@ namespace Game29
             transform.localScale = Vector3.one;
             _wasRevealed = false;
             cardBg.sprite = CardVisualTheme.CardBack;
+            cardBg.type = Image.Type.Simple;
+            cardBg.preserveAspect = true;
             cardBg.color = Color.white;
 
             statusLabelText.text = isSeventhCard ? "TRUMP (7th Card)" : "TRUMP CARD";
@@ -205,8 +207,26 @@ namespace Game29
         private void ApplyRevealedState(Suit trump, Card faceCard = null)
         {
             StopPulse();
-            cardBg.sprite = CardVisualTheme.CardFront;
+            cardBg.type = Image.Type.Simple;
+            cardBg.preserveAspect = true;
             cardBg.color = Color.white;
+
+            Sprite faceArt = faceCard != null ? CardVisualTheme.GetCardFace(faceCard) : null;
+            if (faceArt != null)
+            {
+                cardBg.sprite = faceArt;
+                if (suitSymbolText != null) suitSymbolText.color = Color.clear;
+                if (suitNameText != null) suitNameText.color = Color.clear;
+                statusLabelText.text = "\u2605 7TH CARD TRUMP \u2605";
+                statusLabelText.color = CardVisualTheme.ColorGold;
+                glowOutline.gameObject.SetActive(true);
+                if (tapToRevealText != null)
+                    tapToRevealText.gameObject.SetActive(false);
+                Canvas.ForceUpdateCanvases();
+                return;
+            }
+
+            cardBg.sprite = CardVisualTheme.CardFront;
 
             Color col = CardVisualTheme.GetSuitColor(trump);
 

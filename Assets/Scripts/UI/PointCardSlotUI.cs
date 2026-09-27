@@ -258,7 +258,7 @@ namespace Game29
                 upperCardShadow.type = Image.Type.Sliced;
                 upperCardShadow.raycastTarget = false;
 
-                // Upper Card Face: GreenBack card back
+                // Upper Card Face: printed card back
                 upperCardBg = uObj.AddComponent<Image>();
                 upperCardBg.sprite = CardVisualTheme.CardBack;
                 upperCardBg.type = Image.Type.Simple;

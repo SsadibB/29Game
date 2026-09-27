@@ -236,7 +236,8 @@ namespace Game29
                 {
                     spadesBtn = CreateCardButton(panelRT, "2OfSpades", new Vector2(-370, -25),
                         "2", CardVisualTheme.GetSuitSymbol(Suit.Spades), CardVisualTheme.GetSuitColor(Suit.Spades),
-                        CardVisualTheme.GetSuitSprite(Suit.Spades), CardVisualTheme.GetSuitSymbol(Suit.Spades));
+                        CardVisualTheme.GetSuitSprite(Suit.Spades), CardVisualTheme.GetSuitSymbol(Suit.Spades),
+                        CardVisualTheme.LoadCardSprite("2_of_spades"));
                 }
             }
 
@@ -248,7 +249,8 @@ namespace Game29
                 {
                     heartsBtn = CreateCardButton(panelRT, "2OfHearts", new Vector2(-222, -25),
                         "2", CardVisualTheme.GetSuitSymbol(Suit.Hearts), CardVisualTheme.GetSuitColor(Suit.Hearts),
-                        CardVisualTheme.GetSuitSprite(Suit.Hearts), CardVisualTheme.GetSuitSymbol(Suit.Hearts));
+                        CardVisualTheme.GetSuitSprite(Suit.Hearts), CardVisualTheme.GetSuitSymbol(Suit.Hearts),
+                        CardVisualTheme.LoadCardSprite("2_of_hearts"));
                 }
             }
 
@@ -260,7 +262,8 @@ namespace Game29
                 {
                     clubsBtn = CreateCardButton(panelRT, "2OfClubs", new Vector2(-74, -25),
                         "2", CardVisualTheme.GetSuitSymbol(Suit.Clubs), CardVisualTheme.GetSuitColor(Suit.Clubs),
-                        CardVisualTheme.GetSuitSprite(Suit.Clubs), CardVisualTheme.GetSuitSymbol(Suit.Clubs));
+                        CardVisualTheme.GetSuitSprite(Suit.Clubs), CardVisualTheme.GetSuitSymbol(Suit.Clubs),
+                        CardVisualTheme.LoadCardSprite("2_of_clubs"));
                 }
             }
 
@@ -272,7 +275,8 @@ namespace Game29
                 {
                     diamondsBtn = CreateCardButton(panelRT, "2OfDiamonds", new Vector2(74, -25),
                         "2", CardVisualTheme.GetSuitSymbol(Suit.Diamonds), CardVisualTheme.GetSuitColor(Suit.Diamonds),
-                        CardVisualTheme.GetSuitSprite(Suit.Diamonds), CardVisualTheme.GetSuitSymbol(Suit.Diamonds));
+                        CardVisualTheme.GetSuitSprite(Suit.Diamonds), CardVisualTheme.GetSuitSymbol(Suit.Diamonds),
+                        CardVisualTheme.LoadCardSprite("2_of_diamonds"));
                 }
             }
 
@@ -294,7 +298,8 @@ namespace Game29
                 {
                     seventhCardBtn = CreateCardButton(panelRT, "7thCard", new Vector2(370, -25),
                         "7", CardVisualTheme.GetSuitSymbol(Suit.Hearts), CardVisualTheme.GetSuitColor(Suit.Hearts),
-                        CardVisualTheme.GetSuitSprite(Suit.Hearts), CardVisualTheme.GetSuitSymbol(Suit.Hearts));
+                        CardVisualTheme.GetSuitSprite(Suit.Hearts), CardVisualTheme.GetSuitSymbol(Suit.Hearts),
+                        CardVisualTheme.LoadCardSprite("7_of_hearts"));
                 }
             }
 
@@ -461,6 +466,25 @@ namespace Game29
         {
             if (seventhCardBtn == null) return;
             Transform t = seventhCardBtn.transform;
+
+            string suitFile = suit.ToString().ToLowerInvariant();
+            Sprite faceArt = CardVisualTheme.LoadCardSprite($"7_of_{suitFile}");
+            Image bg = seventhCardBtn.GetComponent<Image>();
+            if (faceArt != null && bg != null)
+            {
+                bg.sprite = faceArt;
+                bg.type = Image.Type.Simple;
+                bg.preserveAspect = true;
+                bg.color = Color.white;
+                SetChildActive(t, "CornerTL", false);
+                SetChildActive(t, "CornerBR", false);
+                SetChildActive(t, "CenterGraphix", false);
+                SetChildActive(t, "CenterGraphic", false);
+                SetChildActive(t, "CenterText", false);
+                SetChildActive(t, "CardBorder", false);
+                return;
+            }
+
             Color suitCol = CardVisualTheme.GetSuitColor(suit);
             string sym = CardVisualTheme.GetSuitSymbol(suit);
 
@@ -513,12 +537,19 @@ namespace Game29
             btn.transform.DOScale(1f, 0.24f).SetDelay(delay).SetEase(Ease.OutBack).SetLink(gameObject);
         }
 
+        private static void SetChildActive(Transform parent, string childName, bool active)
+        {
+            Transform child = parent.Find(childName);
+            if (child != null) child.gameObject.SetActive(active);
+        }
+
         /// <summary>
-        /// Builds standard card button (130x190) with corner rank+suit and centered artwork,
-        /// without bottom badges.
+        /// Builds a standard card button (130x190). Uses the printed card image when
+        /// <paramref name="cardArt"/> is set; otherwise draws rank, suit, and a center mark.
         /// </summary>
         private Button CreateCardButton(RectTransform parent, string goName, Vector2 pos,
-            string rankText, string suitSymbol, Color suitColor, Sprite centerSprite, string centerTextFallback)
+            string rankText, string suitSymbol, Color suitColor, Sprite centerSprite, string centerTextFallback,
+            Sprite cardArt = null)
         {
             GameObject cardGO = new GameObject(goName);
             cardGO.transform.SetParent(parent, false);
@@ -526,12 +557,13 @@ namespace Game29
             rt.sizeDelta = new Vector2(130, 190);
             rt.anchoredPosition = pos;
 
-            // Card Face Background
+            // Printed card art already includes rank and suit. The procedural
+            // corners are only used when that image is missing.
             Image bg = cardGO.AddComponent<Image>();
-            bg.sprite = CardVisualTheme.CardFront;
+            bg.sprite = cardArt != null ? cardArt : CardVisualTheme.CardFront;
             bg.color = Color.white;
             bg.type = Image.Type.Simple;
-            bg.preserveAspect = false;
+            bg.preserveAspect = cardArt != null;
             bg.raycastTarget = true;
 
             // Card Border Outline
@@ -592,7 +624,15 @@ namespace Game29
             centerTxt.color = suitColor;
             centerTxt.raycastTarget = false;
 
-            if (centerSprite != null)
+            if (cardArt != null)
+            {
+                borderGO.SetActive(false);
+                centerImg.gameObject.SetActive(false);
+                centerTxt.gameObject.SetActive(false);
+                SetChildActive(rt, "CornerTL", false);
+                SetChildActive(rt, "CornerBR", false);
+            }
+            else if (centerSprite != null)
             {
                 centerImg.sprite = centerSprite;
                 centerImg.color = Color.white;

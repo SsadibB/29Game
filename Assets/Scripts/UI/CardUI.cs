@@ -226,52 +226,72 @@ namespace Game29
             _onClickCallback = onClick;
 
             gameObject.SetActive(true);
-            bgImage.sprite = CardVisualTheme.CardFront;
             bgImage.color = Color.white;
             bgImage.raycastTarget = true;
-            if (cardBorder != null) cardBorder.gameObject.SetActive(true);
+            bgImage.type = Image.Type.Simple;
+            bgImage.preserveAspect = true;
 
-            Color suitColor = CardVisualTheme.GetSuitColor(card.Suit);
-            string suitSym = CardVisualTheme.GetSuitSymbol(card.Suit);
-            string rankStr = CardVisualTheme.GetRankString(card.Rank);
+            // Printed card art already includes rank, suit, and its own border.
+            // Fall back to the procedural face only when that image is missing.
+            Sprite faceArt = CardVisualTheme.GetCardFace(card);
+            bool usePrintedFace = faceArt != null;
+            bgImage.sprite = usePrintedFace ? faceArt : CardVisualTheme.CardFront;
+            if (cardBorder != null) cardBorder.gameObject.SetActive(!usePrintedFace);
 
-            // Labels
-            rankTopLeft.text = rankStr;
-            rankTopLeft.color = suitColor;
-            suitTopLeft.text = suitSym;
-            suitTopLeft.color = suitColor;
-
-            rankBottomRight.text = rankStr;
-            rankBottomRight.color = suitColor;
-            suitBottomRight.text = suitSym;
-            suitBottomRight.color = suitColor;
-
-            // Center suit mark: prefer the SuitIcons artwork if it loaded, fall back
-            // to the unicode glyph so cards still render correctly without the asset.
-            Sprite suitSprite = CardVisualTheme.GetSuitSprite(card.Suit);
-            if (suitSprite != null && centerSuitImage != null)
+            if (usePrintedFace)
             {
-                centerSuitImage.sprite = suitSprite;
-                centerSuitImage.color = Color.white;
-                centerSuitImage.gameObject.SetActive(true);
-                centerSuitText.gameObject.SetActive(false);
+                SetFaceDecorActive(false);
             }
             else
             {
-                centerSuitText.text = suitSym;
-                centerSuitText.color = suitColor;
-                centerSuitText.gameObject.SetActive(true);
-                if (centerSuitImage != null) centerSuitImage.gameObject.SetActive(false);
-            }
+                Color suitColor = CardVisualTheme.GetSuitColor(card.Suit);
+                string suitSym = CardVisualTheme.GetSuitSymbol(card.Suit);
+                string rankStr = CardVisualTheme.GetRankString(card.Rank);
 
-            // Show face-up elements
-            rankTopLeft.gameObject.SetActive(true);
-            suitTopLeft.gameObject.SetActive(true);
-            rankBottomRight.gameObject.SetActive(true);
-            suitBottomRight.gameObject.SetActive(true);
+                rankTopLeft.text = rankStr;
+                rankTopLeft.color = suitColor;
+                suitTopLeft.text = suitSym;
+                suitTopLeft.color = suitColor;
+
+                rankBottomRight.text = rankStr;
+                rankBottomRight.color = suitColor;
+                suitBottomRight.text = suitSym;
+                suitBottomRight.color = suitColor;
+
+                Sprite suitSprite = CardVisualTheme.GetSuitSprite(card.Suit);
+                if (suitSprite != null && centerSuitImage != null)
+                {
+                    centerSuitImage.sprite = suitSprite;
+                    centerSuitImage.color = Color.white;
+                    centerSuitImage.gameObject.SetActive(true);
+                    centerSuitText.gameObject.SetActive(false);
+                }
+                else
+                {
+                    centerSuitText.text = suitSym;
+                    centerSuitText.color = suitColor;
+                    centerSuitText.gameObject.SetActive(true);
+                    if (centerSuitImage != null) centerSuitImage.gameObject.SetActive(false);
+                }
+
+                rankTopLeft.gameObject.SetActive(true);
+                suitTopLeft.gameObject.SetActive(true);
+                rankBottomRight.gameObject.SetActive(true);
+                suitBottomRight.gameObject.SetActive(true);
+            }
 
             // Playability and interactability
             SetPlayable(isPlayable);
+        }
+
+        private void SetFaceDecorActive(bool active)
+        {
+            if (rankTopLeft != null) rankTopLeft.gameObject.SetActive(active);
+            if (suitTopLeft != null) suitTopLeft.gameObject.SetActive(active);
+            if (centerSuitText != null) centerSuitText.gameObject.SetActive(active);
+            if (centerSuitImage != null) centerSuitImage.gameObject.SetActive(active);
+            if (rankBottomRight != null) rankBottomRight.gameObject.SetActive(active);
+            if (suitBottomRight != null) suitBottomRight.gameObject.SetActive(active);
         }
 
         /// <summary>Configures the card as face-down showing the card back.</summary>
@@ -287,15 +307,13 @@ namespace Game29
             gameObject.SetActive(true);
             bgImage.sprite = CardVisualTheme.CardBack;
             bgImage.color = Color.white;
+            bgImage.type = Image.Type.Simple;
+            bgImage.preserveAspect = true;
             bgImage.raycastTarget = false;
-            if (cardBorder != null) cardBorder.gameObject.SetActive(true);
+            // Card_Back already includes its own border.
+            if (cardBorder != null) cardBorder.gameObject.SetActive(false);
 
-            rankTopLeft.gameObject.SetActive(false);
-            suitTopLeft.gameObject.SetActive(false);
-            centerSuitText.gameObject.SetActive(false);
-            if (centerSuitImage != null) centerSuitImage.gameObject.SetActive(false);
-            rankBottomRight.gameObject.SetActive(false);
-            suitBottomRight.gameObject.SetActive(false);
+            SetFaceDecorActive(false);
 
             if (glowOutline != null) glowOutline.gameObject.SetActive(false);
             canvasGroup.alpha = 1f;

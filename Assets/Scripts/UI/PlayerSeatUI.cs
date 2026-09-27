@@ -34,6 +34,7 @@ namespace Game29
         private bool _skipButtonVisible;
         private bool _thinkingVisible;
         private bool _isPassed;
+        private bool _biddingActionVisible;
         private Tween _skipPulseTween;
         private Vector3 _originalActionBubbleScale = Vector3.one;
         private Vector3 _originalSkipButtonScale = Vector3.one;
@@ -68,19 +69,16 @@ namespace Game29
         }
 
         /// <summary>
-        /// Returns the anchored-position offset for the dealer coin relative to this seat's center.
-        /// The coin is placed adjacent to the avatar circle so it's clearly associated with that player
-        /// but doesn't obscure the face image.
-        /// South → top-right of avatar | North → bottom-right | East → top-left | West → top-right
+        /// Dealer coin sits beside the avatar. Every seat uses the same Y (-40).
         /// </summary>
         private Vector2 GetDealerCoinOffset()
         {
             return Seat switch
             {
                 PlayerSeat.North => new Vector2(40f, -40f),
-                PlayerSeat.East => new Vector2(-50f, 40f),
-                PlayerSeat.West => new Vector2(50f, 40f),
-                _ => new Vector2(40f, 40f),   // South
+                PlayerSeat.East => new Vector2(-50f, -40f),
+                PlayerSeat.West => new Vector2(50f, -40f),
+                _ => new Vector2(40f, -40f),   // South
             };
         }
 
@@ -341,8 +339,12 @@ namespace Game29
                 actionBubbleText.alignment = TextAnchor.MiddleCenter;
                 actionBubbleText.color = CardVisualTheme.ColorGold;
                 actionBubbleText.raycastTarget = false;
-                ab.SetActive(false);
             }
+
+            // Hidden until this player actually bids or passes. A bubble left
+            // active in the scene must not appear as soon as the game starts.
+            if (actionBubbleBg != null && !_biddingActionVisible && !_thinkingVisible && _actionBubbleCoroutine == null && !_skipButtonVisible)
+                actionBubbleBg.gameObject.SetActive(false);
 
             // Skip_Text is hand-created/wired in the Editor (Button component
             // already added), so it isn't null here — just force it hidden the
@@ -389,6 +391,13 @@ namespace Game29
                 }
                 dealerCoinImage.raycastTarget = false;
                 coinObj.SetActive(false);
+            }
+
+            if (dealerCoinImage != null)
+            {
+                RectTransform coinRT = dealerCoinImage.rectTransform;
+                if (coinRT != null)
+                    coinRT.anchoredPosition = GetDealerCoinOffset();
             }
 
             SetupIdentity();
@@ -507,55 +516,100 @@ namespace Game29
         }
 
         /// <summary>
-        /// Shows a permanent "Pass" bubble and dims the avatar to indicate
-        /// this player has passed during bidding. Unlike ShowActionBubble(),
-        /// this does NOT auto-hide — it persists until ResetPassState() is called.
+        /// Shows this seat's latest bidding action and leaves it visible until
+        /// this player acts again or the next bidding round clears every bubble.
+        /// Bids show the number. A pass shows PASS.
         /// </summary>
-        public void ShowPersistentPass()
+        public void ShowBiddingAction(string label, bool isPass, bool dimAvatar)
         {
-            if (_isPassed) return;
-            _isPassed = true;
-
-            // Dim the avatar to signal this player is out of bidding
-            if (avatarBg != null) avatarBg.color = new Color(1f, 1f, 1f, 0.35f);
-            if (avatarIcon != null) avatarIcon.color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
-
+            if (actionBubbleBg == null || actionBubbleText == null) EnsureComponents();
             if (actionBubbleBg == null || actionBubbleText == null) return;
 
-            // Cancel any running auto-hide coroutine
             if (_actionBubbleCoroutine != null)
             {
                 StopCoroutine(_actionBubbleCoroutine);
                 _actionBubbleCoroutine = null;
             }
-            HideThinking();
 
-            actionBubbleText.text = "Pass";
-            actionBubbleText.color = new Color(0.75f, 0.78f, 0.85f, 1f); // muted pale colour
+            _thinkingVisible = false;
+            _biddingActionVisible = true;
+            actionBubbleBg.transform.DOKill();
+
+            if (isPass)
+            {
+                _isPassed = true;
+                if (dimAvatar)
+                {
+                    if (avatarBg != null) avatarBg.color = new Color(1f, 1f, 1f, 0.35f);
+                    if (avatarIcon != null) avatarIcon.color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+                }
+                actionBubbleText.color = new Color(0.75f, 0.78f, 0.85f, 1f);
+            }
+            else
+            {
+                _isPassed = false;
+                if (!_isDisabledPartner)
+                {
+                    if (avatarBg != null) avatarBg.color = Color.white;
+                    if (avatarIcon != null) avatarIcon.color = Color.white;
+                }
+                actionBubbleText.color = CardVisualTheme.ColorGold;
+            }
+
+            actionBubbleText.text = label;
             actionBubbleText.gameObject.SetActive(true);
 
             bool rootWasActive = actionBubbleBg.gameObject.activeSelf;
             actionBubbleBg.gameObject.SetActive(true);
             if (!rootWasActive)
             {
-                actionBubbleBg.transform.DOKill();
                 actionBubbleBg.transform.localScale = Vector3.one * 0.6f;
                 actionBubbleBg.transform.DOScale(1f, 0.22f).SetEase(Ease.OutBack).SetLink(actionBubbleBg.gameObject);
+            }
+            else
+            {
+                actionBubbleBg.transform.localScale = Vector3.one;
             }
         }
 
         /// <summary>
-        /// Resets the pass state set by ShowPersistentPass() — restores avatar
-        /// colors and hides the action bubble. Call at the start of a new round.
+        /// Shows a permanent "PASS" bubble and dims the avatar to indicate
+        /// this player has passed during bidding. Unlike ShowActionBubble(),
+        /// this does NOT auto-hide — it persists until the next bidding round.
+        /// </summary>
+        public void ShowPersistentPass()
+        {
+            ShowBiddingAction("PASS", true, true);
+        }
+
+        /// <summary>
+        /// Restores avatar colours after bidding without hiding the bid or PASS bubble.
+        /// </summary>
+        public void EndBiddingDimming()
+        {
+            _isPassed = false;
+            if (_isDisabledPartner) return;
+            if (avatarBg != null) avatarBg.color = Color.white;
+            if (avatarIcon != null) avatarIcon.color = Color.white;
+            SetupIdentity();
+        }
+
+        /// <summary>
+        /// Clears the bidding action bubble and restores the avatar.
+        /// Call when the next bidding round begins.
         /// </summary>
         public void ResetPassState()
         {
-            if (!_isPassed) return;
             _isPassed = false;
+            _biddingActionVisible = false;
+            _thinkingVisible = false;
 
-            // Restore avatar (SetupIdentity handles name label color as well).
-            // A Single-Play disabled partner is a separate gameplay state — leave
-            // that seat's disabled visuals alone; only the bidding dim is cleared.
+            if (_actionBubbleCoroutine != null)
+            {
+                StopCoroutine(_actionBubbleCoroutine);
+                _actionBubbleCoroutine = null;
+            }
+
             if (!_isDisabledPartner)
             {
                 if (avatarBg != null) avatarBg.color = Color.white;
@@ -563,30 +617,30 @@ namespace Game29
                 SetupIdentity();
             }
 
-            // Restore action bubble text color and hide the bubble
             if (actionBubbleText != null)
             {
                 actionBubbleText.color = CardVisualTheme.ColorGold;
                 actionBubbleText.gameObject.SetActive(false);
             }
             if (!_skipButtonVisible && actionBubbleBg != null)
+            {
+                actionBubbleBg.transform.DOKill();
                 actionBubbleBg.gameObject.SetActive(false);
+            }
         }
 
         public void ShowActionBubble(string text, float duration = 2.5f)
         {
             if (actionBubbleBg == null || actionBubbleText == null) return;
 
-            // Don't overwrite a persistent Pass bubble
-            if (_isPassed) return;
-
             // Skip_Text (once available) owns the shared bubble — Bid_Text
             // ("Text") doesn't get to interrupt it with a trick-win message
             // until Skip goes unavailable again.
             if (_skipButtonVisible) return;
 
-            // Hide any active Thinking state before showing a result bubble.
-            HideThinking();
+            // A later action (trick win, and so on) replaces the bidding bubble.
+            _biddingActionVisible = false;
+            _thinkingVisible = false;
 
             actionBubbleText.text = text;
             actionBubbleText.gameObject.SetActive(true);
@@ -610,34 +664,10 @@ namespace Game29
         }
 
         /// <summary>
-        /// Shows a persistent "Thinking…" bubble while the AI is deciding its bid.
-        /// Stays visible until HideThinking() or ShowActionBubble() clears it.
+        /// The action bubble stays hidden until this player bids or passes.
         /// </summary>
         public void ShowThinking()
         {
-            if (actionBubbleBg == null || actionBubbleText == null) return;
-            if (_skipButtonVisible) return;
-
-            _thinkingVisible = true;
-
-            // Cancel any auto-hide coroutine so the thinking bubble persists.
-            if (_actionBubbleCoroutine != null)
-            {
-                StopCoroutine(_actionBubbleCoroutine);
-                _actionBubbleCoroutine = null;
-            }
-
-            actionBubbleText.text = "Thinking\u2026";
-            actionBubbleText.gameObject.SetActive(true);
-
-            bool rootWasActive = actionBubbleBg.gameObject.activeSelf;
-            actionBubbleBg.gameObject.SetActive(true);
-            if (!rootWasActive)
-            {
-                actionBubbleBg.transform.DOKill();
-                actionBubbleBg.transform.localScale = Vector3.one * 0.6f;
-                actionBubbleBg.transform.DOScale(1f, 0.18f).SetEase(Ease.OutBack).SetLink(actionBubbleBg.gameObject);
-            }
         }
 
         /// <summary>
@@ -648,6 +678,7 @@ namespace Game29
         {
             if (!_thinkingVisible) return;
             _thinkingVisible = false;
+            if (_biddingActionVisible) return;
 
             if (actionBubbleText != null) actionBubbleText.gameObject.SetActive(false);
 
@@ -658,7 +689,7 @@ namespace Game29
                     .SetLink(actionBubbleBg.gameObject)
                     .OnComplete(() =>
                     {
-                        if (actionBubbleBg != null && !_skipButtonVisible && !_thinkingVisible)
+                        if (actionBubbleBg != null && !_skipButtonVisible && !_thinkingVisible && !_biddingActionVisible)
                             actionBubbleBg.gameObject.SetActive(false);
                     });
             }
@@ -667,6 +698,11 @@ namespace Game29
         private System.Collections.IEnumerator HideActionBubbleRoutine(float duration)
         {
             yield return new WaitForSeconds(duration);
+            if (_biddingActionVisible)
+            {
+                _actionBubbleCoroutine = null;
+                yield break;
+            }
 
             // Only the timed message text goes away here — Skip_Text (if
             // active) is managed independently by SetSkipButtonActive and
@@ -680,7 +716,7 @@ namespace Game29
                     .SetLink(actionBubbleBg.gameObject)
                     .OnComplete(() =>
                     {
-                        if (actionBubbleBg != null && !_skipButtonVisible)
+                        if (actionBubbleBg != null && !_skipButtonVisible && !_biddingActionVisible)
                             actionBubbleBg.gameObject.SetActive(false);
                     });
             }
