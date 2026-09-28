@@ -3,6 +3,7 @@
     "rootNamespace": "Game29",
     "references": [
         "UnityEngine.UI",
+        "Unity.TextMeshPro",
         "Unity.InputSystem",
         "DOTween.Modules"
     ],

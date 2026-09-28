@@ -41,6 +41,7 @@ namespace Game29
         [SerializeField] private TrumpSelectionModalUI trumpSelectionModal;
         [SerializeField] private TrumpCardSlotUI trumpCardSlot;
         [SerializeField] private DecisionPanelUI decisionPanel;
+        [SerializeField] private RulesPanelUI rulesPanel;
 
         [Header("Point Card System (-6 to +6)")]
         [SerializeField] private PointCardSlotUI yourTeamPointCard;
@@ -859,6 +860,17 @@ namespace Game29
                 decisionPanel = dpObj.GetComponent<DecisionPanelUI>() ?? dpObj.AddComponent<DecisionPanelUI>();
                 decisionPanel.EnsureComponents();
                 decisionPanel.Hide();
+            }
+
+            if (rulesPanel == null)
+            {
+                Transform rpT = transform.Find("DescriptionPanel");
+                if (rpT != null)
+                {
+                    rulesPanel = rpT.GetComponent<RulesPanelUI>() ?? rpT.gameObject.AddComponent<RulesPanelUI>();
+                    rulesPanel.EnsureWired();
+                    rulesPanel.Hide();
+                }
             }
 
             ApplyLandscapeLayout();
