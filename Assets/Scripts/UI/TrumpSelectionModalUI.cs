@@ -237,7 +237,7 @@ namespace Game29
                     spadesBtn = CreateCardButton(panelRT, "2OfSpades", new Vector2(-370, -25),
                         "2", CardVisualTheme.GetSuitSymbol(Suit.Spades), CardVisualTheme.GetSuitColor(Suit.Spades),
                         CardVisualTheme.GetSuitSprite(Suit.Spades), CardVisualTheme.GetSuitSymbol(Suit.Spades),
-                        CardVisualTheme.LoadCardSprite("2_of_spades"));
+                        CardVisualTheme.GetTrumpMarkerFace(Suit.Spades));
                 }
             }
 
@@ -248,9 +248,9 @@ namespace Game29
                 if (heartsBtn == null)
                 {
                     heartsBtn = CreateCardButton(panelRT, "2OfHearts", new Vector2(-222, -25),
-                        "2", CardVisualTheme.GetSuitSymbol(Suit.Hearts), CardVisualTheme.GetSuitColor(Suit.Hearts),
+                        "4", CardVisualTheme.GetSuitSymbol(Suit.Hearts), CardVisualTheme.GetSuitColor(Suit.Hearts),
                         CardVisualTheme.GetSuitSprite(Suit.Hearts), CardVisualTheme.GetSuitSymbol(Suit.Hearts),
-                        CardVisualTheme.LoadCardSprite("2_of_hearts"));
+                        CardVisualTheme.GetTrumpMarkerFace(Suit.Hearts));
                 }
             }
 
@@ -261,9 +261,9 @@ namespace Game29
                 if (clubsBtn == null)
                 {
                     clubsBtn = CreateCardButton(panelRT, "2OfClubs", new Vector2(-74, -25),
-                        "2", CardVisualTheme.GetSuitSymbol(Suit.Clubs), CardVisualTheme.GetSuitColor(Suit.Clubs),
+                        "3", CardVisualTheme.GetSuitSymbol(Suit.Clubs), CardVisualTheme.GetSuitColor(Suit.Clubs),
                         CardVisualTheme.GetSuitSprite(Suit.Clubs), CardVisualTheme.GetSuitSymbol(Suit.Clubs),
-                        CardVisualTheme.LoadCardSprite("2_of_clubs"));
+                        CardVisualTheme.GetTrumpMarkerFace(Suit.Clubs));
                 }
             }
 
@@ -274,9 +274,9 @@ namespace Game29
                 if (diamondsBtn == null)
                 {
                     diamondsBtn = CreateCardButton(panelRT, "2OfDiamonds", new Vector2(74, -25),
-                        "2", CardVisualTheme.GetSuitSymbol(Suit.Diamonds), CardVisualTheme.GetSuitColor(Suit.Diamonds),
+                        "5", CardVisualTheme.GetSuitSymbol(Suit.Diamonds), CardVisualTheme.GetSuitColor(Suit.Diamonds),
                         CardVisualTheme.GetSuitSprite(Suit.Diamonds), CardVisualTheme.GetSuitSymbol(Suit.Diamonds),
-                        CardVisualTheme.LoadCardSprite("2_of_diamonds"));
+                        CardVisualTheme.GetTrumpMarkerFace(Suit.Diamonds));
                 }
             }
 
@@ -304,6 +304,7 @@ namespace Game29
             }
 
             HookButtonListeners();
+            ApplyPrintedTrumpFaces();
         }
 
         private void HookButtonListeners()
@@ -356,6 +357,7 @@ namespace Game29
             Card sevenCard = hand?.Cards != null ? hand.Cards.FirstOrDefault(c => c.Rank == Rank.Seven) : null;
             Suit dynamicSuit = sevenCard != null ? sevenCard.Suit : Suit.Hearts;
             UpdateSeventhCardVisual(dynamicSuit);
+            ApplyPrintedTrumpFaces();
 
             // Backdrop fade in
             if (backdropImage != null)
@@ -458,6 +460,32 @@ namespace Game29
         // ════════════════════════════════════════════════════════════════════
         // DYNAMIC UPDATES & CARD BUILDERS
         // ════════════════════════════════════════════════════════════════════
+
+        private void ApplyPrintedTrumpFaces()
+        {
+            ApplyPrintedFace(spadesBtn, CardVisualTheme.GetTrumpMarkerFace(Suit.Spades));
+            ApplyPrintedFace(heartsBtn, CardVisualTheme.GetTrumpMarkerFace(Suit.Hearts));
+            ApplyPrintedFace(clubsBtn, CardVisualTheme.GetTrumpMarkerFace(Suit.Clubs));
+            ApplyPrintedFace(diamondsBtn, CardVisualTheme.GetTrumpMarkerFace(Suit.Diamonds));
+        }
+
+        private static void ApplyPrintedFace(Button btn, Sprite face)
+        {
+            if (btn == null || face == null) return;
+            Image bg = btn.GetComponent<Image>();
+            if (bg == null) return;
+            bg.sprite = face;
+            bg.type = Image.Type.Simple;
+            bg.preserveAspect = true;
+            bg.color = Color.white;
+            Transform t = btn.transform;
+            SetChildActive(t, "CornerTL", false);
+            SetChildActive(t, "CornerBR", false);
+            SetChildActive(t, "CenterGraphix", false);
+            SetChildActive(t, "CenterGraphic", false);
+            SetChildActive(t, "CenterText", false);
+            SetChildActive(t, "CardBorder", false);
+        }
 
         /// <summary>
         /// Dynamically updates the 7th Card visual to match the player's 7-rank card suit.

@@ -34,11 +34,13 @@ namespace Game29
         private bool _skipButtonVisible;
         private bool _thinkingVisible;
         private bool _isPassed;
+        private bool _passSticky;
         private bool _biddingActionVisible;
         private Tween _skipPulseTween;
         private Vector3 _originalActionBubbleScale = Vector3.one;
         private Vector3 _originalSkipButtonScale = Vector3.one;
         private bool _skipScalesCached;
+        private static readonly Color BubbleStatusColor = new Color(0.22f, 0.08f, 0.02f, 1f);
 
         [SerializeField] private Sprite avatarSprite;
 
@@ -517,8 +519,8 @@ namespace Game29
 
         /// <summary>
         /// Shows this seat's latest bidding action and leaves it visible until
-        /// this player acts again or the next bidding round clears every bubble.
-        /// Bids show the number. A pass shows PASS.
+        /// this player acts again or trump is set. Bids show the number. A pass
+        /// shows Pass until trump is chosen.
         /// </summary>
         public void ShowBiddingAction(string label, bool isPass, bool dimAvatar)
         {
@@ -538,16 +540,18 @@ namespace Game29
             if (isPass)
             {
                 _isPassed = true;
+                _passSticky = true;
                 if (dimAvatar)
                 {
                     if (avatarBg != null) avatarBg.color = new Color(1f, 1f, 1f, 0.35f);
                     if (avatarIcon != null) avatarIcon.color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
                 }
-                actionBubbleText.color = new Color(0.75f, 0.78f, 0.85f, 1f);
+                actionBubbleText.color = BubbleStatusColor;
             }
             else
             {
                 _isPassed = false;
+                _passSticky = false;
                 if (!_isDisabledPartner)
                 {
                     if (avatarBg != null) avatarBg.color = Color.white;
@@ -579,7 +583,7 @@ namespace Game29
         /// </summary>
         public void ShowPersistentPass()
         {
-            ShowBiddingAction("PASS", true, true);
+            ShowBiddingAction("Pass", true, true);
         }
 
         /// <summary>
@@ -601,6 +605,7 @@ namespace Game29
         public void ResetPassState()
         {
             _isPassed = false;
+            _passSticky = false;
             _biddingActionVisible = false;
             _thinkingVisible = false;
 
@@ -664,10 +669,41 @@ namespace Game29
         }
 
         /// <summary>
-        /// The action bubble stays hidden until this player bids or passes.
+        /// Shows "Thinking..." on this seat's existing action bubble until a bid
+        /// or pass replaces it. Other seats' bubbles are left alone.
         /// </summary>
         public void ShowThinking()
         {
+            if (_passSticky) return;
+
+            if (actionBubbleBg == null || actionBubbleText == null) EnsureComponents();
+            if (actionBubbleBg == null || actionBubbleText == null) return;
+
+            if (_actionBubbleCoroutine != null)
+            {
+                StopCoroutine(_actionBubbleCoroutine);
+                _actionBubbleCoroutine = null;
+            }
+
+            _thinkingVisible = true;
+            _biddingActionVisible = false;
+            actionBubbleBg.transform.DOKill();
+
+            actionBubbleText.color = BubbleStatusColor;
+            actionBubbleText.text = "Thinking...";
+            actionBubbleText.gameObject.SetActive(true);
+
+            bool rootWasActive = actionBubbleBg.gameObject.activeSelf;
+            actionBubbleBg.gameObject.SetActive(true);
+            if (!rootWasActive)
+            {
+                actionBubbleBg.transform.localScale = Vector3.one * 0.6f;
+                actionBubbleBg.transform.DOScale(1f, 0.22f).SetEase(Ease.OutBack).SetLink(actionBubbleBg.gameObject);
+            }
+            else
+            {
+                actionBubbleBg.transform.localScale = Vector3.one;
+            }
         }
 
         /// <summary>
@@ -676,9 +712,9 @@ namespace Game29
         /// </summary>
         public void HideThinking()
         {
+            if (_passSticky || _biddingActionVisible) return;
             if (!_thinkingVisible) return;
             _thinkingVisible = false;
-            if (_biddingActionVisible) return;
 
             if (actionBubbleText != null) actionBubbleText.gameObject.SetActive(false);
 

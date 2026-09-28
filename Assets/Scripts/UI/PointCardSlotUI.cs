@@ -316,8 +316,9 @@ namespace Game29
             _currentScore = clampedScore;
             _currentBoardCardPts = boardCardPoints;
 
-            // Round Display: Team: [goted card points] / Opponent: [goted card points]
-            if (boardCardPointsText != null)
+            // ScoreHUD owns the team-points labels. Do not overwrite texts that
+            // live outside this point-card object.
+            if (boardCardPointsText != null && boardCardPointsText.transform.IsChildOf(transform))
             {
                 string label = teamIndex == 0 ? "Points" : "Points";
                 boardCardPointsText.text = $"{label}: <b>{boardCardPoints}</b>";
@@ -330,7 +331,6 @@ namespace Game29
             }
 
             int pointCount = Mathf.Abs(clampedScore);
-            Suit suit = clampedScore >= 0 ? Suit.Hearts : Suit.Spades;
 
             if (clampedScore == 0)
             {
@@ -338,7 +338,7 @@ namespace Game29
             }
             else
             {
-                ApplyStackedScore(pointCount, suit, clampedScore > 0, scoreChanged);
+                ApplyStackedScore(pointCount, clampedScore > 0, scoreChanged);
             }
 
             if (scoreChanged && gameObject.activeInHierarchy)
@@ -366,87 +366,24 @@ namespace Game29
             MoveUpperCard(Vector2.zero, 0f, animate);
         }
 
-        private void ApplyStackedScore(int count, Suit suit, bool isPositive, bool animate)
+        private void ApplyStackedScore(int count, bool isPositive, bool animate)
         {
-            // Base Card (Underneath: The 6-point card)
             if (baseCardTransform != null)
-            {
                 baseCardTransform.gameObject.SetActive(true);
-                baseCardBg.sprite = CardVisualTheme.CreateRoundedRectSprite(100, 140, 14, CardVisualTheme.ColorCardPaper, CardVisualTheme.ColorBorderGold, 3);
-            }
 
-            Color suitColor = CardVisualTheme.GetSuitColor(suit);
-            string suitSym = CardVisualTheme.GetSuitSymbol(suit);
-            Sprite suitSprite = CardVisualTheme.GetSuitSprite(suit);
-
-            // Base Card corner indices
-            if (baseRankTopLeft != null)
+            Sprite sixFace = CardVisualTheme.GetTeamPointSixFace(teamIndex, isPositive);
+            if (baseCardBg != null && sixFace != null)
             {
-                baseRankTopLeft.gameObject.SetActive(true);
-                baseRankTopLeft.text = "6";
-                baseRankTopLeft.color = suitColor;
+                baseCardBg.sprite = sixFace;
+                baseCardBg.type = Image.Type.Simple;
+                baseCardBg.preserveAspect = true;
+                baseCardBg.color = Color.white;
             }
-
-            if (baseSuitTopLeft != null)
-            {
-                baseSuitTopLeft.gameObject.SetActive(true);
-                baseSuitTopLeft.text = suitSym;
-                baseSuitTopLeft.color = suitColor;
-            }
-
-            if (baseRankBottomRight != null)
-            {
-                baseRankBottomRight.gameObject.SetActive(true);
-                baseRankBottomRight.text = "6";
-                baseRankBottomRight.color = suitColor;
-            }
-
-            if (baseSuitBottomRight != null)
-            {
-                baseSuitBottomRight.gameObject.SetActive(true);
-                baseSuitBottomRight.text = suitSym;
-                baseSuitBottomRight.color = suitColor;
-            }
-
-            // Position and activate the 6 suit icons on the 6-point card:
-            Vector2[] pipPositions = GetBaseCardPipPositions();
 
             if (pipsContainer != null)
-                pipsContainer.SetActive(true);
+                pipsContainer.SetActive(false);
 
-            for (int i = 0; i < 6; i++)
-            {
-                if (pipTexts[i] != null && pipTexts[i].transform.parent != null)
-                {
-                    RectTransform prt = (RectTransform)pipTexts[i].transform.parent;
-                    prt.anchoredPosition = pipPositions[i];
-
-                    // Only the exact suits required for this point count remain
-                    // visible (see VisiblePipsByCount) — NOT simply "the first N
-                    // pip indices". E.g. at 2 points the top-left AND top-right
-                    // pips show (indices 0 and 3), not top-left + mid-left.
-                    bool isVisible = IsPipVisible(i, count);
-                    prt.gameObject.SetActive(isVisible);
-
-                    if (isVisible)
-                    {
-                        if (suitSprite != null && pipImages[i] != null)
-                        {
-                            pipImages[i].sprite = suitSprite;
-                            pipImages[i].color = Color.white;
-                            pipImages[i].gameObject.SetActive(true);
-                            pipTexts[i].gameObject.SetActive(false);
-                        }
-                        else
-                        {
-                            if (pipImages[i] != null) pipImages[i].gameObject.SetActive(false);
-                            pipTexts[i].gameObject.SetActive(true);
-                            pipTexts[i].text = suitSym;
-                            pipTexts[i].color = suitColor;
-                        }
-                    }
-                }
-            }
+            SetCornerActive(false);
 
             // Upper Card (Tilted diagonally over base card)
             if (upperCardShadow != null)
@@ -462,6 +399,14 @@ namespace Game29
             Vector2 targetPos = GetUpperCardOffset(count);
             float targetRot = GetUpperCardRotation(count);
             MoveUpperCard(targetPos, targetRot, animate);
+        }
+
+        private void SetCornerActive(bool active)
+        {
+            if (baseRankTopLeft != null) baseRankTopLeft.gameObject.SetActive(active);
+            if (baseSuitTopLeft != null) baseSuitTopLeft.gameObject.SetActive(active);
+            if (baseRankBottomRight != null) baseRankBottomRight.gameObject.SetActive(active);
+            if (baseSuitBottomRight != null) baseSuitBottomRight.gameObject.SetActive(active);
         }
 
         private void MoveUpperCard(Vector2 targetPos, float targetRot, bool animate)

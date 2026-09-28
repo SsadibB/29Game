@@ -79,7 +79,7 @@ namespace Game29
 
         [Header("Pacing & Delays")]
         [SerializeField] private bool enablePacing = true;
-        [SerializeField] private float aiBidDelay = 3.0f;
+        [SerializeField] private float aiBidDelay = 2.0f;
         [SerializeField] private float aiPlayDelay = 1.0f;
         [SerializeField] private float cardTravelDuration = 0.45f;
         [SerializeField] private float trickClearDelay = 1.2f;
@@ -141,6 +141,9 @@ namespace Game29
         /// <summary>General "something changed — refresh your display" event.</summary>
         public event Action OnStateChanged;
 
+        /// <summary>Fired when the bid winner has chosen trump (suit, joker, or 7th card).</summary>
+        public event Action OnTrumpChosen;
+
         /// <summary>
         /// Fired when an AI player starts "thinking" about their bid.
         /// UI can show a "Thinking…" bubble on the corresponding seat.
@@ -186,7 +189,7 @@ namespace Game29
             _trickMgr.OnCardPlayed += HandleCardPlayed;
             _trickMgr.OnTrickWon += HandleTrickWon;
             _trickMgr.OnRoundComplete += HandleRoundComplete;
-            _trumpMgr.OnTrumpChosen += NotifyStateChanged;
+            _trumpMgr.OnTrumpChosen += HandleTrumpChosen;
             _trumpMgr.OnTrumpRevealed += t => { OnTrumpRevealed?.Invoke(t); NotifyStateChanged(); };
             _scoreMgr.OnRoundScored += HandleRoundScored;
             _scoreMgr.OnGameOver += HandleGameOver;
@@ -625,21 +628,22 @@ namespace Game29
             {
                 while (!_biddingMgr.BiddingComplete && CurrentPlayer != HumanSeat)
                 {
-                    AIPlayer ai = GetAI(CurrentPlayer);
+                    PlayerSeat actor = CurrentPlayer;
+                    AIPlayer ai = GetAI(actor);
                     if (ai == null) break;
 
                     bool partnerLeading =
-                        GameRules.GetTeam(_biddingMgr.CurrentHighBidder) == GameRules.GetTeam(CurrentPlayer)
+                        GameRules.GetTeam(_biddingMgr.CurrentHighBidder) == GameRules.GetTeam(actor)
                         && _biddingMgr.CurrentHighBid >= GameRules.MinBid;
 
-                    int? bid = ai.DecideBid(_hands[(int)CurrentPlayer], _biddingMgr.CurrentHighBid, partnerLeading);
+                    int? bid = ai.DecideBid(_hands[(int)actor], _biddingMgr.CurrentHighBid, partnerLeading);
+
+                    OnBiddingAction?.Invoke(actor, bid);
 
                     if (bid.HasValue)
-                        _biddingMgr.PlaceBid(CurrentPlayer, bid.Value);
+                        _biddingMgr.PlaceBid(actor, bid.Value);
                     else
-                        _biddingMgr.Pass(CurrentPlayer);
-
-                    OnBiddingAction?.Invoke(CurrentPlayer, bid);
+                        _biddingMgr.Pass(actor);
 
                     if (!_biddingMgr.BiddingComplete)
                         SetCurrentPlayer(_biddingMgr.CurrentBidder);
@@ -651,30 +655,37 @@ namespace Game29
         {
             while (!_biddingMgr.BiddingComplete && CurrentPlayer != HumanSeat)
             {
-                // Show "Thinking" bubble on the current AI seat immediately,
-                // before the delay so the player sees the AI considering.
-                OnAIBiddingThinking?.Invoke(CurrentPlayer);
+                PlayerSeat actor = CurrentPlayer;
+                if (_biddingMgr.HasPassed(actor))
+                {
+                    if (!_biddingMgr.BiddingComplete)
+                        SetCurrentPlayer(_biddingMgr.CurrentBidder);
+                    yield return null;
+                    continue;
+                }
+
+                OnAIBiddingThinking?.Invoke(actor);
 
                 yield return new WaitForSeconds(aiBidDelay);
 
-                if (_biddingMgr.BiddingComplete || CurrentPlayer == HumanSeat)
+                if (_biddingMgr.BiddingComplete || CurrentPlayer != actor || _biddingMgr.HasPassed(actor))
                     yield break;
 
-                AIPlayer ai = GetAI(CurrentPlayer);
+                AIPlayer ai = GetAI(actor);
                 if (ai == null) yield break;
 
                 bool partnerLeading =
-                    GameRules.GetTeam(_biddingMgr.CurrentHighBidder) == GameRules.GetTeam(CurrentPlayer)
+                    GameRules.GetTeam(_biddingMgr.CurrentHighBidder) == GameRules.GetTeam(actor)
                     && _biddingMgr.CurrentHighBid >= GameRules.MinBid;
 
-                int? bid = ai.DecideBid(_hands[(int)CurrentPlayer], _biddingMgr.CurrentHighBid, partnerLeading);
+                int? bid = ai.DecideBid(_hands[(int)actor], _biddingMgr.CurrentHighBid, partnerLeading);
+
+                OnBiddingAction?.Invoke(actor, bid);
 
                 if (bid.HasValue)
-                    _biddingMgr.PlaceBid(CurrentPlayer, bid.Value);
+                    _biddingMgr.PlaceBid(actor, bid.Value);
                 else
-                    _biddingMgr.Pass(CurrentPlayer);
-
-                OnBiddingAction?.Invoke(CurrentPlayer, bid);
+                    _biddingMgr.Pass(actor);
 
                 if (!_biddingMgr.BiddingComplete)
                     SetCurrentPlayer(_biddingMgr.CurrentBidder);
@@ -705,15 +716,23 @@ namespace Game29
             else
             {
                 Hand winnerHand = _hands[(int)winner];
-                AIPlayer ai = GetAI(winner);
-                if (ai != null)
-                    ApplyAITrumpChoice(ai, winner, winnerHand);
-                else
-                    _trumpMgr.SelectTrump(winner, winnerHand);
-
-                Debug.Log($"[29] Bid won by {winner} at {bid}. Trump mode: {_trumpMgr.Mode} (hidden until revealed).");
-                StartDoubleDecisionStep();
+                StartCoroutine(ApplyAITrumpAfterPassBubbles(winner, winnerHand));
             }
+        }
+
+        private IEnumerator ApplyAITrumpAfterPassBubbles(PlayerSeat winner, Hand winnerHand)
+        {
+            yield return null;
+            if (CurrentPhase != GamePhase.TrumpSelection) yield break;
+
+            AIPlayer ai = GetAI(winner);
+            if (ai != null)
+                ApplyAITrumpChoice(ai, winner, winnerHand);
+            else
+                _trumpMgr.SelectTrump(winner, winnerHand);
+
+            Debug.Log($"[29] Bid won by {winner} at {_scoreMgr.CurrentBid}. Trump mode: {_trumpMgr.Mode} (hidden until revealed).");
+            StartDoubleDecisionStep();
         }
 
         /// <summary>Called when the human Bid Winner selects a trump suit from their 4 cards.</summary>
@@ -1126,6 +1145,12 @@ namespace Game29
         }
 
         private void NotifyStateChanged() => OnStateChanged?.Invoke();
+
+        private void HandleTrumpChosen()
+        {
+            OnTrumpChosen?.Invoke();
+            NotifyStateChanged();
+        }
 
         private AIPlayer GetAI(PlayerSeat seat)
         {

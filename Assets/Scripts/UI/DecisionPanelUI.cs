@@ -22,6 +22,7 @@ namespace Game29
     {
         [Header("UI References")]
         [SerializeField] private Text titleText;
+        [SerializeField] private Text bidInfoText;
         [SerializeField] private Button decisionBtn;
         [SerializeField] private Text decisionBtnText;
         [SerializeField] private Button negativeBtn;
@@ -42,20 +43,29 @@ namespace Game29
         {
             if (titleText == null)
             {
-                Transform t = transform.Find("Title");
+                Transform t = FindChildByName(transform, "Title");
                 if (t != null) titleText = t.GetComponent<Text>();
             }
             if (titleText != null)
             {
-                // Fixed box, exactly as originally authored in the scene — never resized
-                // per-call. Best Fit shrinks the font so 1-4 lines all stay inside this
-                // same box instead of growing/clipping past the card art's visible bounds.
                 titleText.resizeTextForBestFit = true;
                 titleText.resizeTextMinSize = MinFontSize;
                 titleText.resizeTextMaxSize = MaxFontSize;
                 titleText.verticalOverflow = VerticalWrapMode.Overflow;
                 titleText.horizontalOverflow = HorizontalWrapMode.Wrap;
                 titleText.alignment = TextAnchor.MiddleCenter;
+            }
+
+            if (bidInfoText == null)
+            {
+                Transform bid = FindChildByName(transform, "BidInfo");
+                if (bid != null) bidInfoText = bid.GetComponent<Text>() ?? bid.GetComponentInChildren<Text>(true);
+            }
+            if (bidInfoText != null)
+            {
+                bidInfoText.horizontalOverflow = HorizontalWrapMode.Wrap;
+                bidInfoText.verticalOverflow = VerticalWrapMode.Overflow;
+                bidInfoText.supportRichText = true;
             }
 
             if (decisionBtn == null)
@@ -113,7 +123,9 @@ namespace Game29
         public void ShowDoubleDecision(string trumpSetterPosition, int target, string trumpTypeLabel,
             Action onConfirm, Action onReject)
         {
-            ShowDecision(trumpSetterPosition, target, trumpTypeLabel, decisionLabel: "DOUBLE", negativeLabel: "NO",
+            ShowDecision(trumpSetterPosition, target, trumpTypeLabel,
+                title: "DO YOU WANT TO DOUBLE?",
+                decisionLabel: "DOUBLE", negativeLabel: "NO",
                 onConfirm, onReject);
         }
 
@@ -121,7 +133,9 @@ namespace Game29
         public void ShowReDoubleDecision(string trumpSetterPosition, int target, string trumpTypeLabel,
             Action onConfirm, Action onReject)
         {
-            ShowDecision(trumpSetterPosition, target, trumpTypeLabel, decisionLabel: "RE-DOUBLE", negativeLabel: "NO",
+            ShowDecision(trumpSetterPosition, target, trumpTypeLabel,
+                title: "DO YOU WANT TO RE-DOUBLE?",
+                decisionLabel: "RE-DOUBLE", negativeLabel: "NO",
                 onConfirm, onReject);
         }
 
@@ -129,7 +143,9 @@ namespace Game29
         public void ShowSinglePlayDecision(string trumpSetterPosition, int target, string trumpTypeLabel,
             Action onConfirm, Action onReject)
         {
-            ShowDecision(trumpSetterPosition, target, trumpTypeLabel, decisionLabel: "SINGLE", negativeLabel: "NO",
+            ShowDecision(trumpSetterPosition, target, trumpTypeLabel,
+                title: "DO YOU WANT TO PLAY SINGLE?",
+                decisionLabel: "SINGLE", negativeLabel: "NO",
                 onConfirm, onReject);
         }
 
@@ -143,7 +159,8 @@ namespace Game29
             _onConfirm = onAcknowledge;
             _onReject = null;
 
-            if (titleText != null) titleText.text = BuildInfoLines(trumpSetterPosition, target, trumpTypeLabel);
+            if (titleText != null) titleText.text = "ROUND INFO";
+            SetBidInfo(trumpSetterPosition, target, trumpTypeLabel);
 
             if (decisionBtnText != null) decisionBtnText.text = "OK";
             if (decisionBtn != null) decisionBtn.gameObject.SetActive(true);
@@ -166,13 +183,14 @@ namespace Game29
         // ════════════════════════════════════════════════════════════════════
 
         private void ShowDecision(string trumpSetterPosition, int target, string trumpTypeLabel,
-            string decisionLabel, string negativeLabel, Action onConfirm, Action onReject)
+            string title, string decisionLabel, string negativeLabel, Action onConfirm, Action onReject)
         {
             EnsureComponents();
             _onConfirm = onConfirm;
             _onReject = onReject;
 
-            if (titleText != null) titleText.text = BuildInfoLines(trumpSetterPosition, target, trumpTypeLabel);
+            if (titleText != null) titleText.text = title;
+            SetBidInfo(trumpSetterPosition, target, trumpTypeLabel);
 
             if (decisionBtnText != null) decisionBtnText.text = decisionLabel;
             if (negativeBtnText != null) negativeBtnText.text = negativeLabel;
@@ -183,25 +201,42 @@ namespace Game29
             transform.SetAsLastSibling();
         }
 
+        private void SetBidInfo(string trumpSetterPosition, int target, string trumpTypeLabel)
+        {
+            if (bidInfoText == null) return;
+            bidInfoText.text = BuildInfoLines(trumpSetterPosition, target, trumpTypeLabel);
+        }
+
         /// <summary>
-        /// The card's title — strictly Who Set Trump → Target → Trump Type, in that
-        /// order. Any row whose data isn't available/public yet is simply omitted.
-        /// Never includes the double status or the question being asked.
+        /// Bid facts on the existing BidInfo text: who set trump, target, trump type.
         /// </summary>
         private static string BuildInfoLines(string trumpSetterPosition, int? target, string trumpTypeLabel)
         {
             var lines = new List<string>(3);
 
-            if (!string.IsNullOrEmpty(trumpSetterPosition))
-                lines.Add($"{trumpSetterPosition.ToUpper()} SET TRUMP");
-
-            if (target.HasValue)
+            if (!string.IsNullOrEmpty(trumpSetterPosition) && target.HasValue)
+                lines.Add($"Trump Player: {trumpSetterPosition} - {target.Value}");
+            else if (!string.IsNullOrEmpty(trumpSetterPosition))
+                lines.Add($"Trump Player: {trumpSetterPosition}");
+            else if (target.HasValue)
                 lines.Add($"TARGET : {target.Value}");
 
             if (!string.IsNullOrEmpty(trumpTypeLabel))
                 lines.Add($"TRUMP TYPE : {trumpTypeLabel.ToUpper()}");
 
             return string.Join("\n", lines);
+        }
+
+        private static Transform FindChildByName(Transform root, string name)
+        {
+            if (root == null) return null;
+            if (root.name == name) return root;
+            for (int i = 0; i < root.childCount; i++)
+            {
+                Transform found = FindChildByName(root.GetChild(i), name);
+                if (found != null) return found;
+            }
+            return null;
         }
 
         private void OnDecisionButtonClicked()

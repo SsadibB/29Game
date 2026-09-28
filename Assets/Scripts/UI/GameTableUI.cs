@@ -99,7 +99,7 @@ namespace Game29
             _gm.OnAIBiddingThinking += HandleAIBiddingThinking;
             _gm.OnCardPlayed += HandleCardPlayed;
             _gm.OnTrickWon += HandleTrickWon;
-            _gm.OnTrumpRevealed += HandleTrumpRevealed;
+            _gm.OnTrumpChosen += HandleTrumpChosen;
             _gm.OnRoundScored += HandleRoundScored;
             _gm.OnGameOver += HandleGameOver;
             _gm.OnHumanTrumpSelectionRequired += HandleHumanTrumpSelectionRequired;
@@ -125,6 +125,7 @@ namespace Game29
             _gm.OnCardPlayed -= HandleCardPlayed;
             _gm.OnTrickWon -= HandleTrickWon;
             _gm.OnTrumpRevealed -= HandleTrumpRevealed;
+            _gm.OnTrumpChosen -= HandleTrumpChosen;
             _gm.OnRoundScored -= HandleRoundScored;
             _gm.OnGameOver -= HandleGameOver;
             _gm.OnHumanTrumpSelectionRequired -= HandleHumanTrumpSelectionRequired;
@@ -146,31 +147,30 @@ namespace Game29
             switch (phase)
             {
                 case GamePhase.Dealing:
-                    scoreHUD.SetStatusMessage("Dealing cards from the deck...");
+                    SetHudStatus("Dealing cards from the deck...");
                     trickArea.ClearAll();
                     biddingPanel.Hide();
                     break;
 
                 case GamePhase.Bidding:
-                    scoreHUD.SetStatusMessage("Bidding Phase — Place your bid");
+                    SetHudStatus("Bidding Phase — Place your bid");
                     trickArea.ClearAll();
                     // New bidding round: clear every seat's previous bid or PASS.
                     ResetAllPassStates();
                     break;
 
                 case GamePhase.TrumpSelection:
-                    // Keep each seat's bid or PASS visible. Only restore avatars
-                    // that were dimmed for passing.
+                    // Bid and Pass bubbles stay up until trump is actually set.
                     EndAllBiddingDimming();
                     if (_gm != null)
                     {
                         PlayerSeat bidWinner = _gm.GetBidWinner();
                         if (bidWinner == GameManager.HumanSeat)
-                            scoreHUD.SetStatusMessage("★ YOU WON THE BID! Choose your Trump card ★");
+                            SetHudStatus("★ YOU WON THE BID! Choose your Trump card ★");
                         else
                         {
                             string bidderName = bidWinner == PlayerSeat.North ? "Partner (North)" : bidWinner.ToString();
-                            scoreHUD.SetStatusMessage($"{bidderName} won the bid and is setting the Trump card...");
+                            SetHudStatus($"{bidderName} won the bid and is setting the Trump card...");
                         }
                     }
                     biddingPanel.Hide();
@@ -180,7 +180,7 @@ namespace Game29
                     // Safety-net: undim pass avatars, but leave bid/PASS bubbles up
                     // until the next bidding round.
                     EndAllBiddingDimming();
-                    scoreHUD.SetStatusMessage("YOUR TURN — Select a card to play");
+                    SetHudStatus("YOUR TURN — Select a card to play");
                     if (biddingPanel != null) biddingPanel.Hide();
                     if (trumpSelectionModal != null) trumpSelectionModal.Hide();
                     RefreshHumanCards();
@@ -222,14 +222,14 @@ namespace Game29
 
                 if (seat == GameManager.HumanSeat)
                 {
-                    scoreHUD.SetStatusMessage("YOUR TURN TO BID!");
+                    SetHudStatus("YOUR TURN TO BID!");
                     biddingPanel.Show(_gm.GetCurrentBid(), _gm.GetCurrentHighBidder(), _gm.GetMinimumBid());
                 }
                 else
                 {
                     biddingPanel.Hide();
                     string name = seat == PlayerSeat.North ? "Partner" : seat.ToString();
-                    scoreHUD.SetStatusMessage($"Waiting for {name} to bid...");
+                    SetHudStatus($"Waiting for {name} to bid...");
                 }
             }
             else if (_gm.CurrentPhase == GamePhase.Playing)
@@ -237,58 +237,49 @@ namespace Game29
                 if (seat == GameManager.HumanSeat)
                 {
                     if (_gm.CanHumanRevealTrump())
-                        scoreHUD.SetStatusMessage("You have no cards of the led suit — tap REVEAL TRUMP to play trump, or discard.");
+                        SetHudStatus("You have no cards of the led suit — tap REVEAL TRUMP to play trump, or discard.");
                     else
-                        scoreHUD.SetStatusMessage("YOUR TURN — Select a card to play");
+                        SetHudStatus("YOUR TURN — Select a card to play");
                 }
                 else
                 {
                     string name = seat == PlayerSeat.North ? "Partner" : seat.ToString();
-                    scoreHUD.SetStatusMessage($"{name}'s turn to play...");
+                    SetHudStatus($"{name}'s turn to play...");
                 }
             }
 
             // Immediately refresh playability whenever active player changes
             RefreshHumanCards();
-            if (scoreHUD != null) scoreHUD.UpdateHUD(_gm);
+            UpdateHud();
             if (trumpCardSlot != null) trumpCardSlot.UpdateDisplay(_gm);
         }
 
         private void HandleBiddingAction(PlayerSeat seat, int? bid)
         {
-            // The trump panel is already up — bidding bubbles must stay off,
-            // including the action that just closed the auction.
-            if (trumpSelectionModal != null && trumpSelectionModal.gameObject.activeInHierarchy)
-            {
-                ResetAllPassStates();
-                scoreHUD.UpdateHUD(_gm);
-                return;
-            }
-
             PlayerSeatUI seatUI = GetSeatUI(seat);
-            if (seatUI != null) seatUI.HideThinking();
+            if (seatUI == null) return;
 
             if (bid.HasValue)
-            {
-                if (seatUI != null) seatUI.ShowBiddingAction(bid.Value.ToString(), false, false);
-            }
+                seatUI.ShowBiddingAction(bid.Value.ToString(), false, false);
             else
-            {
-                bool stillBidding = _gm != null && _gm.CurrentPhase == GamePhase.Bidding;
-                if (seatUI != null) seatUI.ShowBiddingAction("PASS", true, stillBidding);
-            }
-            scoreHUD.UpdateHUD(_gm);
+                seatUI.ShowBiddingAction("Pass", true, true);
+
+            UpdateHud();
         }
 
         /// <summary>
-        /// Fired by GameManager right before an AI player's bidding delay starts.
-        /// Shows a "Thinking…" persistent bubble on that seat so the player can
-        /// see the AI is deliberating before the decision lands 0.5 s later.
+        /// Fired by GameManager right before an AI player's 2-second bidding delay.
         /// </summary>
         private void HandleAIBiddingThinking(PlayerSeat seat)
         {
+            if (seat == GameManager.HumanSeat) return;
             PlayerSeatUI seatUI = GetSeatUI(seat);
             if (seatUI != null) seatUI.ShowThinking();
+        }
+
+        private void HandleTrumpChosen()
+        {
+            ResetAllPassStates();
         }
 
         private void HandleCardPlayed(PlayerSeat seat, Card card)
@@ -305,7 +296,7 @@ namespace Game29
             else
                 RefreshAICardCounts();
 
-            scoreHUD.UpdateHUD(_gm);
+            UpdateHud();
         }
 
         private void HandleTrickWon(PlayerSeat winner, int points)
@@ -316,15 +307,15 @@ namespace Game29
             PlayerSeatUI seatUI = GetSeatUI(winner);
             if (seatUI != null) seatUI.ShowActionBubble($"Won +{points} pts!");
 
-            scoreHUD.UpdateHUD(_gm);
+            UpdateHud();
         }
 
         private void HandleTrumpRevealed(Suit trump)
         {
             string sym = CardVisualTheme.GetSuitSymbol(trump);
             string name = CardVisualTheme.GetSuitName(trump);
-            scoreHUD.SetStatusMessage($"★ TRUMP REVEALED: {sym} {name.ToUpper()}! ★");
-            scoreHUD.UpdateHUD(_gm);
+            SetHudStatus($"★ TRUMP REVEALED: {sym} {name.ToUpper()}! ★");
+            UpdateHud();
             if (trumpCardSlot != null) trumpCardSlot.UpdateDisplay(_gm);
             RefreshHumanCards();
         }
@@ -335,9 +326,8 @@ namespace Game29
             if (trumpSelectionModal != null)
             {
                 trumpSelectionModal.Show(_gm.GetCurrentBid(), hand);
-                ResetAllPassStates();
             }
-            scoreHUD.SetStatusMessage("★ YOU WON THE BID! Choose your Trump card ★");
+            SetHudStatus("★ YOU WON THE BID! Choose your Trump card ★");
         }
 
         private void HandleSinglePlayEligible()
@@ -345,7 +335,7 @@ namespace Game29
             if (decisionPanel == null) BuildUIIfMissing();
             if (decisionPanel != null)
             {
-                scoreHUD.SetStatusMessage("DO YOU WANT TO PLAY SINGLE?");
+                SetHudStatus("DO YOU WANT TO PLAY SINGLE?");
                 decisionPanel.ShowSinglePlayDecision(
                     _gm.GetBidWinner().ToString(),
                     _gm.GetFinalBid(),
@@ -361,7 +351,7 @@ namespace Game29
             if (decisionPanel == null) BuildUIIfMissing();
             if (decisionPanel != null)
             {
-                scoreHUD.SetStatusMessage("DO YOU WANT TO SET DOUBLE?");
+                SetHudStatus("DO YOU WANT TO SET DOUBLE?");
                 decisionPanel.ShowDoubleDecision(
                     _gm.GetBidWinner().ToString(),
                     _gm.GetFinalBid(),
@@ -377,7 +367,7 @@ namespace Game29
             if (decisionPanel == null) BuildUIIfMissing();
             if (decisionPanel != null)
             {
-                scoreHUD.SetStatusMessage("DO YOU WANT TO RE-DOUBLE?");
+                SetHudStatus("DO YOU WANT TO RE-DOUBLE?");
                 decisionPanel.ShowReDoubleDecision(
                     _gm.GetBidWinner().ToString(),
                     _gm.GetFinalBid(),
@@ -398,8 +388,8 @@ namespace Game29
             string teamName = declaringTeam == 0 ? "You & Partner" : "Opponents";
             bool loweredTarget = declaringTeam == _gm.ScoreManager.BiddingTeam;
             string verb = loweredTarget ? "lowered" : "raised";
-            scoreHUD.SetStatusMessage($"♥♠ MARRIAGE! {teamName} declared — target {verb} to {newTarget} ♠♥");
-            scoreHUD.UpdateHUD(_gm);
+            SetHudStatus($"♥♠ MARRIAGE! {teamName} declared — target {verb} to {newTarget} ♠♥");
+            UpdateHud();
         }
 
         private void HandleGameOver(int winningTeam)
@@ -415,7 +405,7 @@ namespace Game29
         {
             if (_gm == null) return;
 
-            scoreHUD.UpdateHUD(_gm);
+            UpdateHud();
             UpdateTurnHighlights(_gm.CurrentPlayer);
             UpdateDealerCoin();
             if (_gm.IsSinglePlayActive)
@@ -522,14 +512,14 @@ namespace Game29
 
             if (_gm.CurrentPhase != GamePhase.Playing)
             {
-                scoreHUD.SetStatusMessage("⚠ Bidding in progress — cards cannot be played yet!");
+                SetHudStatus("⚠ Bidding in progress — cards cannot be played yet!");
                 if (southSeat != null) southSeat.ShakeCard(card);
                 return;
             }
 
             if (_gm.CurrentPlayer != GameManager.HumanSeat)
             {
-                scoreHUD.SetStatusMessage("Wait for your turn to play!");
+                SetHudStatus("Wait for your turn to play!");
                 if (southSeat != null) southSeat.ShakeCard(card);
                 return;
             }
@@ -543,11 +533,11 @@ namespace Game29
                 {
                     string suitName = CardVisualTheme.GetSuitName(currentTrick.LedSuit.Value);
                     string suitSym = CardVisualTheme.GetSuitSymbol(currentTrick.LedSuit.Value);
-                    scoreHUD.SetStatusMessage($"⚠ Must follow suit: {suitSym} {suitName}!");
+                    SetHudStatus($"⚠ Must follow suit: {suitSym} {suitName}!");
                 }
                 else
                 {
-                    scoreHUD.SetStatusMessage("⚠ Invalid card play!");
+                    SetHudStatus("⚠ Invalid card play!");
                 }
                 return;
             }
@@ -712,14 +702,12 @@ namespace Game29
                 tableBackground = bgObj.GetComponent<Image>() ?? bgObj.AddComponent<Image>();
             }
 
-            // Score HUD
+            // Score HUD — bind the existing scene object only.
             if (scoreHUD == null)
             {
                 Transform sT = transform.Find("ScoreHUD");
-                GameObject hudObj = sT != null ? sT.gameObject : new GameObject("ScoreHUD");
-                if (sT == null) hudObj.transform.SetParent(transform, false);
-                scoreHUD = hudObj.GetComponent<ScoreHUDUI>() ?? hudObj.AddComponent<ScoreHUDUI>();
-                scoreHUD.EnsureComponents();
+                if (sT != null)
+                    scoreHUD = sT.GetComponent<ScoreHUDUI>() ?? sT.gameObject.AddComponent<ScoreHUDUI>();
             }
 
             // Trick Area
@@ -831,24 +819,30 @@ namespace Game29
             if (opponentPointCard == null)
             {
                 Transform existing = transform.Find("PointCard_Opponent");
-                GameObject obj = existing != null ? existing.gameObject : new GameObject("PointCard_Opponent");
-                if (existing == null) obj.transform.SetParent(transform, false);
-                opponentPointCard = obj.GetComponent<PointCardSlotUI>() ?? obj.AddComponent<PointCardSlotUI>();
-                opponentPointCard.TeamIndex = 1;
-                opponentPointCard.TeamTitle = "Opponent";
-                opponentPointCard.EnsureComponents();
+                if (existing != null)
+                {
+                    opponentPointCard = existing.GetComponent<PointCardSlotUI>();
+                    if (opponentPointCard != null)
+                    {
+                        opponentPointCard.TeamIndex = 1;
+                        opponentPointCard.TeamTitle = "Opponent";
+                    }
+                }
             }
 
             // Your Team Point Card (Right table board)
             if (yourTeamPointCard == null)
             {
                 Transform existing = transform.Find("PointCard_YourTeam");
-                GameObject obj = existing != null ? existing.gameObject : new GameObject("PointCard_YourTeam");
-                if (existing == null) obj.transform.SetParent(transform, false);
-                yourTeamPointCard = obj.GetComponent<PointCardSlotUI>() ?? obj.AddComponent<PointCardSlotUI>();
-                yourTeamPointCard.TeamIndex = 0;
-                yourTeamPointCard.TeamTitle = "Your Team";
-                yourTeamPointCard.EnsureComponents();
+                if (existing != null)
+                {
+                    yourTeamPointCard = existing.GetComponent<PointCardSlotUI>();
+                    if (yourTeamPointCard != null)
+                    {
+                        yourTeamPointCard.TeamIndex = 0;
+                        yourTeamPointCard.TeamTitle = "Your Team";
+                    }
+                }
             }
 
             // Decision Panel (Single, Double, Re-Double)
@@ -874,6 +868,16 @@ namespace Game29
             }
 
             ApplyLandscapeLayout();
+        }
+
+        private void UpdateHud()
+        {
+            if (scoreHUD != null) scoreHUD.UpdateHUD(_gm);
+        }
+
+        private void SetHudStatus(string message)
+        {
+            if (scoreHUD != null) scoreHUD.SetStatusMessage(message);
         }
 
         private void EnsureInputSystemEventSystem()

@@ -163,6 +163,32 @@ namespace Game29
         }
 
         /// <summary>
+        /// Printed 2 / 3 / 4 / 5 used as the trump-suit marker (one rank per suit).
+        /// </summary>
+        public static Sprite GetTrumpMarkerFace(Suit suit)
+        {
+            return suit switch
+            {
+                Suit.Spades => LoadCardSprite("2_of_spades"),
+                Suit.Clubs => LoadCardSprite("3_of_clubs"),
+                Suit.Hearts => LoadCardSprite("4_of_hearts"),
+                Suit.Diamonds => LoadCardSprite("5_of_diamonds"),
+                _ => null
+            };
+        }
+
+        /// <summary>
+        /// Printed 6 used for the team point-card stack.
+        /// Our team: diamonds (+), spades (−). Opponent: hearts (+), clubs (−).
+        /// </summary>
+        public static Sprite GetTeamPointSixFace(int teamIndex, bool positive)
+        {
+            if (teamIndex == 0)
+                return LoadCardSprite(positive ? "6_of_diamonds" : "6_of_spades");
+            return LoadCardSprite(positive ? "6_of_hearts" : "6_of_clubs");
+        }
+
+        /// <summary>
         /// Loads a card image from Resources/Cards by filename, without the extension.
         /// Examples: "ace_of_spades", "7_of_hearts", "2_of_clubs", "Card_Back".
         /// </summary>

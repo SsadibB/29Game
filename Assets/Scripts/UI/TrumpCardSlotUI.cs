@@ -61,55 +61,28 @@ namespace Game29
                 cardButton.onClick.AddListener(OnCardClicked);
             }
 
-            if (glowOutline == null)
-            {
-                GameObject gObj = new GameObject("GlowOutline");
-                gObj.transform.SetParent(transform, false);
-                RectTransform grt = gObj.AddComponent<RectTransform>();
-                grt.anchorMin = Vector2.zero;
-                grt.anchorMax = Vector2.one;
-                grt.offsetMin = Vector2.zero;
-                grt.offsetMax = Vector2.zero;
-
-                glowOutline = gObj.AddComponent<Image>();
-                glowOutline.sprite = CardVisualTheme.CreateRoundedRectSprite(110, 160, 18, Color.clear, CardVisualTheme.ColorGold, 5);
-                glowOutline.type = Image.Type.Sliced;
-                glowOutline.raycastTarget = false;
-                glowOutline.gameObject.SetActive(false);
-            }
-
-            if (statusLabelText == null)
-            {
-                GameObject lObj = CreateText("StatusLabel", new Vector2(0, 96), 13, FontStyle.Bold, CardVisualTheme.ColorGold);
-                statusLabelText = lObj.GetComponent<Text>();
-                statusLabelText.text = "TRUMP CARD";
-                // Always active — content changes, never SetActive(false)
-            }
-
-            if (suitSymbolText == null)
-            {
-                GameObject sObj = CreateText("SuitSymbol", new Vector2(0, 14), 54, FontStyle.Bold, CardVisualTheme.ColorGold);
-                suitSymbolText = sObj.GetComponent<Text>();
-                // Start transparent (hidden) to avoid APK Canvas batching bug:
-                // procedurally-created objects hidden with SetActive(false) at birth
-                // may fail to re-appear with SetActive(true) in Android builds.
-                suitSymbolText.color = Color.clear;
-            }
-
-            if (suitNameText == null)
-            {
-                GameObject nObj = CreateText("SuitName", new Vector2(0, -36), 13, FontStyle.Bold, Color.white);
-                suitNameText = nObj.GetComponent<Text>();
-                // Start transparent — same APK safety as suitSymbolText above.
-                suitNameText.color = Color.clear;
-            }
+            HideOverlay("GlowOutline");
+            HideOverlay("StatusLabel");
+            HideOverlay("SuitSymbol");
+            HideOverlay("SuitName");
+            glowOutline = null;
+            statusLabelText = null;
+            suitSymbolText = null;
+            suitNameText = null;
 
             if (tapToRevealText == null)
             {
-                GameObject trObj = CreateText("TapToReveal", new Vector2(0, -96), 11, FontStyle.Bold, new Color(0.95f, 0.85f, 0.40f, 0.95f));
-                tapToRevealText = trObj.GetComponent<Text>();
-                tapToRevealText.text = "TAP TO REVEAL";
+                Transform existingTap = transform.Find("TapToReveal");
+                if (existingTap != null)
+                    tapToRevealText = existingTap.GetComponent<Text>();
             }
+        }
+
+        private void HideOverlay(string childName)
+        {
+            Transform child = transform.Find(childName);
+            if (child != null)
+                child.gameObject.SetActive(false);
         }
 
         public void UpdateDisplay(GameManager gm)
@@ -135,16 +108,18 @@ namespace Game29
             if (tm.IsJoker)
             {
                 StopPulse();
-                cardBg.sprite = CardVisualTheme.RoundedCardSlot;
-                cardBg.color  = new Color(0.12f, 0.20f, 0.35f, 0.95f);
-                // Use color-based visibility (not SetActive) to avoid APK Canvas batching bug
-                if (suitSymbolText != null) { suitSymbolText.text = "🃏"; suitSymbolText.color = new Color(0.5f, 0.85f, 1f); }
-                if (suitNameText   != null) { suitNameText.text = "NO TRUMP";  suitNameText.color = Color.white; }
-                statusLabelText.text = "★ JOKER ★";
-                statusLabelText.color = new Color(0.5f, 0.85f, 1f);
-                glowOutline.gameObject.SetActive(true);
+                Sprite jokerFace = CardVisualTheme.LoadCardSprite("JOKER");
+                if (jokerFace != null)
+                {
+                    cardBg.sprite = jokerFace;
+                    cardBg.color = Color.white;
+                }
+                else
+                {
+                    cardBg.sprite = CardVisualTheme.RoundedCardSlot;
+                    cardBg.color = new Color(0.12f, 0.20f, 0.35f, 0.95f);
+                }
                 if (tapToRevealText != null) tapToRevealText.gameObject.SetActive(false);
-                Canvas.ForceUpdateCanvases();
                 return;
             }
 
@@ -183,13 +158,6 @@ namespace Game29
             cardBg.preserveAspect = true;
             cardBg.color = Color.white;
 
-            statusLabelText.text = isSeventhCard ? "TRUMP (7th Card)" : "TRUMP CARD";
-            statusLabelText.color = CardVisualTheme.ColorGold;
-
-            // Hide suit text via transparency (not SetActive) to avoid APK Canvas batching bug
-            if (suitSymbolText != null) suitSymbolText.color = Color.clear;
-            if (suitNameText   != null) suitNameText.color   = Color.clear;
-
             if (tapToRevealText != null)
             {
                 tapToRevealText.gameObject.SetActive(true);
@@ -197,11 +165,7 @@ namespace Game29
             }
 
             if (canReveal) StartPulse();
-            else
-            {
-                StopPulse();
-                glowOutline.gameObject.SetActive(false);
-            }
+            else StopPulse();
         }
 
         private void ApplyRevealedState(Suit trump, Card faceCard = null)
@@ -211,54 +175,16 @@ namespace Game29
             cardBg.preserveAspect = true;
             cardBg.color = Color.white;
 
-            Sprite faceArt = faceCard != null ? CardVisualTheme.GetCardFace(faceCard) : null;
+            Sprite faceArt = faceCard != null
+                ? CardVisualTheme.GetCardFace(faceCard)
+                : CardVisualTheme.GetTrumpMarkerFace(trump);
             if (faceArt != null)
-            {
                 cardBg.sprite = faceArt;
-                if (suitSymbolText != null) suitSymbolText.color = Color.clear;
-                if (suitNameText != null) suitNameText.color = Color.clear;
-                statusLabelText.text = "\u2605 7TH CARD TRUMP \u2605";
-                statusLabelText.color = CardVisualTheme.ColorGold;
-                glowOutline.gameObject.SetActive(true);
-                if (tapToRevealText != null)
-                    tapToRevealText.gameObject.SetActive(false);
-                Canvas.ForceUpdateCanvases();
-                return;
-            }
-
-            cardBg.sprite = CardVisualTheme.CardFront;
-
-            Color col = CardVisualTheme.GetSuitColor(trump);
-
-            // Show suit text via full color (not SetActive) to avoid APK Canvas batching bug
-            if (suitSymbolText != null) suitSymbolText.color = col;
-            if (suitNameText   != null) suitNameText.color   = col;
-
-            if (faceCard != null)
-            {
-                if (suitSymbolText != null)
-                    suitSymbolText.text = $"{CardVisualTheme.GetRankString(faceCard.Rank)}\n{CardVisualTheme.GetSuitSymbol(trump)}";
-                if (suitNameText != null)
-                    suitNameText.text = $"{CardVisualTheme.GetRankString(faceCard.Rank)} OF {CardVisualTheme.GetSuitName(trump).ToUpper()}";
-                statusLabelText.text = "\u2605 7TH CARD TRUMP \u2605";
-            }
             else
-            {
-                if (suitSymbolText != null)
-                    suitSymbolText.text = CardVisualTheme.GetSuitSymbol(trump);
-                if (suitNameText != null)
-                    suitNameText.text = CardVisualTheme.GetSuitName(trump).ToUpper();
-                statusLabelText.text = "\u2605 TRUMP \u2605";
-            }
-
-            statusLabelText.color = CardVisualTheme.ColorGold;
-            glowOutline.gameObject.SetActive(true);
+                cardBg.sprite = CardVisualTheme.CardFront;
 
             if (tapToRevealText != null)
                 tapToRevealText.gameObject.SetActive(false);
-
-            // Force a Canvas rebuild to guarantee the text appears on Android APK builds.
-            Canvas.ForceUpdateCanvases();
         }
 
         private void AnimateFlipToRevealed(Suit trump, Card faceCard)
@@ -294,10 +220,6 @@ namespace Game29
 
         private void StartPulse()
         {
-            if (_pulseTween != null && _pulseTween.IsActive()) return;
-            glowOutline.gameObject.SetActive(true);
-            glowOutline.color = new Color(CardVisualTheme.ColorGold.r, CardVisualTheme.ColorGold.g, CardVisualTheme.ColorGold.b, 0.2f);
-            _pulseTween = glowOutline.DOFade(0.7f, 0.7f).SetLoops(-1, LoopType.Yoyo).SetLink(gameObject);
         }
 
         private void StopPulse()
@@ -306,6 +228,12 @@ namespace Game29
             {
                 _pulseTween.Kill();
                 _pulseTween = null;
+            }
+            if (cardBg != null)
+            {
+                Color c = cardBg.color;
+                c.a = 1f;
+                cardBg.color = c;
             }
         }
 
@@ -316,28 +244,6 @@ namespace Game29
         public void ResetHighlight()
         {
             StopPulse();
-            if (glowOutline != null)
-                glowOutline.gameObject.SetActive(false);
-        }
-
-        private GameObject CreateText(string name, Vector2 pos, int fontSize, FontStyle style, Color color)
-        {
-            GameObject obj = new GameObject(name);
-            obj.transform.SetParent(transform, false);
-            RectTransform rt = obj.AddComponent<RectTransform>();
-            rt.anchoredPosition = pos;
-            rt.sizeDelta = new Vector2(160, 32);
-
-            Text txt = obj.AddComponent<Text>();
-            txt.font = CardVisualTheme.GetFont();
-            txt.fontSize = fontSize;
-            txt.fontStyle = style;
-            txt.alignment = TextAnchor.MiddleCenter;
-            txt.color = color;
-            txt.raycastTarget = false;
-            txt.horizontalOverflow = HorizontalWrapMode.Overflow;
-            txt.verticalOverflow = VerticalWrapMode.Overflow;
-            return obj;
         }
     }
 }
